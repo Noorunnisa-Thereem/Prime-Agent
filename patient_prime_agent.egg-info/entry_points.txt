@@ -1,0 +1,3 @@
+[console_scripts]
+prime-agent = patient_prime_agent.agentic.cli:main
+prime-patient-agent = patient_prime_agent.cli:main

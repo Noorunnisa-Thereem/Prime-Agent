@@ -1,0 +1,39 @@
+{
+  "revisions": [
+    {
+      "revision_id": "rev-0001",
+      "number": 1,
+      "reason": "refinement ref-0001 on agent_instruction",
+      "actor": "refinement-engine",
+      "created_at": "2026-08-18T06:22:27Z"
+    },
+    {
+      "revision_id": "rev-0002",
+      "number": 2,
+      "reason": "refinement ref-0002 on agent_instruction",
+      "actor": "refinement-engine",
+      "created_at": "2026-08-18T06:22:27Z"
+    },
+    {
+      "revision_id": "rev-0003",
+      "number": 3,
+      "reason": "refinement ref-0003 on agent_instruction",
+      "actor": "refinement-engine",
+      "created_at": "2026-08-18T06:22:27Z"
+    },
+    {
+      "revision_id": "rev-0004",
+      "number": 4,
+      "reason": "refinement ref-0004 on agent_instruction",
+      "actor": "refinement-engine",
+      "created_at": "2026-08-18T06:22:27Z"
+    },
+    {
+      "revision_id": "rev-0005",
+      "number": 5,
+      "reason": "refinement ref-0005 on agent_instruction",
+      "actor": "refinement-engine",
+      "created_at": "2026-08-18T06:31:25Z"
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+{
+  "patient_profile": {
+    "patient_id": null,
+    "name": "John Doe",
+    "age": 34,
+    "gender": null,
+    "diagnosis": {
+      "primary": "Focal impaired-awareness seizures",
+      "secondary": "Secondary generalized tonic-clonic seizures",
+      "diagnosis_date": "2021-05-12",
+      "disease_stage": null
+    }
+  },
+  "observation_window": {
+    "start_date": "2026-01-01",
+    "end_date": "2026-03-02",
+    "total_visits": 5,
+    "follow_up_frequency": "approximately every 2 weeks"
+  },
+  "longitudinal_summary": {
+    "overall_clinical_status": "Clinician notes repeatedly describe seizure control as reasonably stable, with persistent breakthrough seizures.",
+    "overall_disease_trajectory": "fluctuating burden across visits (7, 4, 5, 11, 5 reported episodes), with stable clinician impression rather than documented progressive decline",
+    "overall_risk_level": "moderate",
+    "clinical_progression": [
+      {
+        "date": "2026-01-01",
+        "status": "stable outpatient follow-up",
+        "summary": "7 total reported episodes; average duration 3.4 minutes; clustering no. Clinician impression: seizure control reasonably stable, quality-of-life trending favorably. CBC and LFT reviewed today - within normal limits. Plan: Continue current regimen; reassess in 2 weeks."
+      },
+      {
+        "date": "2026-01-16",
+        "status": "seizure clustering documented",
+        "summary": "4 total reported episodes; average duration 9.0 minutes; clustering yes. Clinician impression: seizure control reasonably stable, quality-of-life trending favorably. Plan: Maintain current dosing; encourage consistent sleep schedule and trigger avoidance."
+      },
+      {
+        "date": "2026-02-03",
+        "status": "stable outpatient follow-up",
+        "summary": "5 total reported episodes; average duration 6.7 minutes; clustering no. Clinician impression: seizure control reasonably stable, quality-of-life trending favorably. Repeat CBC obtained - platelet and white cell counts stable. Plan: Maintain current dosing; encourage consistent sleep schedule and trigger avoidance."
+      },
+      {
+        "date": "2026-02-15",
+        "status": "highest recorded seizure burden",
+        "summary": "11 total reported episodes; average duration 8.2 minutes; clustering no. Clinician impression: seizure control reasonably stable, quality-of-life trending favorably. Plan: Maintain current dosing; encourage consistent sleep schedule and trigger avoidance."
+      },
+      {
+        "date": "2026-03-02",
+        "status": "stable outpatient follow-up",
+        "summary": "5 total reported episodes; average duration 4.5 minutes; clustering no. Clinician impression: seizure control reasonably stable, quality-of-life trending favorably. Plan: Maintain current dosing; encourage consistent sleep schedule and trigger avoidance."
+      }
+    ]
+  },
+  "clinical_inference": {
+    "disease_behavior": {
+      "pattern": "Chronic focal epilepsy with focal impaired-awareness seizures and secondary generalized tonic-clonic seizures.",
+      "trend": "fluctuating burden across visits (7, 4, 5, 11, 5 reported episodes), with stable clinician impression rather than documented progressive decline",
+      "disease_control": "partial control with ongoing breakthrough seizures",
+      "neurological_decline": false,
+      "functional_decline": false
+    },
+    "seizure_analysis": {
+      "overall_pattern": "Breakthrough seizure burden fluctuated across visits without a sustained monotonic worsening pattern.",
+      "total_recorded_visits": 5,
+      "highest_seizure_burden": {
+        "date": "2026-02-15",
+        "episodes": 11
+      },
+      "lowest_seizure_burden": {
+        "date": "2026-01-16",
+        "episodes": 4
+      },
+      "average_duration_trend": [
+        3.4,
+        9.0,
+        6.7,
+        8.2,
+        4.5
+      ],
+      "clustering_detected": true,
+      "overall_inference": "Seizure risk remains clinically relevant because events persist on dual therapy and clustering was documented once."
+    },
+    "aura_analysis": {
+      "persistent_patterns": [
+        "Deja vu frequency",
+        "Epigastric rising sensation",
+        "Feeling of derealization/detachment",
+        "Metallic taste in mouth",
+        "Racing heartbeat prior to episode",
+        "Sudden dizziness before seizure onset",
+        "Sudden intense anxiety or fear",
+        "Tingling or numbness sensations",
+        "Unusual smells (olfactory aura)",
+        "Visual distortions or flashing lights"
+      ],
+      "clinical_significance": "Aura and prodromal symptoms remain useful warning signals for episode tracking.",
+      "digital_twin_use": "Track aura severity and recurrence alongside seizure burden, triggers, and sleep metrics."
+    },
+    "medication_response": {
+      "current_regimen": [
+        {
+          "drug": "Levetiracetam (Keppra)",
+          "dose": "1000 mg BID"
+        },
+        {
+          "drug": "Lamotrigine",
+          "dose": "150 mg BID"
+        }
+      ],
+      "effectiveness": "partial response",
+      "tolerability": "generally tolerated with intermittent dizziness and variable side-effect burden",
+      "persistent_side_effects": [
+        "Memory fog post-dose",
+        "Tremor in hands",
+        "Weight change since last visit",
+        "Gum hypertrophy",
+        "Mood irritability",
+        "Nausea after taking medication",
+        "Skin rash or itching",
+        "Daytime drowsiness",
+        "Dizziness/lightheadedness",
+        "Unsteady gait (ataxia)"
+      ],
+      "drug_toxicity": false,
+      "overall_inference": "Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression."
+    },
+    "sleep_analysis": {
+      "overall_trend": "sleep remained variable across visits",
+      "average_sleep": "6.2 hours per night across printed assessments",
+      "persistent_issues": [
+        "Daytime naps needed",
+        "Difficulty falling back asleep",
+        "Fatigue level through the day",
+        "Waking up unrefreshed"
+      ],
+      "clinical_relationship": "Sleep disruption and inconsistent recovery may contribute to seizure vulnerability and quality-of-life fluctuation."
+    },
+    "cognitive_analysis": {
+      "overall_status": "stable without documented progressive decline",
+      "memory": "stable on clinician review, with low to intermittent patient-reported memory difficulty",
+      "attention": "variable patient-reported concentration and attention symptoms",
+      "language": "mild word-finding difficulty was noted but not described as worsening",
+      "mental_clarity": "improved mental clarity was reported at the latest visit",
+      "overall_inference": "Cognitive concerns are present but the clinical notes do not document progressive neurological decline."
+    },
+    "laboratory_analysis": {
+      "cbc": "reviewed as within normal limits or stable when performed",
+      "liver_function": "reviewed as within normal limits when documented",
+      "platelet_count": "stable or normal when documented",
+      "white_cell_count": "stable when documented",
+      "medication_safety": "no drug-toxicity signal documented in the clinical notes",
+      "overall_inference": "Available clinical-note lab summaries support continued safety monitoring without an abnormal CBC/LFT signal."
+    },
+    "quality_of_life": {
+      "overall_status": "fluctuating but generally described as trending favorably by the clinician",
+      "daily_function": "independence in daily activities was repeatedly normal, intact, or stable",
+      "mobility": null,
+      "social_function": "intermittent social withdrawal or isolation symptoms were reported",
+      "overall_inference": "Quality of life remains affected by seizures, sleep, triggers, and medication tolerability, despite generally stable outpatient status."
+    }
+  },
+  "major_clinical_events": [
+    {
+      "date": "2026-01-01",
+      "event": "Routine epilepsy follow-up with stable clinician impression",
+      "importance": "moderate",
+      "clinical_impact": "Contributes to longitudinal assessment of seizure burden, triggers, sleep, and tolerability."
+    },
+    {
+      "date": "2026-01-16",
+      "event": "Seizure clustering documented during follow-up",
+      "importance": "high",
+      "clinical_impact": "Raises near-term seizure-monitoring priority despite otherwise stable clinician impression."
+    },
+    {
+      "date": "2026-02-03",
+      "event": "CBC/LFT safety review documented",
+      "importance": "moderate",
+      "clinical_impact": "Supports medication-safety monitoring without a documented abnormal lab signal."
+    },
+    {
+      "date": "2026-02-15",
+      "event": "Highest recorded seizure burden in clinical-note window",
+      "importance": "high",
+      "clinical_impact": "11 reported episodes make this the peak burden visit."
+    },
+    {
+      "date": "2026-03-02",
+      "event": "Routine epilepsy follow-up with stable clinician impression",
+      "importance": "moderate",
+      "clinical_impact": "Contributes to longitudinal assessment of seizure burden, triggers, sleep, and tolerability."
+    }
+  ],
+  "digital_twin_state": {
+    "current_state": "stable outpatient epilepsy state with persistent breakthrough seizure risk",
+    "state_vector": {
+      "disease_stability": 0.67,
+      "treatment_response": 0.64,
+      "medication_safety": 0.67,
+      "cognitive_health": 0.69,
+      "sleep_health": 0.66,
+      "quality_of_life": 0.67,
+      "overall_health_score": 0.67
+    },
+    "risk_prediction": {
+      "future_seizure_risk": "moderate",
+      "status_epilepticus_risk": "low to moderate",
+      "hospitalization_risk": "low to moderate",
+      "cognitive_decline_risk": "low",
+      "medication_toxicity_risk": "low to moderate",
+      "functional_decline_risk": "low"
+    },
+    "monitoring_priorities": [
+      "seizure frequency by type",
+      "seizure clustering",
+      "average and longest seizure duration",
+      "post-ictal recovery time",
+      "aura pattern and severity",
+      "sleep duration and sleep fragmentation",
+      "missed medication doses and trigger exposure",
+      "dizziness and other medication side effects",
+      "CBC, liver function, and antiseizure drug-level tracking",
+      "word-finding, memory, and attention symptoms"
+    ],
+    "recommended_actions": [
+      "continue the documented antiseizure medication regimen unless changed by the treating clinician",
+      "maintain the documented plan for consistent sleep schedule and trigger avoidance",
+      "continue seizure and aura tracking across follow-up windows",
+      "continue periodic CBC, liver function, and antiseizure drug-level safety monitoring when scheduled",
+      "reassess at the planned follow-up interval"
+    ]
+  },
+  "executive_summary": {
+    "clinical_conclusion": "Across five clinical-note visits from 2026-01-01 to 2026-03-02, the patient has chronic focal epilepsy with persistent breakthrough seizures on levetiracetam and lamotrigine. The clinician repeatedly documented reasonably stable seizure control and favorable quality-of-life trajectory, while seizure burden, sleep quality, trigger exposure, aura symptoms, and medication tolerability continued to fluctuate."
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "reportLabel": "CT Scan Clinical Summary",
+  "patientId": "PATIENT-01",
+  "reportMetadata": {
+    "reportType": "neuroimaging_longitudinal_summary",
+    "modality": "CT",
+    "bodyPart": "Head/Brain",
+    "periodCovered": {
+      "startDate": "2026-01-12",
+      "endDate": "2026-06-29"
+    },
+    "numberOfStudies": 6  },
+  "studies": [
+    {
+      "studyId": "CT_Scan_01",
+      "studyDate": "2026-01-12",
+      "findings": "The lateral ventricles are visualized at the level of the frontal horns and bodies and appear grossly symmetric. Cortical sulci are visualized over the bilateral frontal and parietal convexities. No midline shift. No hyperdense collection to suggest acute intracranial hemorrhage.",
+      "impression": "No acute intracranial abnormality on this synthetic demo read.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_02",
+      "studyDate": "2026-02-16",
+      "findings": "Section obtained at the level of the basal cisterns/temporal lobes. Cisterns about the suprasellar region are visualized. Ventricular detail is limited at this level. No midline shift. No hyperdense collection identified.",
+      "impression": "No acute abnormality identified; assessment limited by slice level and image quality on this synthetic demo read.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_03",
+      "studyDate": "2026-03-11",
+      "findings": "The frontal horns of the lateral ventricles are visualized, with adjacent CSF spaces appearing mildly prominent. Cortical sulci and sylvian fissures are visualized. No midline shift. No hyperdense collection identified.",
+      "impression": "No acute abnormality identified on this synthetic demo read.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_04",
+      "studyDate": "2026-04-20",
+      "findings": "Section obtained at the high convexity, above the level of the lateral ventricles. Cortical sulci are visualized diffusely. No hyperdense collection identified.",
+      "impression": "No acute abnormality identified; ventricles not included at this slice level on this synthetic demo read.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_05",
+      "studyDate": "2026-05-14",
+      "findings": "Section obtained near the vertex. Sulci are visualized over the convexities and appear relatively prominent; image graininess limits fine assessment. No hyperdense collection identified.",
+      "impression": "No acute abnormality identified; limited by image quality on this synthetic demo read.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_06",
+      "studyDate": "2026-06-29",
+      "findings": "The frontal horns of the lateral ventricles are visualized. Cortical sulci are visualized over the convexities. Small symmetric hyperdense foci are noted near the ventricular atria/trigones bilaterally, in a location and appearance typical of benign choroid plexus calcification. No midline shift.",
+      "impression": "No acute abnormality identified. Incidental bilateral choroid plexus calcification (common benign finding) on this synthetic demo read.",
+      "verifiedByRadiologist": false
+    }
+  ],
+  "comparison": "Direct interval comparison across the six studies is limited by differences in image resolution, windowing, and slice positioning between files; a quantitative trend/progression assessment is not rendered in this synthetic demo report."
+}

@@ -1,0 +1,11 @@
+{
+  "session_id": "session-5cbeb06dae4f4dec",
+  "objective": "Scan patient files and generate one validated integrated digital twin report.",
+  "created_at": "2026-08-18T06:23:07Z",
+  "updated_at": "2026-08-18T06:23:51Z",
+  "status": "open",
+  "run_count": 0,
+  "agent_ids": [],
+  "metrics": {},
+  "notes": []
+}

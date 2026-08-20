@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ECG Section",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "study_date",
+    "rate_bpm",
+    "rhythm",
+    "intervals",
+    "axis",
+    "impression",
+    "notable_abnormalities"
+  ],
+  "properties": {
+    "study_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "rate_bpm": {
+      "type": ["number", "null"]
+    },
+    "rhythm": {
+      "type": ["string", "null"]
+    },
+    "intervals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pr_ms", "qrs_ms", "qt_ms", "qtc_ms"],
+      "properties": {
+        "pr_ms": {
+          "type": ["number", "null"]
+        },
+        "qrs_ms": {
+          "type": ["number", "null"]
+        },
+        "qt_ms": {
+          "type": ["number", "null"]
+        },
+        "qtc_ms": {
+          "type": ["number", "null"]
+        }
+      }
+    },
+    "axis": {
+      "type": ["string", "null"]
+    },
+    "impression": {
+      "type": ["string", "null"]
+    },
+    "notable_abnormalities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

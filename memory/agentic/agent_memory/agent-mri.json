@@ -1,0 +1,149 @@
+{
+  "scope": "agent-mri",
+  "updated_at": "2026-08-18T09:59:32Z",
+  "records": [
+    {
+      "key": "last_run::task-5e8a357812b9",
+      "scope": "agent-mri",
+      "kind": "episodic",
+      "content": "attempt=1 files=20 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-5e8a357812b9",
+        "at": "2026-08-18T07:01:07Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00001_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00001_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00002_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00002_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00003_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00003_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI_summary.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00001_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00001_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00002_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00002_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00003_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00003_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\MRI\\MRI_summary.json",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-T2sel_FLAIR.nii"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T07:01:07Z",
+      "updated_at": "2026-08-18T07:01:07Z"
+    },
+    {
+      "key": "last_run::task-8ad9a84a56f0",
+      "scope": "agent-mri",
+      "kind": "episodic",
+      "content": "attempt=1 files=20 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-8ad9a84a56f0",
+        "at": "2026-08-18T06:22:25Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00001_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00001_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00002_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00002_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00003_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00003_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI_summary.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00001_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00001_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00002_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00002_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00003_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00003_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\MRI\\MRI_summary.json",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-T2sel_FLAIR.nii"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T06:22:25Z",
+      "updated_at": "2026-08-18T06:22:25Z"
+    },
+    {
+      "key": "last_run::task-8e47102668ab",
+      "scope": "agent-mri",
+      "kind": "episodic",
+      "content": "attempt=1 files=7 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-8e47102668ab",
+        "at": "2026-08-18T09:59:32Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\MRI\\MRI_summary.json",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-T2sel_FLAIR.nii"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T09:59:32Z",
+      "updated_at": "2026-08-18T09:59:32Z"
+    },
+    {
+      "key": "last_run::task-daa18568d428",
+      "scope": "agent-mri",
+      "kind": "episodic",
+      "content": "attempt=1 files=20 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-daa18568d428",
+        "at": "2026-08-18T06:31:23Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00001_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00001_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00002_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00002_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00003_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI\\sub-00003_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\MRI_summary.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00001_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00001_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00002_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00002_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00003_acq-iso08_T1w.json",
+          "D:\\Prime Agent\\patient_data\\DT_Data\\MRI\\Preprocess_data\\sub-00003_acq-T2sel_FLAIR.json",
+          "D:\\Prime Agent\\patient_data\\MRI\\MRI_summary.json",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-T2sel_FLAIR.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-iso08_T1w.nii",
+          "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-T2sel_FLAIR.nii"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T06:31:23Z",
+      "updated_at": "2026-08-18T06:31:23Z"
+    }
+  ]
+}

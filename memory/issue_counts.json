@@ -1,0 +1,27 @@
+{
+  "ct:file-note:unsupported-extension-png": {
+    "count": 24,
+    "last_seen": "2026-08-18T09:59:33Z",
+    "last_refined_count": 24
+  },
+  "mri:file-note:unsupported-extension-nii": {
+    "count": 42,
+    "last_seen": "2026-08-18T09:59:34Z",
+    "last_refined_count": 42
+  },
+  "ecg:file-note:unsupported-extension-edf": {
+    "count": 48,
+    "last_seen": "2026-08-18T09:59:34Z",
+    "last_refined_count": 48
+  },
+  "eeg:file-note:unsupported-extension-mat": {
+    "count": 252,
+    "last_seen": "2026-08-18T09:59:34Z",
+    "last_refined_count": 252
+  },
+  "genetics:file-note:unsupported-extension-xlsx": {
+    "count": 4,
+    "last_seen": "2026-08-18T09:59:34Z",
+    "last_refined_count": 4
+  }
+}

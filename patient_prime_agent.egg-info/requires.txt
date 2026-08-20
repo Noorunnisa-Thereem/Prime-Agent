@@ -1,0 +1,17 @@
+pypdf>=4.0
+openpyxl>=3.1
+
+[llm]
+torch>=2.2
+transformers>=4.40
+accelerate>=0.30
+sentencepiece>=0.2
+psutil>=5.9
+
+[quant]
+
+[quant:platform_system != "Darwin"]
+bitsandbytes>=0.43
+
+[test]
+pytest>=8.0

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MRI Section",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "study_date",
+    "body_region",
+    "indication",
+    "contrast",
+    "impression",
+    "key_findings",
+    "urgent_findings"
+  ],
+  "properties": {
+    "study_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "body_region": {
+      "type": ["string", "null"]
+    },
+    "indication": {
+      "type": ["string", "null"]
+    },
+    "contrast": {
+      "type": ["string", "null"]
+    },
+    "impression": {
+      "type": ["string", "null"]
+    },
+    "key_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "urgent_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

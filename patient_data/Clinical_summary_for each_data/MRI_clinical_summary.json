@@ -1,0 +1,109 @@
+{
+  "report_type": "MRI Structural Assessment",
+  "patient_id": "Patient_001",
+  "observation_period": "Past 6 Months",
+
+  "mri_summary": {
+    "overall_status": "Structurally Stable",
+    "clinical_impression": "Serial MRI examinations demonstrate consistent anatomical coverage and high-quality image acquisition throughout the six-month observation period. No measurable structural progression can be inferred from the available imaging metadata. Additional quantitative neuroimaging analysis is required to evaluate subtle structural abnormalities."
+  },
+
+  "imaging_details": {
+    "modalities": [
+      "3D T1-weighted MRI",
+      "T2-FLAIR MRI"
+    ],
+    "brain_coverage": "Complete",
+    "image_quality": "Excellent",
+    "spatial_resolution": "High",
+    "image_consistency": "Maintained across follow-up examinations"
+  },
+
+  "structural_findings": {
+    "brain_morphology": {
+      "status": "Stable",
+      "finding": "No measurable global structural variation identified from available MRI metadata."
+    },
+
+    "brain_volume": {
+      "status": "Preserved",
+      "finding": "Brain volume measurements remain consistent across available examinations without evidence of significant global volume loss."
+    },
+
+    "tissue_signal_characteristics": {
+      "status": "Stable",
+      "finding": "Signal intensity distribution remains consistent between examinations, indicating reliable image acquisition."
+    },
+
+    "white_matter": {
+      "status": "Not Assessed",
+      "finding": "White matter lesion analysis was not available."
+    },
+
+    "hippocampus": {
+      "status": "Not Assessed",
+      "finding": "Hippocampal volumetric evaluation was not performed."
+    },
+
+    "cortical_structure": {
+      "status": "Not Assessed",
+      "finding": "Cortical thickness and cortical morphology were not evaluated."
+    },
+
+    "mass_lesion": {
+      "status": "Not Determined",
+      "finding": "No lesion analysis was available from the provided data."
+    },
+
+    "hemorrhage": {
+      "status": "Not Determined",
+      "finding": "Cannot be evaluated without image interpretation."
+    },
+
+    "infarction": {
+      "status": "Not Determined",
+      "finding": "No assessment available from acquisition metadata."
+    }
+  },
+
+  "longitudinal_assessment": {
+    "overall_trend": "Stable",
+    "comparison_with_previous_scans": "MRI acquisition characteristics remained consistent over the six-month follow-up period with no measurable changes in global structural measurements.",
+    "evidence_of_progression": "No structural progression identified from available quantitative metadata.",
+    "structural_stability": "Maintained"
+  },
+
+  "clinical_inference": {
+    "positive_observations": [
+      "Consistent MRI acquisition quality across all examinations.",
+      "High-resolution anatomical imaging available.",
+      "Complete brain coverage achieved.",
+      "Stable quantitative image characteristics over six months.",
+      "Suitable baseline for longitudinal structural monitoring."
+    ],
+
+    
+
+    "overall_interpretation": "Based on the available MRI metadata, there is no measurable evidence of structural instability during the six-month observation period. However, the absence of quantitative structural biomarkers and radiological interpretation prevents assessment of subtle pathological changes."
+  },
+
+  "recommendations": {
+    "follow_up": [
+      "Perform quantitative brain volumetric analysis.",
+      "Assess hippocampal volume for epilepsy-related structural abnormalities.",
+      "Evaluate cortical thickness and regional brain morphology.",
+      "Perform automated white matter lesion analysis using FLAIR imaging.",
+      "Compare future MRI studies using longitudinal registration techniques."
+    ],
+
+    "clinical": [
+      "Correlate MRI findings with seizure history and neurological examination.",
+      "Review MRI together with EEG findings to improve localization of seizure focus.",
+      "Repeat MRI if new neurological symptoms or increased seizure frequency occur."
+    ]
+  },
+
+  "conclusion": {
+    "summary": "MRI examinations obtained over the past six months demonstrate stable structural imaging with preserved brain morphology and consistently high image quality. No measurable structural progression is evident from the available quantitative metadata. Further advanced neuroimaging analysis is recommended to evaluate subtle structural abnormalities that cannot be determined from acquisition metadata alone."
+  }
+}

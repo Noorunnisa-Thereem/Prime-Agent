@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Genetics Section",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "test_name",
+    "variants",
+    "overall_interpretation",
+    "recommendations"
+  ],
+  "properties": {
+    "test_name": {
+      "type": ["string", "null"]
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "gene",
+          "variant",
+          "zygosity",
+          "classification",
+          "inheritance",
+          "interpretation"
+        ],
+        "properties": {
+          "gene": {
+            "type": ["string", "null"]
+          },
+          "variant": {
+            "type": ["string", "null"]
+          },
+          "zygosity": {
+            "type": ["string", "null"]
+          },
+          "classification": {
+            "type": ["string", "null"]
+          },
+          "inheritance": {
+            "type": ["string", "null"]
+          },
+          "interpretation": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "overall_interpretation": {
+      "type": ["string", "null"]
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

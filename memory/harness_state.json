@@ -1,0 +1,9 @@
+{
+  "objective": "Scan patient files and generate one validated integrated digital twin report.",
+  "run_count": 9,
+  "last_run_at": "2026-08-18T11:11:41Z",
+  "last_report_path": "D:\\Prime Agent\\reports\\Digital_Twin_Integrated_Report.json",
+  "last_status": "passed",
+  "last_category_count": 8,
+  "last_issue_count": 61
+}

@@ -1,0 +1,1118 @@
+[
+    {
+        "file_name": "interictal17_interictal_20260513_145940.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -69,
+            "maximum": 59,
+            "mean": -0.3017578125,
+            "std": 21.449198630953447,
+            "variance": 460.0681219100952
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -69,
+                "maximum": 59,
+                "mean": -0.3017578125,
+                "std": 21.449198630953447,
+                "variance": 460.0681219100952,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal1_interictal_20260120_173612.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -51,
+            "maximum": 58,
+            "mean": 0.658203125,
+            "std": 19.007101137370743,
+            "variance": 361.26989364624023
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -51,
+                "maximum": 58,
+                "mean": 0.658203125,
+                "std": 19.007101137370743,
+                "variance": 361.26989364624023,
+                "median": 1.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal10_interictal_20260123_080242.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -50,
+            "maximum": 54,
+            "mean": -0.337890625,
+            "std": 14.297176904044278,
+            "variance": 204.4092674255371
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -50,
+                "maximum": 54,
+                "mean": -0.337890625,
+                "std": 14.297176904044278,
+                "variance": 204.4092674255371,
+                "median": -1.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal19_interictal_20260602_162517.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -89,
+            "maximum": 99,
+            "mean": -0.734375,
+            "std": 23.504440861981273,
+            "variance": 552.458740234375
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -89,
+                "maximum": 99,
+                "mean": -0.734375,
+                "std": 23.504440861981273,
+                "variance": 552.458740234375,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal18_interictal_20260523_134320.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -53,
+            "maximum": 81,
+            "mean": 0.9365234375,
+            "std": 22.35322950187541,
+            "variance": 499.6668691635132
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -53,
+                "maximum": 81,
+                "mean": 0.9365234375,
+                "std": 22.35322950187541,
+                "variance": 499.6668691635132,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal2_interictal_20260627_071452.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -53,
+            "maximum": 44,
+            "mean": 0.2548828125,
+            "std": 15.341951128829479,
+            "variance": 235.3754644393921
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -53,
+                "maximum": 44,
+                "mean": 0.2548828125,
+                "std": 15.341951128829479,
+                "variance": 235.3754644393921,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal15_interictal_20260406_131029.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -63,
+            "maximum": 61,
+            "mean": 0.2919921875,
+            "std": 23.245666899982435,
+            "variance": 540.361029624939
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -63,
+                "maximum": 61,
+                "mean": 0.2919921875,
+                "std": 23.245666899982435,
+                "variance": 540.361029624939,
+                "median": 1.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal16_interictal_20260423_083840.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -64,
+            "maximum": 48,
+            "mean": 0.0615234375,
+            "std": 18.807597056884703,
+            "variance": 353.7257070541382
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -64,
+                "maximum": 48,
+                "mean": 0.0615234375,
+                "std": 18.807597056884703,
+                "variance": 353.7257070541382,
+                "median": 1.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal11_interictal_20260208_092417.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -47,
+            "maximum": 60,
+            "mean": 0.361328125,
+            "std": 15.02713394117734,
+            "variance": 225.81475448608398
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -47,
+                "maximum": 60,
+                "mean": 0.361328125,
+                "std": 15.02713394117734,
+                "variance": 225.81475448608398,
+                "median": 0.5
+            }
+        ]
+    },
+    {
+        "file_name": "interictal14_interictal_20260315_171023.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -56,
+            "maximum": 43,
+            "mean": -0.0185546875,
+            "std": 12.161376146886987,
+            "variance": 147.89906978607178
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -56,
+                "maximum": 43,
+                "mean": -0.0185546875,
+                "std": 12.161376146886987,
+                "variance": 147.89906978607178,
+                "median": -1.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal12_interictal_20260208_150554.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -34,
+            "maximum": 32,
+            "mean": -0.1005859375,
+            "std": 11.68075672983892,
+            "variance": 136.44007778167725
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -34,
+                "maximum": 32,
+                "mean": -0.1005859375,
+                "std": 11.68075672983892,
+                "variance": 136.44007778167725,
+                "median": -1.0
+            }
+        ]
+    },
+    {
+        "file_name": "interictal13_interictal_20260312_124217.mat",
+        "patient_id": "Patient_001",
+        "phase": "interictal",
+        "modality": "EEG",
+        "signal_variable": "interictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -60,
+            "maximum": 52,
+            "mean": 0.1748046875,
+            "std": 17.46261939497417,
+            "variance": 304.943076133728
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -60,
+                "maximum": 52,
+                "mean": 0.1748046875,
+                "std": 17.46261939497417,
+                "variance": 304.943076133728,
+                "median": 1.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal17_pre_ictal_20260511_132538.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -251,
+            "maximum": 188,
+            "mean": -0.841796875,
+            "std": 79.19380383288355,
+            "variance": 6271.65856552124
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -251,
+                "maximum": 188,
+                "mean": -0.841796875,
+                "std": 79.19380383288355,
+                "variance": 6271.65856552124,
+                "median": 6.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal13_pre_ictal_20260308_200448.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -149,
+            "maximum": 128,
+            "mean": 1.291015625,
+            "std": 43.65061565895727,
+            "variance": 1905.3762474060059
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -149,
+                "maximum": 128,
+                "mean": 1.291015625,
+                "std": 43.65061565895727,
+                "variance": 1905.3762474060059,
+                "median": 3.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal19_pre_ictal_20260605_160959.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -49,
+            "maximum": 45,
+            "mean": -0.1181640625,
+            "std": 17.245037277194662,
+            "variance": 297.3913106918335
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -49,
+                "maximum": 45,
+                "mean": -0.1181640625,
+                "std": 17.245037277194662,
+                "variance": 297.3913106918335,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal14_pre_ictal_20260320_193021.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -58,
+            "maximum": 55,
+            "mean": -0.005859375,
+            "std": 19.913925248245878,
+            "variance": 396.5644187927246
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -58,
+                "maximum": 55,
+                "mean": -0.005859375,
+                "std": 19.913925248245878,
+                "variance": 396.5644187927246,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal18_pre_ictal_20260518_200446.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -169,
+            "maximum": 182,
+            "mean": 1.166015625,
+            "std": 39.96770885742959,
+            "variance": 1597.4177513122559
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -169,
+                "maximum": 182,
+                "mean": 1.166015625,
+                "std": 39.96770885742959,
+                "variance": 1597.4177513122559,
+                "median": 1.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal1_pre_ictal_20260106_111532.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -345,
+            "maximum": 247,
+            "mean": -1.4921875,
+            "std": 57.81768505042245,
+            "variance": 3342.8847045898438
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -345,
+                "maximum": 247,
+                "mean": -1.4921875,
+                "std": 57.81768505042245,
+                "variance": 3342.8847045898438,
+                "median": 1.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal15_pre_ictal_20260406_101648.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -208,
+            "maximum": 440,
+            "mean": 11.677734375,
+            "std": 92.07322181892488,
+            "variance": 8477.478176116943
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -208,
+                "maximum": 440,
+                "mean": 11.677734375,
+                "std": 92.07322181892488,
+                "variance": 8477.478176116943,
+                "median": 1.5
+            }
+        ]
+    },
+    {
+        "file_name": "preictal2_pre_ictal_20260619_093518.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -121,
+            "maximum": 95,
+            "mean": 0.271484375,
+            "std": 28.710783840468913,
+            "variance": 824.3091087341309
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -121,
+                "maximum": 95,
+                "mean": 0.271484375,
+                "std": 28.710783840468913,
+                "variance": 824.3091087341309,
+                "median": 1.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal12_pre_ictal_20260221_113137.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -66,
+            "maximum": 52,
+            "mean": -0.203125,
+            "std": 20.50285207865908,
+            "variance": 420.366943359375
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -66,
+                "maximum": 52,
+                "mean": -0.203125,
+                "std": 20.50285207865908,
+                "variance": 420.366943359375,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal10_pre_ictal_20260118_083512.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -47,
+            "maximum": 47,
+            "mean": -0.427734375,
+            "std": 17.4408221617974,
+            "variance": 304.18227767944336
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -47,
+                "maximum": 47,
+                "mean": -0.427734375,
+                "std": 17.4408221617974,
+                "variance": 304.18227767944336,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "preictal11_pre_ictal_20260209_184634.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -319,
+            "maximum": 243,
+            "mean": 2.794921875,
+            "std": 74.87469306589942,
+            "variance": 5606.2196617126465
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -319,
+                "maximum": 243,
+                "mean": 2.794921875,
+                "std": 74.87469306589942,
+                "variance": 5606.2196617126465,
+                "median": 9.5
+            }
+        ]
+    },
+    {
+        "file_name": "preictal16_pre_ictal_20260419_091024.mat",
+        "patient_id": "Patient_001",
+        "phase": "pre_ictal",
+        "modality": "EEG",
+        "signal_variable": "preictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -45,
+            "maximum": 44,
+            "mean": -0.326171875,
+            "std": 14.481435401332252,
+            "variance": 209.71197128295898
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -45,
+                "maximum": 44,
+                "mean": -0.326171875,
+                "std": 14.481435401332252,
+                "variance": 209.71197128295898,
+                "median": 0.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal16_ictal_20260419_091524.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -483,
+            "maximum": 562,
+            "mean": -5.9951171875,
+            "std": 221.12532454661462,
+            "variance": 48896.40915584564
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -483,
+                "maximum": 562,
+                "mean": -5.9951171875,
+                "std": 221.12532454661462,
+                "variance": 48896.40915584564,
+                "median": 0.5
+            }
+        ]
+    },
+    {
+        "file_name": "ictal12_ictal_20260221_113837.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -420,
+            "maximum": 784,
+            "mean": -7.552734375,
+            "std": 253.6241782275217,
+            "variance": 64325.22378158569
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -420,
+                "maximum": 784,
+                "mean": -7.552734375,
+                "std": 253.6241782275217,
+                "variance": 64325.22378158569,
+                "median": -47.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal10_ictal_20260118_084512.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -235,
+            "maximum": 279,
+            "mean": -1.2099609375,
+            "std": 95.07722939388391,
+            "variance": 9039.679549217224
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -235,
+                "maximum": 279,
+                "mean": -1.2099609375,
+                "std": 95.07722939388391,
+                "variance": 9039.679549217224,
+                "median": -11.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal1_ictal_20260106_112432.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -120,
+            "maximum": 192,
+            "mean": -0.3037109375,
+            "std": 52.502125569865676,
+            "variance": 2756.473189353943
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -120,
+                "maximum": 192,
+                "mean": -0.3037109375,
+                "std": 52.502125569865676,
+                "variance": 2756.473189353943,
+                "median": -2.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal13_ictal_20260308_201048.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -305,
+            "maximum": 384,
+            "mean": 0.3349609375,
+            "std": 135.31207458217781,
+            "variance": 18309.35752773285
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -305,
+                "maximum": 384,
+                "mean": 0.3349609375,
+                "std": 135.31207458217781,
+                "variance": 18309.35752773285,
+                "median": -2.5
+            }
+        ]
+    },
+    {
+        "file_name": "ictal2_ictal_20260619_094518.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -336,
+            "maximum": 409,
+            "mean": 3.587890625,
+            "std": 169.73756193455836,
+            "variance": 28810.839931488037
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -336,
+                "maximum": 409,
+                "mean": 3.587890625,
+                "std": 169.73756193455836,
+                "variance": 28810.839931488037,
+                "median": -1.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal14_ictal_20260320_193721.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -504,
+            "maximum": 764,
+            "mean": 0.373046875,
+            "std": 286.41571945627226,
+            "variance": 82033.96435165405
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -504,
+                "maximum": 764,
+                "mean": 0.373046875,
+                "std": 286.41571945627226,
+                "variance": 82033.96435165405,
+                "median": 5.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal11_ictal_20260209_185434.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -227,
+            "maximum": 304,
+            "mean": 3.8798828125,
+            "std": 109.0623040183856,
+            "variance": 11894.586157798767
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -227,
+                "maximum": 304,
+                "mean": 3.8798828125,
+                "std": 109.0623040183856,
+                "variance": 11894.586157798767,
+                "median": 14.5
+            }
+        ]
+    },
+    {
+        "file_name": "ictal18_ictal_20260518_201246.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -350,
+            "maximum": 422,
+            "mean": -3.6982421875,
+            "std": 143.90630685678823,
+            "variance": 20709.025153160095
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -350,
+                "maximum": 422,
+                "mean": -3.6982421875,
+                "std": 143.90630685678823,
+                "variance": 20709.025153160095,
+                "median": -3.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal19_ictal_20260605_161759.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -312,
+            "maximum": 359,
+            "mean": 0.7294921875,
+            "std": 155.70143726925218,
+            "variance": 24242.937567710876
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -312,
+                "maximum": 359,
+                "mean": 0.7294921875,
+                "std": 155.70143726925218,
+                "variance": 24242.937567710876,
+                "median": -14.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal17_ictal_20260511_133238.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -465,
+            "maximum": 571,
+            "mean": 3.853515625,
+            "std": 244.12189983659368,
+            "variance": 59595.50197982788
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -465,
+                "maximum": 571,
+                "mean": 3.853515625,
+                "std": 244.12189983659368,
+                "variance": 59595.50197982788,
+                "median": 46.0
+            }
+        ]
+    },
+    {
+        "file_name": "ictal15_ictal_20260406_102348.mat",
+        "patient_id": "Patient_001",
+        "phase": "ictal",
+        "modality": "EEG",
+        "signal_variable": "ictal",
+        "shape": [
+            1024
+        ],
+        "dimensions": 1,
+        "channels": 1,
+        "samples": 1024,
+        "global_statistics": {
+            "minimum": -473,
+            "maximum": 685,
+            "mean": 4.8291015625,
+            "std": 239.5039247557575,
+            "variance": 57362.12997341156
+        },
+        "channel_statistics": [
+            {
+                "channel": 0,
+                "minimum": -473,
+                "maximum": 685,
+                "mean": 4.8291015625,
+                "std": 239.5039247557575,
+                "variance": 57362.12997341156,
+                "median": 9.5
+            }
+        ]
+    }
+]

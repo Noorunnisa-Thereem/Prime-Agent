@@ -1,0 +1,100 @@
+{
+  "report_type": "Pharmacogenomic (PGx) Clinical Interpretation Report",
+   "patient": {
+    "patient_id": "PATIENT01",
+    "report_date": "2026-07-11",
+    "specimen": "Buccal/blood NGS panel (simulated)",
+    "ordering_context": "Psychiatric medication planning",
+    "variants_analyzed": 87,
+    "drugs_covered": 44
+  },
+  "purpose": "This report summarizes a pharmacogenomic (PGx) panel that cross-references the patient's genotype at 87 pharmacologically relevant loci against published gene-drug outcome studies, PharmGKB/CPIC annotations, and FDA drug labeling. It predicts likely efficacy and toxicity/side-effect risk across 44 medications used in depression, bipolar disorder, schizophrenia, epilepsy, ADHD, and anxiety. This is a decision-support tool, not a diagnosis. It does not indicate which condition(s) the patient has — it reports how the patient's genotype is expected to interact with a broad library of medications so a clinician can weigh options for whichever condition is being treated.",
+  "metabolizer_profile": [
+    { "gene": "CYP2D6", "status": "Reduced-function pattern", "impact": "Methylphenidate – reduced efficacy signal; gene also governs risperidone, TCAs, many SSRIs" },
+    { "gene": "CYP2C19", "status": "GA – Intermediate metabolizer", "impact": "Citalopram – moderate response; caution with standard dosing" },
+    { "gene": "CYP2C9", "status": "*1/*3 – Intermediate metabolizer", "impact": "Valproic acid – reduced efficacy signal" },
+    { "gene": "CYP2B6", "status": "*1/*6 – Intermediate metabolizer", "impact": "Sertraline – increased adverse-reaction risk" },
+    { "gene": "CYP3A5", "status": "*3/*3 – Poor metabolizer", "impact": "Clozapine – moderate response; Perampanel – reduced efficacy" },
+    { "gene": "CYP1A2", "status": "AA", "impact": "Chlorpromazine – increased toxicity risk; Carbamazepine – favorable efficacy" },
+    { "gene": "CYP3A4", "status": "TT", "impact": "Lamotrigine, phenytoin, primidone, valproic acid – reduced efficacy signal" },
+    { "gene": "UGT1A4", "status": "*1/*3A – Decreased function", "impact": "Olanzapine – lower autonomic dysfunction risk" },
+    { "gene": "POR", "status": "*1/*28 – Decreased function", "impact": "Clobazam, risperidone – moderate response" }
+  ],
+  "findings_by_therapeutic_class": {
+    "antidepressants": [
+      { "drugs": "Citalopram", "genetic_basis": "CREB1 / SRP19 favorable alleles", "finding": "Better response", "predicted_effect": "Efficacy" },
+      { "drugs": "Citalopram", "genetic_basis": "GSK3B (AG) / CRHR2", "finding": "Reduced response", "predicted_effect": "Reduced efficacy" },
+      { "drugs": "Citalopram", "genetic_basis": "CYP2C19 (GA)", "finding": "Intermediate metabolism", "predicted_effect": "Moderate" },
+      { "drugs": "Clomipramine, venlafaxine, nefazodone", "genetic_basis": "HTR1B (A-allele)", "finding": "Favorable response predicted", "predicted_effect": "Efficacy" },
+      { "drugs": "Paroxetine", "genetic_basis": "HTR1B (rs130058)", "finding": "Increased suicidal-ideation risk flag", "predicted_effect": "Toxicity – SAFETY FLAG" },
+      { "drugs": "Clomipramine, lithium, nefazodone, paroxetine, venlafaxine", "genetic_basis": "FKBP5 (rs1360780, TC)", "finding": "Increased suicidal-ideation risk flag", "predicted_effect": "Toxicity – SAFETY FLAG" },
+      { "drugs": "Sertraline", "genetic_basis": "CYP2B6 (*1/*6)", "finding": "Increased adverse-reaction risk", "predicted_effect": "Toxicity" },
+      { "drugs": "Fluoxetine", "genetic_basis": "SRP19 nonresponse allele", "finding": "Reduced response predicted", "predicted_effect": "Reduced efficacy" }
+    ],
+    "antipsychotics": [
+      { "drugs": "Clozapine", "genetic_basis": "DTNBP1, EPM2A favorable alleles", "finding": "Better response predicted", "predicted_effect": "Efficacy" },
+      { "drugs": "Risperidone", "genetic_basis": "PPA2 (mixed signal)", "finding": "One allele favorable / one reduces response", "predicted_effect": "Mixed" },
+      { "drugs": "Risperidone", "genetic_basis": "ADRB2", "finding": "Increased sexual side-effect risk", "predicted_effect": "Toxicity" },
+      { "drugs": "Risperidone", "genetic_basis": "CNR1 (in ASD context)", "finding": "Increased weight-gain risk", "predicted_effect": "Toxicity" },
+      { "drugs": "Quetiapine", "genetic_basis": "PDE4D", "finding": "Better response predicted", "predicted_effect": "Efficacy" },
+      { "drugs": "Olanzapine", "genetic_basis": "UGT1A4 (*1/*3A)", "finding": "Lower autonomic-dysfunction risk", "predicted_effect": "Toxicity (favorable)" },
+      { "drugs": "Olanzapine", "genetic_basis": "PLAGL1 (low sequencing depth – LOW CONFIDENCE)", "finding": "Better response predicted", "predicted_effect": "Efficacy (unconfirmed)" },
+      { "drugs": "Clozapine, olanzapine", "genetic_basis": "MTHFR / LEPR / GCG (mixed)", "finding": "Weight-gain risk signals in both directions", "predicted_effect": "Mixed" }
+    ],
+    "mood_stabilizers_antiepileptics": [
+      { "drugs": "Lithium", "genetic_basis": "GSK3B + ADCY1 (concordant)", "finding": "Good response predicted by two independent genes", "predicted_effect": "Efficacy" },
+      { "drugs": "Valproic acid", "genetic_basis": "GABRA1 (drug-resistance allele), CYP3A4, CYP2C9", "finding": "Reduced efficacy signal", "predicted_effect": "Reduced efficacy" },
+      { "drugs": "Carbamazepine, phenytoin, primidone", "genetic_basis": "CYP3A4 / CYP1A1", "finding": "Reduced efficacy / increased toxicity signal", "predicted_effect": "Reduced efficacy / Toxicity" },
+      { "drugs": "Clobazam, ethosuximide, lamotrigine, levetiracetam, oxcarbazepine", "genetic_basis": "SCN1A favorable allele", "finding": "Better response predicted", "predicted_effect": "Efficacy" },
+      { "drugs": "Cannabidiol (Epidiolex)", "genetic_basis": "ABCC5", "finding": "Reduced efficacy signal", "predicted_effect": "Reduced efficacy" }
+    ],
+    "adhd_stimulants": [
+      { "drugs": "Dextroamphetamine, methylphenidate", "genetic_basis": "DRD1 (CT)", "finding": "Increased risk of social-withdrawal side effects", "predicted_effect": "Toxicity" },
+      { "drugs": "Methylphenidate", "genetic_basis": "CYP2D6 reduced-function pattern", "finding": "Reduced efficacy signal", "predicted_effect": "Reduced efficacy" }
+    ],
+    "other_panel_entries": [
+      { "drugs": "Peginterferon alfa-2b / Ribavirin (Hepatitis C context)", "genetic_basis": "IL6", "finding": "Reduced efficacy / increased depression-toxicity risk", "predicted_effect": "Mixed" },
+      { "drugs": "Atorvastatin", "genetic_basis": "Myopathy-related variant", "finding": "Statin-myopathy risk context flagged", "predicted_effect": "Toxicity context" },
+      { "drugs": "Opioid analgesic (context entry)", "genetic_basis": "Panel default gene", "finding": "Standard panel content, not disease-specific", "predicted_effect": "Informational" }
+    ]
+  },
+  "priority_safety_flags": [
+    {
+      "flag": "FKBP5 (rs1360780, genotype TC)",
+      "risk": "Increased suicidal-ideation risk during treatment with clomipramine, lithium, nefazodone, paroxetine, or venlafaxine",
+      "severity": "high"
+    },
+    {
+      "flag": "HTR1B (rs130058)",
+      "risk": "Increased suicidal-thought risk specifically on paroxetine",
+      "severity": "high"
+    },
+    {
+      "flag": "CYP2B6 *1/*6 (intermediate metabolizer)",
+      "risk": "Increased risk of adverse reactions to sertraline",
+      "severity": "moderate"
+    },
+    {
+      "flag": "GABRA1 drug-resistance allele",
+      "risk": "Reduced response to valproic acid, phenytoin, and carbamazepine in epilepsy",
+      "severity": "moderate"
+    },
+    {
+      "flag": "DRD1 (CT)",
+      "risk": "Increased risk of social-withdrawal side effects on both first-line ADHD stimulants (dextroamphetamine, methylphenidate)",
+      "severity": "moderate"
+    }
+  ],
+  "boxed_warning_note": "All standard FDA boxed warnings for antidepressant-associated suicidality in young patients, and for antipsychotic-associated mortality risk in dementia-related psychosis, continue to apply independent of these genetic findings.",
+  "clinical_conclusion": {
+    "impression": "Patient01's pharmacogenomic profile is most notable for (1) intermediate-to-poor metabolizer status across five separate CYP enzymes (2D6, 2C19, 2C9, 2B6, 3A5), which broadly predicts atypical drug clearance and a higher likelihood of dose-related side effects or subtherapeutic response across multiple drug classes rather than any single agent; and (2) two independently derived genetic markers (FKBP5, HTR1B) that flag an elevated risk of treatment-emergent suicidal ideation specifically on paroxetine and, more broadly, on clomipramine, lithium, nefazodone, and venlafaxine. On the efficacy side, the profile is more favorable for lithium (concordant signal from two independent genes, GSK3B and ADCY1), for the SCN1A-linked antiepileptics (clobazam, ethosuximide, lamotrigine, levetiracetam, oxcarbazepine), and for clozapine and quetiapine among the antipsychotics. Taken together, this pattern is consistent with a patient for whom standard first-line SSRI or first-line antiepileptic dosing may underperform or be poorly tolerated, and for whom paroxetine specifically carries an elevated genetically-informed suicidality signal that should prompt either avoidance or enhanced monitoring if prescribed.",
+    "recommendations": [
+      { "action": "Avoid or use with heightened monitoring", "detail": "Paroxetine (dual suicidality signal); sertraline at standard dose (CYP2B6 intermediate metabolizer)", "priority": "high" },
+      { "action": "Favor if clinically appropriate", "detail": "Lithium (concordant efficacy signal); SCN1A-favorable antiepileptics; clozapine/quetiapine among antipsychotics", "priority": "favorable" },
+      { "action": "Dose with caution / consider therapeutic drug monitoring", "detail": "Valproic acid, carbamazepine, phenytoin, lamotrigine, primidone (multiple reduced-efficacy / toxicity signals via CYP3A4, CYP1A1, CYP2C9)", "priority": "moderate" },
+      { "action": "Re-confirm before clinical use", "detail": "Re-confirm the low-depth PLAGL1 (olanzapine) call with repeat sequencing before acting on it clinically", "priority": "moderate" },
+      { "action": "Contextualize", "detail": "Interpret alongside actual clinical history, current medication list, and labs — this panel alone does not establish a diagnosis", "priority": "informational" }
+    ]
+  }
+  
+}

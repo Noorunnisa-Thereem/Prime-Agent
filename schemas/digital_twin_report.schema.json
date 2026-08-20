@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Digital Twin Integrated Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_type",
+    "generated_at",
+    "patient_profile",
+    "clinical_summary",
+    "sections",
+    "source_traceability",
+    "validation"
+  ],
+  "properties": {
+    "report_type": {
+      "type": "string",
+      "const": "Digital_Twin_Integrated_Report"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "patient_profile": {
+      "$ref": "#/$defs/patient_profile"
+    },
+    "clinical_summary": {
+      "$ref": "#/$defs/clinical_summary"
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clinical_notes",
+        "cbc",
+        "ct",
+        "mri",
+        "ecg",
+        "eeg",
+        "genetics",
+        "questionnaire"
+      ],
+      "properties": {
+        "clinical_notes": {
+          "$ref": "clinical_notes.schema.json"
+        },
+        "cbc": {
+          "$ref": "cbc.schema.json"
+        },
+        "ct": {
+          "$ref": "ct.schema.json"
+        },
+        "mri": {
+          "$ref": "mri.schema.json"
+        },
+        "ecg": {
+          "$ref": "ecg.schema.json"
+        },
+        "eeg": {
+          "$ref": "eeg.schema.json"
+        },
+        "genetics": {
+          "$ref": "genetics.schema.json"
+        },
+        "questionnaire": {
+          "$ref": "questionnaire.schema.json"
+        }
+      }
+    },
+    "source_traceability": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/traceability_item"
+      }
+    },
+    "validation": {
+      "$ref": "#/$defs/validation_info"
+    }
+  },
+  "$defs": {
+    "patient_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "patient_id",
+        "name",
+        "date_of_birth",
+        "sex",
+        "age_years"
+      ],
+      "properties": {
+        "patient_id": {
+          "type": ["string", "null"]
+        },
+        "name": {
+          "type": ["string", "null"]
+        },
+        "date_of_birth": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "sex": {
+          "type": ["string", "null"]
+        },
+        "age_years": {
+          "type": ["number", "null"]
+        }
+      }
+    },
+    "clinical_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active_problems",
+        "medications",
+        "allergies",
+        "notable_abnormalities"
+      ],
+      "properties": {
+        "active_problems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "medications": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allergies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notable_abnormalities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "traceability_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section",
+        "field",
+        "source_file",
+        "source_lines",
+        "source_excerpt",
+        "confidence"
+      ],
+      "properties": {
+        "section": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string"
+        },
+        "source_file": {
+          "type": "string"
+        },
+        "source_lines": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "source_excerpt": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "validation_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "status",
+        "checked_at",
+        "issues_found"
+      ],
+      "properties": {
+        "schema": {
+          "type": "string",
+          "const": "digital_twin_report.schema.json"
+        },
+        "status": {
+          "type": "string",
+          "const": "passed"
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "issues_found": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+

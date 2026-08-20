@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CBC Section",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "collection_date",
+    "hemoglobin_g_per_dL",
+    "hematocrit_pct",
+    "rbc_million_uL",
+    "wbc_10e3_uL",
+    "platelets_10e3_uL",
+    "mcv_fL",
+    "mch_pg",
+    "mchc_g_dL",
+    "rdw_pct",
+    "differential",
+    "abnormal_flags"
+  ],
+  "properties": {
+    "collection_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "hemoglobin_g_per_dL": {
+      "type": ["number", "null"]
+    },
+    "hematocrit_pct": {
+      "type": ["number", "null"]
+    },
+    "rbc_million_uL": {
+      "type": ["number", "null"]
+    },
+    "wbc_10e3_uL": {
+      "type": ["number", "null"]
+    },
+    "platelets_10e3_uL": {
+      "type": ["number", "null"]
+    },
+    "mcv_fL": {
+      "type": ["number", "null"]
+    },
+    "mch_pg": {
+      "type": ["number", "null"]
+    },
+    "mchc_g_dL": {
+      "type": ["number", "null"]
+    },
+    "rdw_pct": {
+      "type": ["number", "null"]
+    },
+    "differential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "neutrophils_pct",
+        "lymphocytes_pct",
+        "monocytes_pct",
+        "eosinophils_pct",
+        "basophils_pct"
+      ],
+      "properties": {
+        "neutrophils_pct": {
+          "type": ["number", "null"]
+        },
+        "lymphocytes_pct": {
+          "type": ["number", "null"]
+        },
+        "monocytes_pct": {
+          "type": ["number", "null"]
+        },
+        "eosinophils_pct": {
+          "type": ["number", "null"]
+        },
+        "basophils_pct": {
+          "type": ["number", "null"]
+        }
+      }
+    },
+    "abnormal_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

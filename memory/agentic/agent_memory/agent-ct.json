@@ -1,0 +1,106 @@
+{
+  "scope": "agent-ct",
+  "updated_at": "2026-08-18T09:59:32Z",
+  "records": [
+    {
+      "key": "last_run::task-2703c3858f33",
+      "scope": "agent-ct",
+      "kind": "episodic",
+      "content": "attempt=1 files=6 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-2703c3858f33",
+        "at": "2026-08-18T07:01:07Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_01_20260112_091530.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_02_20260216_104215.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_03_20260311_143025.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_04_20260420_112840.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_05_20260514_155510.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_06_20260629_111534.png"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T07:01:07Z",
+      "updated_at": "2026-08-18T07:01:07Z"
+    },
+    {
+      "key": "last_run::task-6ea86cb2b9f9",
+      "scope": "agent-ct",
+      "kind": "episodic",
+      "content": "attempt=1 files=6 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-6ea86cb2b9f9",
+        "at": "2026-08-18T06:31:22Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_01_20260112_091530.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_02_20260216_104215.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_03_20260311_143025.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_04_20260420_112840.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_05_20260514_155510.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_06_20260629_111534.png"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T06:31:22Z",
+      "updated_at": "2026-08-18T06:31:22Z"
+    },
+    {
+      "key": "last_run::task-732bf31096e4",
+      "scope": "agent-ct",
+      "kind": "episodic",
+      "content": "attempt=1 files=6 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-732bf31096e4",
+        "at": "2026-08-18T06:22:25Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_01_20260112_091530.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_02_20260216_104215.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_03_20260311_143025.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_04_20260420_112840.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_05_20260514_155510.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_06_20260629_111534.png"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T06:22:25Z",
+      "updated_at": "2026-08-18T06:22:25Z"
+    },
+    {
+      "key": "last_run::task-7996276684b7",
+      "scope": "agent-ct",
+      "kind": "episodic",
+      "content": "attempt=1 files=6 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-7996276684b7",
+        "at": "2026-08-18T09:59:32Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_01_20260112_091530.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_02_20260216_104215.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_03_20260311_143025.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_04_20260420_112840.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_05_20260514_155510.png",
+          "D:\\Prime Agent\\patient_data\\CT\\CT_Scan_06_20260629_111534.png"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T09:59:32Z",
+      "updated_at": "2026-08-18T09:59:32Z"
+    }
+  ]
+}

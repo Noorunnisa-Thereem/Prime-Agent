@@ -1,0 +1,209 @@
+{
+  "revision_id": "rev-0005",
+  "number": 5,
+  "reason": "refinement ref-0005 on agent_instruction",
+  "actor": "refinement-engine",
+  "created_at": "2026-08-18T06:31:25Z",
+  "state": {
+    "created_at": "2026-08-18T06:22:23Z",
+    "updated_at": "2026-08-18T06:31:25Z",
+    "components": {
+      "prompt": {
+        "name": "prompt",
+        "data": {
+          "system": "You are the main orchestrator of a patient Digital Twin pipeline. Plan the work, delegate each data category to its persistent sub-agent, validate every result against its JSON schema before integration, never invent a patient value, use null when a value is unavailable, and preserve source-file traceability for everything you emit.",
+          "objective": "Scan patient files and generate one validated integrated digital twin report.",
+          "policies": [
+            "Follow Plan -> Delegate -> Execute -> Validate -> Fix/Retry -> Verify -> Integrate.",
+            "Never fabricate patient values; unavailable scalars are null and unavailable lists are [].",
+            "Every extracted field keeps the source file it came from.",
+            "A category result may only be integrated after it validates against its schema.",
+            "When an issue repeats, refine the narrowest artifact: memory record, skill file, or agent instruction."
+          ],
+          "workflow": [
+            "Plan",
+            "Delegate",
+            "Execute",
+            "Validate",
+            "Fix/Retry",
+            "Verify",
+            "Integrate"
+          ]
+        },
+        "version": 1,
+        "updated_at": "2026-08-18T06:22:23Z"
+      },
+      "skills": {
+        "name": "skills",
+        "data": {
+          "root": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\SKILL.md",
+            "refinements": []
+          },
+          "clinical_notes": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\clinical_notes\\SKILL.md",
+            "refinements": []
+          },
+          "cbc": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\cbc\\SKILL.md",
+            "refinements": []
+          },
+          "ct": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\ct\\SKILL.md",
+            "refinements": []
+          },
+          "mri": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\mri\\SKILL.md",
+            "refinements": []
+          },
+          "ecg": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\ecg\\SKILL.md",
+            "refinements": []
+          },
+          "eeg": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\eeg\\SKILL.md",
+            "refinements": []
+          },
+          "genetics": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\genetics\\SKILL.md",
+            "refinements": []
+          },
+          "questionnaire": {
+            "path": "D:\\Prime Agent\\patient_prime_agent\\skills\\questionnaire\\SKILL.md",
+            "refinements": []
+          }
+        },
+        "version": 1,
+        "updated_at": "2026-08-18T06:22:23Z"
+      },
+      "memory": {
+        "name": "memory",
+        "data": {
+          "scopes": [
+            "global",
+            "agent-clinical_notes",
+            "agent-cbc",
+            "agent-ct",
+            "agent-mri",
+            "agent-ecg",
+            "agent-eeg",
+            "agent-genetics",
+            "agent-questionnaire"
+          ],
+          "refinement_threshold": 2,
+          "retain_sessions": 50,
+          "record_kinds": [
+            "semantic",
+            "episodic",
+            "procedural"
+          ]
+        },
+        "version": 1,
+        "updated_at": "2026-08-18T06:22:23Z"
+      },
+      "subagents": {
+        "name": "subagents",
+        "data": {
+          "clinical_notes": {
+            "category": "clinical_notes",
+            "agent_id": "agent-clinical_notes",
+            "label": "Clinical Notes",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\clinical_notes\\SKILL.md",
+            "schema_name": "clinical_notes",
+            "instruction": "You are the persistent Clinical Notes sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\clinical_notes\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/clinical_notes.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-clinical_notes",
+            "extractor": "patient_prime_agent.extractors.clinical_notes"
+          },
+          "cbc": {
+            "category": "cbc",
+            "agent_id": "agent-cbc",
+            "label": "CBC",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\cbc\\SKILL.md",
+            "schema_name": "cbc",
+            "instruction": "You are the persistent CBC sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\cbc\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/cbc.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-cbc",
+            "extractor": "patient_prime_agent.extractors.cbc"
+          },
+          "ct": {
+            "category": "ct",
+            "agent_id": "agent-ct",
+            "label": "CT",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\ct\\SKILL.md",
+            "schema_name": "ct",
+            "instruction": "You are the persistent CT sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\ct\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/ct.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.\nLearned rule: Repeated issue in ct (2x): unsupported_extension:.png at $.files[CT_Scan_02_20260216_104215.png]. Before extracting, confirm the assigned files are loadable for this category and record an explicit note (not a guessed value) for any file that cannot be parsed.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-ct",
+            "extractor": "patient_prime_agent.extractors.ct"
+          },
+          "mri": {
+            "category": "mri",
+            "agent_id": "agent-mri",
+            "label": "MRI",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\mri\\SKILL.md",
+            "schema_name": "mri",
+            "instruction": "You are the persistent MRI sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\mri\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/mri.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.\nLearned rule: Repeated issue in mri (2x): unsupported_extension:.nii at $.files[sub-00001_acq-T2sel_FLAIR.nii]. Before extracting, confirm the assigned files are loadable for this category and record an explicit note (not a guessed value) for any file that cannot be parsed.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-mri",
+            "extractor": "patient_prime_agent.extractors.mri"
+          },
+          "ecg": {
+            "category": "ecg",
+            "agent_id": "agent-ecg",
+            "label": "ECG",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\ecg\\SKILL.md",
+            "schema_name": "ecg",
+            "instruction": "You are the persistent ECG sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\ecg\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/ecg.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.\nLearned rule: Repeated issue in ecg (2x): unsupported_extension:.edf at $.files[ecg_02_20260120_123536.edf]. Before extracting, confirm the assigned files are loadable for this category and record an explicit note (not a guessed value) for any file that cannot be parsed.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-ecg",
+            "extractor": "patient_prime_agent.extractors.ecg"
+          },
+          "eeg": {
+            "category": "eeg",
+            "agent_id": "agent-eeg",
+            "label": "EEG",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\eeg\\SKILL.md",
+            "schema_name": "eeg",
+            "instruction": "You are the persistent EEG sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\eeg\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/eeg.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.\nLearned rule: Repeated issue in eeg (2x): unsupported_extension:.mat at $.files[ictal11_ictal_20260209_185434.mat]. Before extracting, confirm the assigned files are loadable for this category and record an explicit note (not a guessed value) for any file that cannot be parsed.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-eeg",
+            "extractor": "patient_prime_agent.extractors.eeg"
+          },
+          "genetics": {
+            "category": "genetics",
+            "agent_id": "agent-genetics",
+            "label": "Genetics",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\genetics\\SKILL.md",
+            "schema_name": "genetics",
+            "instruction": "You are the persistent Genetics sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\genetics\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/genetics.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.\nLearned rule: Repeated issue in genetics (2x): unsupported_extension:.xlsx at $.files[genetics_data.xlsx]. Before extracting, confirm the assigned files are loadable for this category and record an explicit note (not a guessed value) for any file that cannot be parsed.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-genetics",
+            "extractor": "patient_prime_agent.extractors.genetics"
+          },
+          "questionnaire": {
+            "category": "questionnaire",
+            "agent_id": "agent-questionnaire",
+            "label": "Questionnaire",
+            "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\questionnaire\\SKILL.md",
+            "schema_name": "questionnaire",
+            "instruction": "You are the persistent Questionnaire sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\questionnaire\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/questionnaire.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.",
+            "enabled": true,
+            "max_retries": 2,
+            "memory_scope": "agent-questionnaire",
+            "extractor": "patient_prime_agent.extractors.questionnaire"
+          }
+        },
+        "version": 6,
+        "updated_at": "2026-08-18T06:31:25Z"
+      }
+    }
+  }
+}

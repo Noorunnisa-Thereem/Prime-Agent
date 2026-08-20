@@ -1,0 +1,21 @@
+{
+  "agent_id": "agent-eeg",
+  "role": "category-subagent",
+  "created_at": "2026-08-18T06:22:25Z",
+  "updated_at": "2026-08-18T09:59:35Z",
+  "boot_count": 6,
+  "task_count": 4,
+  "success_count": 4,
+  "failure_count": 0,
+  "retry_count": 0,
+  "last_task_id": "task-acbe3ae1b751",
+  "last_status": "ok",
+  "last_error": null,
+  "last_run_at": "2026-08-18T09:59:32Z",
+  "directives": [],
+  "custom": {
+    "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\eeg\\SKILL.md",
+    "schema": "eeg.schema.json",
+    "instruction": "You are the persistent EEG sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\eeg\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/eeg.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.\nLearned rule: Repeated issue in eeg (2x): unsupported_extension:.mat at $.files[ictal11_ictal_20260209_185434.mat]. Before extracting, confirm the assigned files are loadable for this category and record an explicit note (not a guessed value) for any file that cannot be parsed."
+  }
+}

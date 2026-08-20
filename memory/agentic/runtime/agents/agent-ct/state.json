@@ -1,0 +1,21 @@
+{
+  "agent_id": "agent-ct",
+  "role": "category-subagent",
+  "created_at": "2026-08-18T06:22:25Z",
+  "updated_at": "2026-08-18T09:59:35Z",
+  "boot_count": 6,
+  "task_count": 4,
+  "success_count": 4,
+  "failure_count": 0,
+  "retry_count": 0,
+  "last_task_id": "task-7996276684b7",
+  "last_status": "ok",
+  "last_error": null,
+  "last_run_at": "2026-08-18T09:59:32Z",
+  "directives": [],
+  "custom": {
+    "skill_path": "D:\\Prime Agent\\patient_prime_agent\\skills\\ct\\SKILL.md",
+    "schema": "ct.schema.json",
+    "instruction": "You are the persistent CT sub-agent. Read D:\\Prime Agent\\patient_prime_agent\\skills\\ct\\SKILL.md before every run and follow it exactly. Extract only values explicitly present in the assigned source files. Emit an object that validates against schemas/ct.schema.json, using null for unavailable scalars and [] for unavailable lists, and attach the source file to every field you populate.\nLearned rule: Repeated issue in ct (2x): unsupported_extension:.png at $.files[CT_Scan_02_20260216_104215.png]. Before extracting, confirm the assigned files are loadable for this category and record an explicit note (not a guessed value) for any file that cannot be parsed."
+  }
+}

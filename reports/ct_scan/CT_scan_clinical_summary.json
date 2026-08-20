@@ -1,0 +1,59 @@
+{
+  "reportLabel": "CT Scan Clinical Summary",
+  "patientId": "PATIENT-01",
+  "reportMetadata": {
+    "reportType": "neuroimaging_longitudinal_summary",
+    "modality": "CT",
+    "bodyPart": "Head/Brain",
+    "periodCovered": {
+      "startDate": "2026-01-12",
+      "endDate": "2026-06-29"
+    },
+    "numberOfStudies": 6
+  },
+  "studies": [
+    {
+      "studyId": "CT_Scan_01",
+      "studyDate": "2026-01-12",
+      "findings": "Axial non-contrast head CT image at the level of the lateral ventricles. The frontal horns and bodies of the lateral ventricles are visible and grossly symmetric. No midline shift or hyperdense extra-axial/intraparenchymal collection is evident on this image. Source image resolution: 500 x 629 pixels.",
+      "impression": "No acute intracranial abnormality is evident on this single-image model-assisted review.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_02",
+      "studyDate": "2026-02-16",
+      "findings": "Axial image through the skull base/basal cistern level with limited parenchymal assessment. Basal cistern region is visible, and no gross midline shift or hyperdense hemorrhagic collection is evident. Source image resolution: 217 x 276 pixels.",
+      "impression": "No gross acute abnormality is evident on this limited skull-base level image; assessment is limited by slice level and image quality.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_03",
+      "studyDate": "2026-03-11",
+      "findings": "Axial head CT image at the ventricular level. The lateral ventricles are visible and symmetric. Cortical sulci and sylvian fissures are visible. No midline shift or hyperdense hemorrhagic collection is evident. Source image resolution: 324 x 464 pixels.",
+      "impression": "No acute intracranial abnormality is evident on this single-image model-assisted review.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_04",
+      "studyDate": "2026-04-20",
+      "findings": "Axial high-convexity head CT image above the ventricular level. Cortical sulci are visible over the convexities. No focal hyperdense collection or midline shift is evident on this slice. Source image resolution: 383 x 452 pixels.",
+      "impression": "No acute intracranial abnormality is evident on this high-convexity image; ventricular assessment is not available at this slice level.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_05",
+      "studyDate": "2026-05-14",
+      "findings": "Axial near-vertex head CT image with grainy image quality. Convexity sulci are visible. No focal hyperdense collection or gross mass effect is evident on this image. Source image resolution: 312 x 409 pixels.",
+      "impression": "No acute intracranial abnormality is evident on this limited-quality near-vertex image.",
+      "verifiedByRadiologist": false
+    },
+    {
+      "studyId": "CT_Scan_06",
+      "studyDate": "2026-06-29",
+      "findings": "Axial head CT image at the ventricular atria/trigone level. The ventricles are visible without gross midline shift. Small symmetric hyperdense foci near the bilateral choroid plexus region are present, compatible with benign choroid plexus calcifications. Source image resolution: 243 x 301 pixels.",
+      "impression": "No acute intracranial abnormality is evident. Incidental bilateral choroid plexus calcifications are present.",
+      "verifiedByRadiologist": false
+    }
+  ],
+  "comparison": "Across the available CT image files, no gross acute intracranial hemorrhage, midline shift, or mass effect is evident on this model-assisted image-only review. Direct progression assessment is limited because the files represent single slices with different slice levels, resolutions, and image quality. This output is not a radiologist-verified diagnostic report."
+}

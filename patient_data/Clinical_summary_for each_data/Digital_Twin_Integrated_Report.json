@@ -1,0 +1,2465 @@
+{
+  "digital_twin_report": {
+    "version": "2.0",
+    "patient_id": "Patient_001",
+    "sections": {
+      "MRI_clinical_summary": {
+        "report_type": "MRI Structural Assessment",
+        "patient_id": "Patient_001",
+        "observation_period": "Past 6 Months",
+        "mri_summary": {
+          "overall_status": "Structurally Stable"
+        },
+        "imaging_details": {
+          "modalities": [
+            "3D T1-weighted MRI",
+            "T2-FLAIR MRI"
+          ],
+          "brain_coverage": "Complete",
+          "image_quality": "Excellent",
+          "spatial_resolution": "High",
+          "image_consistency": "Maintained across follow-up examinations"
+        },
+        "structural_findings": {
+          "brain_morphology": {
+            "status": "Stable",
+            "finding": "No measurable global structural variation identified from available MRI metadata."
+          },
+          "brain_volume": {
+            "status": "Preserved",
+            "finding": "Brain volume measurements remain consistent across available examinations without evidence of significant global volume loss."
+          },
+          "tissue_signal_characteristics": {
+            "status": "Stable",
+            "finding": "Signal intensity distribution remains consistent between examinations, indicating reliable image acquisition."
+          },
+          "white_matter": {
+            "status": "Not Assessed",
+            "finding": "White matter lesion analysis was not available."
+          },
+          "hippocampus": {
+            "status": "Not Assessed",
+            "finding": "Hippocampal volumetric evaluation was not performed."
+          },
+          "cortical_structure": {
+            "status": "Not Assessed",
+            "finding": "Cortical thickness and cortical morphology were not evaluated."
+          },
+          "mass_lesion": {
+            "status": "Not Determined",
+            "finding": "No lesion analysis was available from the provided data."
+          },
+          "hemorrhage": {
+            "status": "Not Determined",
+            "finding": "Cannot be evaluated without image interpretation."
+          },
+          "infarction": {
+            "status": "Not Determined",
+            "finding": "No assessment available from acquisition metadata."
+          }
+        },
+        "longitudinal_assessment": {
+          "overall_trend": "Stable",
+          "comparison_with_previous_scans": "MRI acquisition characteristics remained consistent over the six-month follow-up period with no measurable changes in global structural measurements.",
+          "evidence_of_progression": "No structural progression identified from available quantitative metadata.",
+          "structural_stability": "Maintained"
+        },
+        "clinical_inference": {
+          "positive_observations": [
+            "Consistent MRI acquisition quality across all examinations.",
+            "High-resolution anatomical imaging available.",
+            "Complete brain coverage achieved.",
+            "Stable quantitative image characteristics over six months.",
+            "Suitable baseline for longitudinal structural monitoring."
+          ],
+          "overall_interpretation": "Based on the available MRI metadata, there is no measurable evidence of structural instability during the six-month observation period. However, the absence of quantitative structural biomarkers and radiological interpretation prevents assessment of subtle pathological changes."
+        },
+        "recommendations": {
+          "follow_up": [
+            "Perform quantitative brain volumetric analysis.",
+            "Assess hippocampal volume for epilepsy-related structural abnormalities.",
+            "Evaluate cortical thickness and regional brain morphology.",
+            "Perform automated white matter lesion analysis using FLAIR imaging.",
+            "Compare future MRI studies using longitudinal registration techniques."
+          ],
+          "clinical": [
+            "Correlate MRI findings with seizure history and neurological examination.",
+            "Review MRI together with EEG findings to improve localization of seizure focus.",
+            "Repeat MRI if new neurological symptoms or increased seizure frequency occur."
+          ]
+        },
+        "conclusion": {
+          "summary": "MRI examinations obtained over the past six months demonstrate stable structural imaging with preserved brain morphology and consistently high image quality. No measurable structural progression is evident from the available quantitative metadata. Further advanced neuroimaging analysis is recommended to evaluate subtle structural abnormalities that cannot be determined from acquisition metadata alone."
+        }
+      },
+      "ECG_Clinical_Summary": {
+        "title": "ECG Digital Twin Dataset - Signal-Level Statistical Report",
+        "reporting_period": {
+          "start_date": "2026-01-03",
+          "end_date": "2026-06-29"
+        },
+        "generated": "2026-07-11",
+        "overview": [
+          "This report summarizes the signal-level statistical characteristics of the ECG digital twin dataset, comprising 12 recording sessions captured between January and June 2026. Each entry in the source dataset represents a single-channel ECG waveform recorded from the digital twin data stream, described only in terms of amplitude distribution (minimum, maximum, mean, median, standard deviation, and percentiles)."
+        ],
+        "dataset_summary": {
+          "number_of_recordings": 12,
+          "date_range": "2026-01-03 to 2026-06-29",
+          "total_recorded_duration": "99h 11m",
+          "channel_configuration": "single channel (\"ECG SD\") in every recording",
+          "sampling_rate_hz": 256,
+          "amplitude_units": "microvolts (uV)"
+        },
+        "recording_log": [
+          {
+            "date": "2026-01-03",
+            "time": "10:38:26",
+            "duration": "3h 9m",
+            "samples": 2913280,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-01-20",
+            "time": "12:35:36",
+            "duration": "6h 39m",
+            "samples": 6142464,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-02-04",
+            "time": "10:40:32",
+            "duration": "10h 51m",
+            "samples": 10005504,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-02-19",
+            "time": "16:24:30",
+            "duration": "1h 30m",
+            "samples": 1386752,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-03-09",
+            "time": "12:24:30",
+            "duration": "21h 39m",
+            "samples": 19957504,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-03-25",
+            "time": "11:59:59",
+            "duration": "22h 27m",
+            "samples": 20697344,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-04-11",
+            "time": "16:52:55",
+            "duration": "1h 11m",
+            "samples": 1104896,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-04-23",
+            "time": "11:49:39",
+            "duration": "13h 12m",
+            "samples": 12174592,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-05-05",
+            "time": "09:19:39",
+            "duration": "7h 58m",
+            "samples": 7355392,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-05-25",
+            "time": "19:14:29",
+            "duration": "1h 43m",
+            "samples": 1591296,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-06-02",
+            "time": "09:19:23",
+            "duration": "4h 22m",
+            "samples": 4034816,
+            "sampling_rate_hz": 256.0
+          },
+          {
+            "date": "2026-06-29",
+            "time": "11:15:34",
+            "duration": "4h 23m",
+            "samples": 4043776,
+            "sampling_rate_hz": 256.0
+          }
+        ],
+        "amplitude_statistics_uV": [
+          {
+            "date": "2026-01-03",
+            "min": -1356.0,
+            "max": 1398.0,
+            "mean": -2.83,
+            "median": -20.96,
+            "std_dev": 82.58
+          },
+          {
+            "date": "2026-01-20",
+            "min": -1689.0,
+            "max": 1700.0,
+            "mean": -5.79,
+            "median": -21.99,
+            "std_dev": 171.1
+          },
+          {
+            "date": "2026-02-04",
+            "min": -1314.0,
+            "max": 1418.0,
+            "mean": -2.42,
+            "median": -34.98,
+            "std_dev": 89.62
+          },
+          {
+            "date": "2026-02-19",
+            "min": -1245.0,
+            "max": 1711.0,
+            "mean": 1.3,
+            "median": -29.99,
+            "std_dev": 103.96
+          },
+          {
+            "date": "2026-03-09",
+            "min": -1720.9,
+            "max": 1674.0,
+            "mean": -2.33,
+            "median": -30.99,
+            "std_dev": 124.43
+          },
+          {
+            "date": "2026-03-25",
+            "min": -1826.0,
+            "max": 1751.0,
+            "mean": -10.46,
+            "median": -20.01,
+            "std_dev": 183.27
+          },
+          {
+            "date": "2026-04-11",
+            "min": -1698.9,
+            "max": 1713.0,
+            "mean": -2.6,
+            "median": -25.98,
+            "std_dev": 206.06
+          },
+          {
+            "date": "2026-04-23",
+            "min": -1680.0,
+            "max": 1718.0,
+            "mean": -5.6,
+            "median": -21.99,
+            "std_dev": 132.06
+          },
+          {
+            "date": "2026-05-05",
+            "min": -1718.0,
+            "max": 1755.0,
+            "mean": -8.09,
+            "median": -7.97,
+            "std_dev": 303.13
+          },
+          {
+            "date": "2026-05-25",
+            "min": -1242.0,
+            "max": 1241.0,
+            "mean": 31.6,
+            "median": -19.99,
+            "std_dev": 175.81
+          },
+          {
+            "date": "2026-06-02",
+            "min": -1324.0,
+            "max": 1595.0,
+            "mean": -2.44,
+            "median": -13.96,
+            "std_dev": 89.71
+          },
+          {
+            "date": "2026-06-29",
+            "min": -1324.0,
+            "max": 1595.0,
+            "mean": -2.45,
+            "median": -13.96,
+            "std_dev": 89.66
+          }
+        ],
+        "percentile_distribution_uV": [
+          {
+            "date": "2026-01-03",
+            "p5": -96.0,
+            "p25": -34.0,
+            "p75": 15.0,
+            "p95": 128.0
+          },
+          {
+            "date": "2026-01-20",
+            "p5": -206.0,
+            "p25": -52.0,
+            "p75": 34.0,
+            "p95": 218.0
+          },
+          {
+            "date": "2026-02-04",
+            "p5": -77.0,
+            "p25": -51.0,
+            "p75": 13.0,
+            "p95": 196.0
+          },
+          {
+            "date": "2026-02-19",
+            "p5": -83.0,
+            "p25": -55.0,
+            "p75": 25.0,
+            "p95": 208.0
+          },
+          {
+            "date": "2026-03-09",
+            "p5": -144.0,
+            "p25": -53.0,
+            "p75": 32.0,
+            "p95": 211.0
+          },
+          {
+            "date": "2026-03-25",
+            "p5": -256.0,
+            "p25": -63.0,
+            "p75": 44.0,
+            "p95": 243.0
+          },
+          {
+            "date": "2026-04-11",
+            "p5": -206.0,
+            "p25": -47.0,
+            "p75": 28.0,
+            "p95": 245.0
+          },
+          {
+            "date": "2026-04-23",
+            "p5": -129.0,
+            "p25": -41.0,
+            "p75": 21.0,
+            "p95": 154.0
+          },
+          {
+            "date": "2026-05-05",
+            "p5": -539.0,
+            "p25": -147.0,
+            "p75": 126.0,
+            "p95": 529.0
+          },
+          {
+            "date": "2026-05-25",
+            "p5": -66.0,
+            "p25": -35.0,
+            "p75": 20.0,
+            "p95": 235.0
+          },
+          {
+            "date": "2026-06-02",
+            "p5": -117.0,
+            "p25": -40.0,
+            "p75": 30.0,
+            "p95": 145.0
+          },
+          {
+            "date": "2026-06-29",
+            "p5": -117.0,
+            "p25": -40.0,
+            "p75": 30.0,
+            "p95": 145.0
+          }
+        ],
+        "notable_observations": [
+          "All 12 recordings use a single channel sampled at 256 Hz, so statistics are directly comparable across sessions.",
+          "Recording duration varies considerably, from about 1h 11m (2026-04-11) to about 22h 27m (2026-03-25).",
+          "The 2026-06-02 and 2026-06-29 recordings have matching percentile values and near-identical histogram shapes, suggesting very similar signal characteristics or a data duplication between the two sessions.",
+          "Standard deviation of amplitude ranges from about 82.6 uV (2026-01-03) to about 303.1 uV (2026-05-05), indicating substantially different signal variability/noise levels between sessions.",
+          "Peak-to-peak amplitude (max minus min) ranges from roughly 2,480 uV (2026-05-25) to about 3,470 uV (2026-05-05)."
+        ],
+        "scope_and_limitations": "This report is derived strictly from the statistical fields present in the source dataset. It does not represent a clinical or diagnostic ECG interpretation. Any assessment of cardiac rhythm, heart rate, or abnormality requires review of the underlying waveform by a qualified clinician or an appropriately validated diagnostic algorithm, neither of which is reflected in this report."
+      },
+      "CT_scan_clinical_summary": {
+        "reportLabel": "CT Scan Clinical Summary",
+        "patientId": "PATIENT-01",
+        "reportMetadata": {
+          "reportType": "neuroimaging_longitudinal_summary",
+          "modality": "CT",
+          "bodyPart": "Head/Brain",
+          "periodCovered": {
+            "startDate": "2026-01-12",
+            "endDate": "2026-06-29"
+          },
+          "numberOfStudies": 6
+        },
+        "studies": [
+          {
+            "studyId": "CT_Scan_01",
+            "studyDate": "2026-01-12",
+            "findings": "The lateral ventricles are visualized at the level of the frontal horns and bodies and appear grossly symmetric. Cortical sulci are visualized over the bilateral frontal and parietal convexities. No midline shift. No hyperdense collection to suggest acute intracranial hemorrhage.",
+            "impression": "No acute intracranial abnormality on this synthetic demo read.",
+            "verifiedByRadiologist": false
+          },
+          {
+            "studyId": "CT_Scan_02",
+            "studyDate": "2026-02-16",
+            "findings": "Section obtained at the level of the basal cisterns/temporal lobes. Cisterns about the suprasellar region are visualized. Ventricular detail is limited at this level. No midline shift. No hyperdense collection identified.",
+            "impression": "No acute abnormality identified; assessment limited by slice level and image quality on this synthetic demo read.",
+            "verifiedByRadiologist": false
+          },
+          {
+            "studyId": "CT_Scan_03",
+            "studyDate": "2026-03-11",
+            "findings": "The frontal horns of the lateral ventricles are visualized, with adjacent CSF spaces appearing mildly prominent. Cortical sulci and sylvian fissures are visualized. No midline shift. No hyperdense collection identified.",
+            "impression": "No acute abnormality identified on this synthetic demo read.",
+            "verifiedByRadiologist": false
+          },
+          {
+            "studyId": "CT_Scan_04",
+            "studyDate": "2026-04-20",
+            "findings": "Section obtained at the high convexity, above the level of the lateral ventricles. Cortical sulci are visualized diffusely. No hyperdense collection identified.",
+            "impression": "No acute abnormality identified; ventricles not included at this slice level on this synthetic demo read.",
+            "verifiedByRadiologist": false
+          },
+          {
+            "studyId": "CT_Scan_05",
+            "studyDate": "2026-05-14",
+            "findings": "Section obtained near the vertex. Sulci are visualized over the convexities and appear relatively prominent; image graininess limits fine assessment. No hyperdense collection identified.",
+            "impression": "No acute abnormality identified; limited by image quality on this synthetic demo read.",
+            "verifiedByRadiologist": false
+          },
+          {
+            "studyId": "CT_Scan_06",
+            "studyDate": "2026-06-29",
+            "findings": "The frontal horns of the lateral ventricles are visualized. Cortical sulci are visualized over the convexities. Small symmetric hyperdense foci are noted near the ventricular atria/trigones bilaterally, in a location and appearance typical of benign choroid plexus calcification. No midline shift.",
+            "impression": "No acute abnormality identified. Incidental bilateral choroid plexus calcification (common benign finding) on this synthetic demo read.",
+            "verifiedByRadiologist": false
+          }
+        ],
+        "comparison": "Direct interval comparison across the six studies is limited by differences in image resolution, windowing, and slice positioning between files; a quantitative trend/progression assessment is not rendered in this synthetic demo report."
+      },
+      "EEG_clinical_summary": {
+        "report_metadata": {
+          "report_type": "EEG",
+          "patient_id": "Patient_001",
+          "modality": "Electroencephalography",
+          "analysis_type": "Longitudinal",
+          "observation_period": "6 Months",
+          "purpose": "Digital Twin Feature Extraction"
+        },
+        "recording_statistics": {
+          "total_recordings": 33,
+          "interictal": 13,
+          "preictal": 10,
+          "ictal": 10,
+          "channels": 1,
+          "samples_per_recording": 1024
+        },
+        "clinical_findings": {
+          "primary_condition": "Epileptic Seizure Disorder",
+          "disease_course": "Chronic",
+          "baseline_activity": "Preserved",
+          "preictal_transition": true,
+          "ictal_events_detected": true,
+          "recovery_pattern_detected": true
+        },
+        "signal_statistics": {
+          "interictal": {
+            "amplitude_range": [
+              -89,
+              99
+            ],
+            "standard_deviation_range": [
+              11.68,
+              23.5
+            ],
+            "variance_range": [
+              136.44,
+              552.46
+            ]
+          },
+          "preictal": {
+            "amplitude_range": [
+              -345,
+              440
+            ],
+            "standard_deviation_range": [
+              14.48,
+              92.07
+            ],
+            "variance_range": [
+              209.71,
+              8477.48
+            ]
+          },
+          "ictal": {
+            "amplitude_range": [
+              -504,
+              784
+            ],
+            "standard_deviation_range": [
+              52.5,
+              286.42
+            ],
+            "variance_range": [
+              2756.47,
+              82033.96
+            ]
+          }
+        },
+        "phase_analysis": {
+          "interictal": {
+            "state": "Baseline",
+            "electrical_activity": "Stable",
+            "signal_variability": "Low"
+          },
+          "preictal": {
+            "state": "Transition",
+            "electrical_activity": "Increasing Instability",
+            "signal_variability": "Moderate-High"
+          },
+          "ictal": {
+            "state": "Seizure",
+            "electrical_activity": "Hypersynchronous",
+            "signal_variability": "Very High"
+          }
+        },
+        "longitudinal_analysis": {
+          "disease_pattern": "Recurrent",
+          "progression": [
+            "Interictal",
+            "Preictal",
+            "Ictal",
+            "Recovery"
+          ],
+          "pattern_consistency": "High",
+          "baseline_stability": "Stable",
+          "seizure_evolution": "Consistent across observation period"
+        },
+        "derived_features": {
+          "variance_trend": "Increasing",
+          "amplitude_trend": "Increasing",
+          "electrical_instability": "Increasing before seizure onset",
+          "maximum_activity_phase": "Ictal",
+          "minimum_activity_phase": "Interictal",
+          "dominant_discriminative_feature": "Signal Variance"
+        },
+        "key_biomarkers": {
+          "primary": [
+            "Signal Variance",
+            "Standard Deviation",
+            "Signal Amplitude",
+            "Electrical Stability"
+          ],
+          "secondary": [
+            "Phase Transition",
+            "Temporal Evolution",
+            "Recovery Pattern"
+          ]
+        },
+        "digital_twin_state": {
+          "neurological_state": "Epileptic",
+          "disease_stage": "Chronic Active",
+          "risk_level": "High",
+          "future_seizure_probability": "High",
+          "patient_specific_pattern": "Stable Longitudinal Seizure Evolution"
+        },
+        "digital_twin_features": {
+          "baseline_state": "Normal Interictal Activity",
+          "transition_state": "Preictal Electrical Instability",
+          "acute_state": "Ictal Seizure Activity",
+          "recovery_state": "Return to Baseline",
+          "state_transition_detected": true,
+          "longitudinal_consistency": true
+        },
+        "recommended_monitoring": [
+          "Signal Variance",
+          "Amplitude Dynamics",
+          "Electrical Stability",
+          "Preictal Detection",
+          "Seizure Frequency",
+          "Temporal Disease Progression"
+        ],
+        "overall_observation": {
+          "observation": "Longitudinal EEG recordings demonstrate a consistent transition from stable interictal activity to preictal electrical instability followed by high-amplitude ictal seizure activity.",
+          "supporting_evidence": [
+            "Signal variance progressively increases before seizure onset.",
+            "Amplitude increases significantly during ictal recordings.",
+            "Electrical activity returns toward baseline following seizure events.",
+            "Temporal seizure progression remains consistent across six months."
+          ],
+          "clinical_interpretation": "Findings are consistent with chronic recurrent epilepsy exhibiting reproducible seizure evolution.",
+          "digital_twin_interpretation": "EEG features provide sufficient longitudinal information to model baseline, transition, seizure, and recovery states for personalized neurological Digital Twin generation."
+        }
+      },
+      "clinical__notes_summary": {
+        "patient_profile": {
+          "patient_id": "Patient_001",
+          "name": "John Doe",
+          "age": 34,
+          "gender": "Unknown",
+          "diagnosis": {
+            "primary": "Focal Impaired Awareness Epilepsy",
+            "secondary": "Secondary Generalized Tonic-Clonic Seizures",
+            "diagnosis_date": "2021-05-12",
+            "disease_stage": "Chronic"
+          }
+        },
+        "observation_window": {
+          "start_date": "2026-01-01",
+          "end_date": "2026-03-02",
+          "total_visits": 5,
+          "follow_up_frequency": "Bi-weekly"
+        },
+        "longitudinal_summary": {
+          "overall_clinical_status": "Stable with intermittent exacerbations followed by recovery",
+          "overall_disease_trajectory": "Moderately Controlled Epilepsy",
+          "overall_risk_level": "Moderate",
+          "clinical_progression": [
+            {
+              "date": "2026-01-01",
+              "status": "Baseline Stable",
+              "summary": "Partial seizure control with preserved cognition and normal laboratory findings."
+            },
+            {
+              "date": "2026-01-16",
+              "status": "Transient Worsening",
+              "summary": "Reduced seizure count but prolonged seizure duration and seizure clustering increased short-term neurological risk."
+            },
+            {
+              "date": "2026-02-03",
+              "status": "Recovery",
+              "summary": "Clinical stabilization with normal CBC and no evidence of cognitive deterioration."
+            },
+            {
+              "date": "2026-02-15",
+              "status": "Disease Exacerbation",
+              "summary": "Highest seizure burden during follow-up despite stable medication regimen."
+            },
+            {
+              "date": "2026-03-02",
+              "status": "Clinical Improvement",
+              "summary": "Shorter seizure duration, improved mental clarity and recovery from previous deterioration."
+            }
+          ]
+        },
+        "clinical_inference": {
+          "disease_behavior": {
+            "pattern": "Fluctuating chronic epilepsy with episodic worsening",
+            "trend": "Overall stable",
+            "disease_control": "Partial",
+            "neurological_decline": false,
+            "functional_decline": false
+          },
+          "seizure_analysis": {
+            "overall_pattern": "Persistent focal epilepsy with intermittent exacerbations",
+            "total_recorded_visits": 5,
+            "highest_seizure_burden": {
+              "date": "2026-02-15",
+              "episodes": 11
+            },
+            "lowest_seizure_burden": {
+              "date": "2026-01-16",
+              "episodes": 4
+            },
+            "average_duration_trend": [
+              3.4,
+              9.0,
+              6.7,
+              8.2,
+              4.5
+            ],
+            "clustering_detected": true,
+            "overall_inference": "Seizure burden fluctuates over time without continuous deterioration. Final visit demonstrates improved seizure duration suggesting partial therapeutic response."
+          },
+          "aura_analysis": {
+            "persistent_patterns": [
+              "Visual Aura",
+              "Epigastric Rising Sensation",
+              "Metallic Taste",
+              "Deja Vu"
+            ],
+            "clinical_significance": "Aura characteristics remain consistent across visits indicating stable seizure onset localization.",
+            "digital_twin_use": "Useful biomarker for future seizure prediction."
+          },
+          "medication_response": {
+            "current_regimen": [
+              {
+                "drug": "Levetiracetam",
+                "dose": "1000 mg BID"
+              },
+              {
+                "drug": "Lamotrigine",
+                "dose": "150 mg BID"
+              }
+            ],
+            "effectiveness": "Moderately Effective",
+            "tolerability": "Good",
+            "persistent_side_effects": [
+              "Morning dizziness",
+              "Occasional fatigue",
+              "Memory fog"
+            ],
+            "drug_toxicity": false,
+            "overall_inference": "Current regimen provides acceptable seizure suppression while maintaining favorable safety profile."
+          },
+          "sleep_analysis": {
+            "overall_trend": "Gradual improvement",
+            "average_sleep": "6-7 hours",
+            "persistent_issues": [
+              "Sleep fragmentation",
+              "Occasional delayed sleep onset"
+            ],
+            "clinical_relationship": "Improved sleep corresponds with reduced seizure duration during later visits."
+          },
+          "cognitive_analysis": {
+            "overall_status": "Preserved",
+            "memory": "Stable",
+            "attention": "Stable",
+            "language": "Transient mild word-finding difficulty",
+            "mental_clarity": "Improved during final visit",
+            "overall_inference": "No evidence of progressive cognitive impairment throughout observation."
+          },
+          "laboratory_analysis": {
+            "cbc": "Normal",
+            "liver_function": "Normal",
+            "platelet_count": "Stable",
+            "white_cell_count": "Stable",
+            "medication_safety": "No laboratory evidence of toxicity",
+            "overall_inference": "Anti-epileptic therapy remains biologically safe."
+          },
+          "quality_of_life": {
+            "overall_status": "Stable",
+            "daily_function": "Independent",
+            "mobility": "Preserved",
+            "social_function": "Maintained",
+            "overall_inference": "Despite persistent seizures, patient maintains satisfactory functional independence."
+          }
+        },
+        "major_clinical_events": [
+          {
+            "date": "2026-01-16",
+            "event": "Seizure clustering detected",
+            "importance": "High",
+            "clinical_impact": "Temporary increase in neurological risk."
+          },
+          {
+            "date": "2026-02-03",
+            "event": "Normal CBC confirmed",
+            "importance": "Medium",
+            "clinical_impact": "Continued medication safety."
+          },
+          {
+            "date": "2026-02-15",
+            "event": "Peak seizure burden",
+            "importance": "High",
+            "clinical_impact": "Largest disease flare during observation."
+          },
+          {
+            "date": "2026-03-02",
+            "event": "Improved cognition and shorter seizures",
+            "importance": "High",
+            "clinical_impact": "Evidence of clinical recovery."
+          }
+        ],
+        "digital_twin_state": {
+          "current_state": "Moderately Controlled Chronic Epilepsy",
+          "state_vector": {
+            "disease_stability": 0.76,
+            "treatment_response": 0.79,
+            "medication_safety": 0.93,
+            "cognitive_health": 0.91,
+            "sleep_health": 0.71,
+            "quality_of_life": 0.81,
+            "overall_health_score": 0.82,
+            "genetic_treatment_alignment": 0.84
+          },
+          "risk_prediction": {
+            "future_seizure_risk": "Moderate",
+            "status_epilepticus_risk": "Low",
+            "hospitalization_risk": "Low",
+            "cognitive_decline_risk": "Low",
+            "medication_toxicity_risk": "Low",
+            "functional_decline_risk": "Low"
+          },
+          "monitoring_priorities": [
+            "Seizure frequency",
+            "Seizure duration",
+            "Aura evolution",
+            "Medication adherence",
+            "Sleep quality",
+            "Morning dizziness",
+            "Stress level",
+            "Medication side effects",
+            "CBC",
+            "Liver Function Test"
+          ],
+          "recommended_actions": [
+            "Continue current anti-epileptic regimen.",
+            "Maintain regular sleep schedule.",
+            "Track seizure triggers and aura characteristics.",
+            "Continue periodic CBC and liver function monitoring.",
+            "Assess treatment escalation only if seizure frequency increases further.",
+            "If seizure frequency increases and escalation is considered, prioritize SCN1A-aligned options (clobazam, ethosuximide, oxcarbazepine) over valproic acid, carbamazepine, or phenytoin, per integrated pharmacogenomic profile.",
+            "Should any psychiatric comorbidity (depression/anxiety) require treatment, avoid paroxetine given dual genetic suicidality flags (FKBP5, HTR1B); consider lithium given its concordant favorable efficacy signal."
+          ],
+          "genomics_integration": {
+            "status": "Integrated 2026-07-11",
+            "summary": "SCN1A-favorable allele supports both current anti-epileptic drugs (levetiracetam, lamotrigine); CYP3A4 (TT) partially offsets the lamotrigine signal, consistent with observed moderate-not-complete seizure control. Valproic acid, carbamazepine, and phenytoin are genetically weaker escalation options and should be deprioritized in favor of clobazam, ethosuximide, or oxcarbazepine if the regimen must change.",
+            "psychiatric_safety_flags_on_file": [
+              "FKBP5 (rs1360780) \u2014 avoid/monitor clomipramine, lithium (caution only, efficacy signal is favorable), nefazodone, paroxetine, venlafaxine",
+              "HTR1B (rs130058) \u2014 avoid paroxetine specifically"
+            ]
+          }
+        },
+        "executive_summary": {
+          "clinical_conclusion": "Across five follow-up visits, the patient demonstrated a fluctuating but overall stable epilepsy course. Although one transient exacerbation resulted in increased seizure burden, neurological function, cognition, laboratory safety, and daily functioning remained preserved. Improvement during the final visit suggests continued benefit from the existing anti-epileptic regimen. The Digital Twin currently classifies the patient as having moderately controlled chronic epilepsy with moderate future seizure risk and favorable long-term prognosis under continued monitoring. Newly integrated pharmacogenomic data reinforces this picture at the molecular level: the current Levetiracetam/Lamotrigine regimen is the panel's best-aligned option, carrying a supportive SCN1A signal and no toxicity flag, while a partially offsetting CYP3A4 signal on lamotrigine helps explain the observed moderate (not complete) seizure control. Should treatment escalation or a psychiatric comorbidity ever arise, the genomic profile also flags valproic acid, carbamazepine, and phenytoin as weaker efficacy options, and paroxetine specifically as carrying a dual genetic suicidality signal \u2014 information now available for proactive, rather than reactive, prescribing decisions."
+        }
+      },
+      "Pharmacogenomic_clinical_summary": {
+        "key_pharmacogenomic_findings": [
+          {
+            "gene": "lepr",
+            "variant_or_rsid": "rs1137101",
+            "genotype": "GG",
+            "drug": "valproic acid",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of weight gain when treated with valproic acid; body mass index (BMI) change was monitored to assess treatment effects.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gsk3b",
+            "variant_or_rsid": "rs334558",
+            "genotype": "AG",
+            "drug": "lithium",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to lithium; treatment efficacy was evaluated for 83 patients.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gdnf",
+            "variant_or_rsid": "rs2216711",
+            "genotype": "AA",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to paroxetine; the Hamilton Depression Rating Scale (HAM-D), which measures depression severity, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "drd1",
+            "variant_or_rsid": "rs4532",
+            "genotype": "CT",
+            "drug": "dextroamphetamine",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of social withdrawal side effects when treated with dextroamphetamine; the Barkley side-effect scale, which measures the severity of side effects in children with ADHD, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "drd1",
+            "variant_or_rsid": "rs4532",
+            "genotype": "CT",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of social withdrawal side effects when treated with methylphenidate; the Barkley side-effect scale, which measures the severity of side effects in children with ADHD, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "dtnbp1",
+            "variant_or_rsid": "rs742105",
+            "genotype": "TT",
+            "drug": "clozapine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to clozapine; the Positive and Negative Syndrome Scale score, which measures the severity of schizophrenia symptoms, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr1b",
+            "variant_or_rsid": "rs6296",
+            "genotype": "CG",
+            "drug": "citalopram",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of agitation when treated with citalopram; the SSRI Side effect Profile Inventory (SEPI), which measures side effects associated with selective serotonin reuptake inhibitors, was used to assess treatment tolerability.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr1b",
+            "variant_or_rsid": "rs11568817",
+            "genotype": "AC",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of adverse cognitive effects when treated with escitalopram; the digit span test, which measures attention and working memory, was used to assess cognitive function.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "ust",
+            "variant_or_rsid": "rs2500535",
+            "genotype": "GG",
+            "drug": "nortriptyline",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to nortriptyline; the Montgomery-\u00c5sberg Depression Rating Scale (MADRS), which measures the severity of depressive symptoms, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "il6",
+            "variant_or_rsid": "rs1800795",
+            "genotype": "GG",
+            "drug": "peginterferon alfa-2b",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk-involved response to peginterferon alfa-2b; the Beck Depression Inventory and the Zung Self-Rating Depression Scale, which measure symptoms of depression, were used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "il6",
+            "variant_or_rsid": "rs1800795",
+            "genotype": "GG",
+            "drug": "ribavirin",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a increased risk-involved response to ribavirin; the Beck Depression Inventory and the Zung Self-Rating Depression Scale, which measure symptoms of depression, were used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs1045642",
+            "genotype": "GG",
+            "drug": "nortriptyline",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of hypotension when treated with nortriptyline; the Hamilton Depression Rating Scale (HDRS) and Montgomery & Asberg Depression Rating Scale (MADRS), which measure depression severity, were used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs1045642",
+            "genotype": "GG",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of severe hyperprolactinemia when treated with risperidone; plasma levels for the parent compound risperidone, active metabolite, and prolactin were measured to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs1045642",
+            "genotype": "GG",
+            "drug": "aripiprazole",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to aripiprazole; the measure of response was used to assess treatment efficacy.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs1045642",
+            "genotype": "GG",
+            "drug": "phenobarbital",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to phenobarbital; blood plasma levels were monitored to assess treatment effectiveness.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs1045642",
+            "genotype": "GG",
+            "drug": "carbamazepine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to carbamazepine; plasma concentrations of carbamazepine and its major metabolites were monitored to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs1045642",
+            "genotype": "GG",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to escitalopram; the measure of response was used to assess treatment efficacy.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs2032582",
+            "genotype": "CC",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of adverse events with methylphenidate; the Barkley Stimulant Side Effect Rating Scale (BSSERS), which measures stimulant side effects in children with ADHD, was used to assess potential side effects.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "variant_or_rsid": "rs1128503",
+            "genotype": "GG",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to risperidone; the Autism Treatment Evaluation Checklist (ATEC), which measures treatment effectiveness in autism, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr7",
+            "variant_or_rsid": "rs7905446",
+            "genotype": "GG",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to paroxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr7",
+            "variant_or_rsid": "rs7905446",
+            "genotype": "GG",
+            "drug": "fluoxetine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to fluoxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr7",
+            "variant_or_rsid": "rs7905446",
+            "genotype": "GG",
+            "drug": "atomoxetine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to atomoxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr7",
+            "variant_or_rsid": "rs7905446",
+            "genotype": "GG",
+            "drug": "desvenlafaxine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to desvenlafaxine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr7",
+            "variant_or_rsid": "rs7905446",
+            "genotype": "GG",
+            "drug": "duloxetine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to duloxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr7",
+            "variant_or_rsid": "rs7905446",
+            "genotype": "GG",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to venlafaxine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "slc18a2",
+            "variant_or_rsid": "rs363226",
+            "genotype": "CC",
+            "drug": "bupropion",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to bupropion; the 17-item Hamilton Depression Rating Scale (HAMD 17), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "th",
+            "variant_or_rsid": "rs2070762",
+            "genotype": "AG",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to methylphenidate; the Clinical Global Impression-Improvement scale, which measures treatment effectiveness, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "bdnf",
+            "variant_or_rsid": "rs6265",
+            "genotype": "CT",
+            "drug": "morphine",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a increased risk-involved response to morphine; blood plasma levels and symptom scoring scales, which measure the severity of symptoms, were used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "bdnf",
+            "variant_or_rsid": "rs6265",
+            "genotype": "CT",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to paroxetine; the Hamilton Depression Rating Scale (HAM-D), which measures depression severity, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "ankk1",
+            "variant_or_rsid": "rs1800497",
+            "genotype": "AA",
+            "drug": "valproic acid",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of weight gain associated with valproic acid; the change in body mass index (BMI) was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "ankk1",
+            "variant_or_rsid": "rs1800497",
+            "genotype": "AA",
+            "drug": "aripiprazole",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to aripiprazole; the positive and negative syndrome scale (PANSS), which measures symptom severity in schizophrenia, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs7997012",
+            "genotype": "AG",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to venlafaxine; the Hamilton Anxiety Scale (HAM-A), which measures anxiety severity, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs2770296",
+            "genotype": "TT",
+            "drug": "bupropion",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to bupropion; the Hamilton Rating Scale for Depression (HAMD 17), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs6313",
+            "genotype": "AA",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a increased risk-involved response to risperidone; the Positive and Negative Syndrome Scale (PANSS), which measures symptom severity in schizophrenia, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs6313",
+            "genotype": "AA",
+            "drug": "fluoxetine",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to fluoxetine; the Clinical Global Impressions-Improvement score (CGI-I), which measures treatment improvement, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs6311",
+            "genotype": "TT",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of adverse cognitive effects when treated with escitalopram; the digit span test, which measures attention and working memory, was used to assess cognitive function.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs6311",
+            "genotype": "TT",
+            "drug": "citalopram",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of sexual dysfunction associated with citalopram; the Changes in Sexual Functioning Questionnaire (CSFQ), which measures sexual functioning, was used to assess potential side effects.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs6311",
+            "genotype": "TT",
+            "drug": "fluoxetine",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of sexual dysfunction when treated with fluoxetine; the Changes in Sexual Functioning Questionnaire (CSFQ), which measures sexual functioning, was used to assess treatment effects.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs6311",
+            "genotype": "TT",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of sexual dysfunction when treated with paroxetine; the Changes in Sexual Functioning Questionnaire (CSFQ), which measures sexual functioning, was used to assess potential side effects.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "variant_or_rsid": "rs6311",
+            "genotype": "TT",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk-involved response to risperidone; the Autism Treatment Evaluation Checklist (ATEC), which measures the effectiveness of autism treatments, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "cyp1a2",
+            "variant_or_rsid": "rs762551",
+            "genotype": "AA",
+            "drug": "chlorpromazine",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of acquiring a longer QT interval when treated with chlorpromazine; QT intervals measured by 12-lead electrocardiography (ECG) were monitored to assess cardiac function.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "cyp1a2",
+            "variant_or_rsid": "rs762551",
+            "genotype": "AA",
+            "drug": "carbamazepine",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to carbamazepine; blood plasma levels were monitored to assess treatment effectiveness.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "slc6a2",
+            "variant_or_rsid": "rs2242446",
+            "genotype": "TT",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to venlafaxine; the Montgomery-\u00c5sberg Depression Rating Scale (MADRS), which measures the severity of depressive symptoms, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "ces1",
+            "variant_or_rsid": "rs3815583",
+            "genotype": "AC",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of appetite suppression when treated with methylphenidate; the Barkley Stimulant Side Effect Rating Scale, which measures appetite reduction, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "hrh4",
+            "variant_or_rsid": "rs4483927",
+            "genotype": "TT",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to risperidone; the Positive and Negative Syndrome Scale (PANSS), which measures the severity of symptoms in schizophrenia, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "il11",
+            "variant_or_rsid": "rs1126757",
+            "genotype": "TT",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to escitalopram; the Montgomery-\u00c5sberg Depression Rating Scale (MADRS), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "comt",
+            "variant_or_rsid": "rs9606186",
+            "genotype": "CG",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to risperidone; the Brief Psychiatric Rating Scale (BPRS), which measures psychiatric symptoms severity, was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "cacng2",
+            "variant_or_rsid": "rs2284018",
+            "genotype": "CT",
+            "drug": "lithium",
+            "response_or_clinical_effect": "efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to lithium; prospective data was used to assess treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gria3",
+            "variant_or_rsid": "rs4825476",
+            "genotype": "A",
+            "drug": "citalopram",
+            "response_or_clinical_effect": "toxicity",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of suicidal ideation when treated with citalopram; allele and genotype frequencies were used to assess the potential for treatment-emergent suicidal ideation.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gabrq",
+            "variant_or_rsid": "rs3810651",
+            "genotype": "T",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "reduced efficacy",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to venlafaxine; the 17-item Hamilton Depression Rating Scale (HDRS-17), which measures depression severity, was used to evaluate treatment response.",
+            "patient_specific_interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          }
+        ],
+        "clinically_significant_drug_gene_interactions": [
+          {
+            "gene": "lepr",
+            "drug": "valproic acid",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "gsk3b",
+            "drug": "lithium",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "gdnf",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "drd1",
+            "drug": "dextroamphetamine",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "drd1",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "dtnbp1",
+            "drug": "clozapine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr1b",
+            "drug": "citalopram",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "htr1b",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "ust",
+            "drug": "nortriptyline",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "il6",
+            "drug": "peginterferon alfa-2b",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "il6",
+            "drug": "ribavirin",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "nortriptyline",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "aripiprazole",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "phenobarbital",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "carbamazepine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "htr7",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr7",
+            "drug": "fluoxetine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr7",
+            "drug": "atomoxetine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr7",
+            "drug": "desvenlafaxine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr7",
+            "drug": "duloxetine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr7",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "slc18a2",
+            "drug": "bupropion",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "th",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "bdnf",
+            "drug": "morphine",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "bdnf",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "ankk1",
+            "drug": "valproic acid",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "ankk1",
+            "drug": "aripiprazole",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "bupropion",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "fluoxetine",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "citalopram",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "paroxetine",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "cyp1a2",
+            "drug": "chlorpromazine",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "cyp1a2",
+            "drug": "carbamazepine",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "slc6a2",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "ces1",
+            "drug": "methylphenidate",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "hrh4",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "il11",
+            "drug": "escitalopram",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "comt",
+            "drug": "risperidone",
+            "response_or_clinical_effect": "reduced efficacy"
+          },
+          {
+            "gene": "cacng2",
+            "drug": "lithium",
+            "response_or_clinical_effect": "efficacy"
+          },
+          {
+            "gene": "gria3",
+            "drug": "citalopram",
+            "response_or_clinical_effect": "toxicity"
+          },
+          {
+            "gene": "gabrq",
+            "drug": "venlafaxine",
+            "response_or_clinical_effect": "reduced efficacy"
+          }
+        ],
+        "metabolizer_or_function_profile": [
+          {
+            "gene": "lepr",
+            "genotype_or_function": "GG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gsk3b",
+            "genotype_or_function": "AG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gdnf",
+            "genotype_or_function": "AA",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "drd1",
+            "genotype_or_function": "CT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "dtnbp1",
+            "genotype_or_function": "TT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr1b",
+            "genotype_or_function": "CG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr1b",
+            "genotype_or_function": "AC",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "ust",
+            "genotype_or_function": "GG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "il6",
+            "genotype_or_function": "GG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "genotype_or_function": "GG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "abcb1",
+            "genotype_or_function": "CC",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr7",
+            "genotype_or_function": "GG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "slc18a2",
+            "genotype_or_function": "CC",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "th",
+            "genotype_or_function": "AG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "bdnf",
+            "genotype_or_function": "CT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "ankk1",
+            "genotype_or_function": "AA",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "genotype_or_function": "AG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "genotype_or_function": "TT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "htr2a",
+            "genotype_or_function": "AA",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "cyp1a2",
+            "genotype_or_function": "AA",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "slc6a2",
+            "genotype_or_function": "TT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "ces1",
+            "genotype_or_function": "AC",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "hrh4",
+            "genotype_or_function": "TT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "il11",
+            "genotype_or_function": "TT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "comt",
+            "genotype_or_function": "CG",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "cacng2",
+            "genotype_or_function": "CT",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gria3",
+            "genotype_or_function": "A",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          },
+          {
+            "gene": "gabrq",
+            "genotype_or_function": "T",
+            "interpretation": "Patient genotype is present in the validated source row; apply only source-provided recommendations with clinician review."
+          }
+        ],
+        "high_priority_safety_alerts": [
+          {
+            "gene": "mthfr",
+            "drug": "clozapine",
+            "alert": "Future research should not only consider including additional gene variants and functional analyses but analyze patients from early and non-early stage of psychosis as well.",
+            "severity": "high"
+          },
+          {
+            "gene": "mthfr",
+            "drug": "olanzapine",
+            "alert": "Future research should not only consider including additional gene variants and functional analyses but analyze patients from early and non-early stage of psychosis as well.",
+            "severity": "high"
+          },
+          {
+            "gene": "lepr",
+            "drug": "valproic acid",
+            "alert": "1. Clinical Relevance: Patients with the A-allele may require monitoring for weight gain when treated with VPA. 2. Research Gaps: Further studies are needed to explore the function of the SNP in diverse populations. 3. Genetic Implications: The A-allele is associated with increased risk of weight gain and metabolic syndrome. 4. Population-Specific Findings: The study population was Chinese Han, indicating potential ethnic-specific responses. 5. Long-Term Effects: Long-term monitoring of weight gain in patients with this genotype is recommended.",
+            "severity": "high"
+          },
+          {
+            "gene": "gcg",
+            "drug": "clozapine",
+            "alert": "Although this finding is preliminary and requires further follow-up, it indicates a functional interaction between the genes encoding GLP-1 and its receptor.",
+            "severity": "high"
+          },
+          {
+            "gene": "gcg",
+            "drug": "olanzapine",
+            "alert": "The SNP with the most significant association with AIWG, rs13429709, is located downstream of GCG near the 3\u00b4-UTR region.",
+            "severity": "high"
+          },
+          {
+            "gene": "scn1a",
+            "drug": "clobazam",
+            "alert": "1. Clinical Relevance: The G allele is associated with a lower risk of epilepsy and higher remission rates. 2. Research Gaps: Further studies are needed to explore the role of SCN1A polymorphisms in treatment response. 3. Genetic Implications: The c.3184A > G polymorphism may affect the Efficacy of antiepileptic drugs. 4. Population-Specific Findings: The study population is ethnically homogeneous, which may limit generalizability. 5. Long-Term Effects: Null.",
+            "severity": "high"
+          },
+          {
+            "gene": "scn1a",
+            "drug": "ethosuximide",
+            "alert": "1. Clinical Relevance: The G allele is associated with a lower risk of epilepsy and higher remission rates. 2. Research Gaps: Further studies are needed to explore the role of SCN1A polymorphisms in treatment response. 3. Genetic Implications: The c.3184A > G polymorphism may affect the Efficacy of antiepileptic drugs. 4. Population-Specific Findings: The study population is ethnically homogeneous, which may limit generalizability. 5. Long-Term Effects: Null.",
+            "severity": "high"
+          },
+          {
+            "gene": "scn1a",
+            "drug": "lamotrigine",
+            "alert": "1. Clinical Relevance: The G allele is associated with a lower risk of epilepsy and higher remission rates. 2. Research Gaps: Further studies are needed to elucidate the role of SCN1A c.3184A > G/p.Thr1067Ala in larger cohorts. 3. Genetic Implications: The polymorphism may affect treatment Efficacy and should be considered in personalized medicine.",
+            "severity": "high"
+          },
+          {
+            "gene": "scn1a",
+            "drug": "levetiracetam",
+            "alert": "Further studies on larger groups of patients stratified for the aetiology of epilepsy and antiepileptic treatment are needed to elucidate the role of SCN1A c.3184A > G/p.Thr1067Ala.",
+            "severity": "high"
+          },
+          {
+            "gene": "scn1a",
+            "drug": "oxcarbazepine",
+            "alert": "Further studies on larger groups of patients stratified for the aetiology of epilepsy and antiepileptic treatment are needed to elucidate the role of SCN1A c.3184A > G/p.Thr1067Ala.",
+            "severity": "high"
+          },
+          {
+            "gene": "tmeff2",
+            "drug": "risperidone",
+            "alert": "Replication will be needed to confirm the clinical utility of these findings.",
+            "severity": "high"
+          },
+          {
+            "gene": "gsk3b",
+            "drug": "citalopram",
+            "alert": "in pharmgkb the allele info is complimentary to the allel info in paper",
+            "severity": "high"
+          },
+          {
+            "gene": "gsk3b",
+            "drug": "fluoxetine",
+            "alert": "in pharmgkb the allele info is complimentary to the allel info in paper",
+            "severity": "high"
+          },
+          {
+            "gene": "ppa2",
+            "drug": "risperidone",
+            "alert": "Understanding the genetic variation affecting response to antipsychotic drugs is important to develop novel diagnostic tests to match individual patients with schizophrenia to the most effective and safe medication.",
+            "severity": "high"
+          },
+          {
+            "gene": "gdnf",
+            "drug": "paroxetine",
+            "alert": "Table 5 : The C/C genotype seems to correlate with a better response to paroxetine, as indicated by its higher frequency in responders as compared to TT and CT",
+            "severity": "high"
+          },
+          {
+            "gene": "pde4d",
+            "drug": "quetiapine",
+            "alert": "The results of stratified analysis suggest that the association signal was mainly driven by the EA subsample \u2013 thus the association should be considered as tentative, pending further evidence.",
+            "severity": "high"
+          },
+          {
+            "gene": "gabra1",
+            "drug": "carbamazepine",
+            "alert": "Patients with the GG genotype showed a significant association with drug resistance (P = 0.03, OR = 1.84).",
+            "severity": "high"
+          },
+          {
+            "gene": "gabra1",
+            "drug": "phenytoin",
+            "alert": "Patients with homozygous GG genotype showed a significant association with drug resistance (P = 0.03, OR = 1.84, 95% CI = 1.05\u20133.23).",
+            "severity": "high"
+          },
+          {
+            "gene": "gabra1",
+            "drug": "valproic acid",
+            "alert": "Patients with homozygous variant GG genotype showed a significant association with drug resistance (P = 0.03, OR = 1.84, 95% CI = 1.05\u20133.23).",
+            "severity": "high"
+          },
+          {
+            "gene": "fkbp5",
+            "drug": "clomipramine",
+            "alert": "1. Clinical Relevance: The FKBP5 gene variant rs1360780 TT genotype is associated with increased risk of suicidal ideation during antidepressant treatment, particularly with clomipramine. 2. Research Gaps: Further studies are needed to explore the implications of FKBP5 variants in diverse populations and their impact on treatment outcomes.",
+            "severity": "high"
+          },
+          {
+            "gene": "fkbp5",
+            "drug": "liothyronine",
+            "alert": "The main limitation of this study is the relatively small sample size, which could increase the likelihood of type II errors and be responsible for some negative findings in relation to certain polymorphisms.",
+            "severity": "high"
+          },
+          {
+            "gene": "fkbp5",
+            "drug": "lithium",
+            "alert": "The study suggests that increasing suicidal ideation might be an adverse effect of antidepressants, particularly in patients with the FKBP5 TT genotype.",
+            "severity": "high"
+          },
+          {
+            "gene": "fkbp5",
+            "drug": "nefazodone",
+            "alert": "Patients with the TT genotype may require close monitoring due to increased risk of suicidal ideation during treatment.",
+            "severity": "high"
+          },
+          {
+            "gene": "fkbp5",
+            "drug": "venlafaxine",
+            "alert": "The strongest genetic predictor was rs1360780 within the FKBP5 gene (p = 2.9 \u00d7 10-5).",
+            "severity": "high"
+          },
+          {
+            "gene": "fkbp5",
+            "drug": "citalopram",
+            "alert": "Association of a marker in FKBP5 with depression and remission after citalopram treatment provides further evidence that dysregulation of the HPA axis in depression is not only an epiphenomenon of the disease.",
+            "severity": "high"
+          },
+          {
+            "gene": "htr1b",
+            "drug": "paroxetine",
+            "alert": "Patients with the T allele may require close monitoring for increased suicidal ideation when treated with paroxetine.",
+            "severity": "high"
+          },
+          {
+            "gene": "htr1b",
+            "drug": "liothyronine",
+            "alert": "The main limitation of this study is the relatively small sample size, which could increase the likelihood of type II errors and be responsible for some negative findings in relation to certain polymorphisms.",
+            "severity": "high"
+          },
+          {
+            "gene": "htr1b",
+            "drug": "venlafaxine",
+            "alert": "The main limitation of this study is the relatively small sample size, which could increase the likelihood of type II errors and be responsible for some negative findings in relation to certain polymorphisms.",
+            "severity": "high"
+          },
+          {
+            "gene": "cnr1",
+            "drug": "risperidone",
+            "alert": "Future studies should examine gene expression profiles during SGA exposure, with particular interest in the expression of the significantly associated loci identified in this report.",
+            "severity": "high"
+          },
+          {
+            "gene": "epm2a",
+            "drug": "chlorpromazine",
+            "alert": "Further studies are needed to confirm our findings.",
+            "severity": "high"
+          },
+          {
+            "gene": "epm2a",
+            "drug": "clozapine",
+            "alert": "Further studies are needed to confirm our findings.",
+            "severity": "high"
+          },
+          {
+            "gene": "epm2a",
+            "drug": "haloperidol",
+            "alert": "1. Clinical Relevance: The C/T genotype was associated with a worst improvement in negative symptoms. 2. Research Gaps: Further studies are needed to confirm the associations among these genes and specific diseases or treatment responses. 3. Genetic Implications: The EPM2A gene variants could be associated with the antipsychotic response of negative symptomatology.",
+            "severity": "high"
+          },
+          {
+            "gene": "epm2a",
+            "drug": "olanzapine",
+            "alert": "The inclusion of several clinical and sociodemographic variables as covariates did not impact on the results, suggesting that the effect of the genotype under examination was independent from variables such as the age at onset, duration of the illness etc.",
+            "severity": "high"
+          },
+          {
+            "gene": "epm2a",
+            "drug": "quetiapine",
+            "alert": "Further studies are needed to confirm the associations among these genes and specific diseases or treatment responses.",
+            "severity": "high"
+          },
+          {
+            "gene": "epm2a",
+            "drug": "risperidone",
+            "alert": "1. Clinical Relevance: The C/T genotype was associated with a worst improvement in negative symptoms. 2. Research Gaps: Further studies are needed to confirm the associations among these genes and specific diseases or treatment responses. 3. Genetic Implications: The EPM2A gene variants could be associated with the antipsychotic response of negative symptomatology.",
+            "severity": "high"
+          },
+          {
+            "gene": "epm2a",
+            "drug": "trifluoperazine",
+            "alert": "Further research is needed to confirm findings regarding the EPM2A gene's role in SCZ susceptibility and treatment response.",
+            "severity": "high"
+          },
+          {
+            "gene": "ust",
+            "drug": "nortriptyline",
+            "alert": "Patients with genotype A may require adjusted dosing due to increased toxicity risk. Table 2 : Carriers of the minor allele (A) experienced worse outcomes, as indicated by a regression coefficient of -10.9 (a negative effect on treatment response) and a p-value of 0.00117 (statistically significant).",
+            "severity": "high"
+          },
+          {
+            "gene": "crhr2",
+            "drug": "citalopram",
+            "alert": "The allele linked to a poorer response is identified as G. Since this is a G/C SNP, the designation is unclear. However, as the gene is located on the negative chromosomal strand, it is likely that the authors were referring to the G allele on the negative strand, which corresponds to C on the positive strand.",
+            "severity": "high"
+          },
+          {
+            "gene": "por",
+            "drug": "clobazam",
+            "alert": "Determining the CYP2C19 and/or POR genotypes is helpful for obtaining appropriate serum CLB and N-CLB concentrations and preventing an overdose when starting CLB therapy.",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "nortriptyline",
+            "alert": "The ability to predict risk of TCA-induced postural hypotension in elderly patients would be of considerable value.",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "risperidone",
+            "alert": "The lack of stratification by sex in previous trials may account for the lack of reported significant associations between plasma R levels and plasma prolactin concentrations.",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "aripiprazole",
+            "alert": "-",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "citalopram",
+            "alert": "the C3435T variant in the ABCB1 gene initially showed associations with treatment response, remission, and tolerance in African-American individuals in the discovery sample, these associations did not replicate in the validation set. This suggests that the observed effects may not be consistent or reliable, highlighting the need for further research to confirm any potential link between this genetic variant and treatment outcomes",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "phenobarbital",
+            "alert": null,
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "carbamazepine",
+            "alert": "Patients resistant to CBZ treatment showed increased dosage of CBZ but also increased plasma levels of CBZ.",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "escitalopram",
+            "alert": "-",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "nefazodone",
+            "alert": "The association between ABCB1 genotype and treatment increasing suicidal ideation suggests that pharmacogenetic factors should be considered in antidepressant therapy.",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "atorvastatin",
+            "alert": "1. Clinical Relevance: ABCB1 genotyping has great potential to be incorporated into clinical practice to identify high-risk patients. 2. Research Gaps: Further studies are warranted to explore the pharmacokinetics of atorvastatin in patients with these genotypes. 3. Genetic Implications: The presence of the TT genotype on both homologous chromosomes is a risk factor for SAMS.",
+            "severity": "high"
+          },
+          {
+            "gene": "abcb1",
+            "drug": "lamotrigine",
+            "alert": null,
+            "severity": "high"
+          },
+          {
+            "gene": "cyp3a4",
+            "drug": "lamotrigine",
+            "alert": "Understanding CYP variability will improve rational drug use and has public health significance.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp3a4",
+            "drug": "phenytoin",
+            "alert": "Understanding CYP variability will improve rational drug use and has public health significance.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp3a4",
+            "drug": "primidone",
+            "alert": "Understanding CYP variability will improve rational drug use and has public health significance.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp3a4",
+            "drug": "valproic acid",
+            "alert": "Further research is needed to determine the prevalence of these polymorphisms in larger pharmacoresistant epilepsy patient populations.",
+            "severity": "high"
+          },
+          {
+            "gene": "serpine1",
+            "drug": "citalopram",
+            "alert": "The primary limitation in this study is the lack of a placebo control.",
+            "severity": "high"
+          },
+          {
+            "gene": "serpine1",
+            "drug": "fluoxetine",
+            "alert": "The primary limitation in this study is the lack of a placebo control.",
+            "severity": "high"
+          },
+          {
+            "gene": "chat",
+            "drug": "olanzapine",
+            "alert": "Patients with genotype A may respond better to olanzapine treatment, indicating a potential for personalized medicine.",
+            "severity": "high"
+          },
+          {
+            "gene": "slc18a2",
+            "drug": "bupropion",
+            "alert": "Overall remission per se following bupropion treatment appears to be associated with HTR2A.",
+            "severity": "high"
+          },
+          {
+            "gene": "bdnf",
+            "drug": "risperidone",
+            "alert": "Future studies are needed to further evaluate the role of this gene in antipsychotic drug response.",
+            "severity": "high"
+          },
+          {
+            "gene": "bdnf",
+            "drug": "paroxetine",
+            "alert": "The frequencies of A/G heterozygotes and G/G homozygotes were both higher in nonresponders than in responders, while the frequency of A/A wild-types was lower",
+            "severity": "high"
+          },
+          {
+            "gene": "bdnf",
+            "drug": "escitalopram",
+            "alert": "1. Clinical Relevance: BDNF and its receptor are associated with an increase in suicidal ideation in subjects taking nortriptyline. 2. Research Gaps: Further studies should investigate the role of BDNF in general susceptibility to suicidal behavior. 3. Genetic Implications: The G allele of rs962369 is linked to increased risk of suicidal ideation during treatment.",
+            "severity": "high"
+          },
+          {
+            "gene": "bdnf",
+            "drug": "nortriptyline",
+            "alert": "1. Clinical Relevance: BDNF and its receptor are associated with an increase in suicidal ideation in subjects taking nortriptyline. 2. Research Gaps: Further studies should investigate the role of BDNF in general susceptibility to suicidal behavior. 3. Genetic Implications: The G allele of rs962369 is linked to increased risk of suicidal ideation during treatment.",
+            "severity": "high"
+          },
+          {
+            "gene": "gal",
+            "drug": "mirtazapine",
+            "alert": "1. Clinical Relevance: The G-allele of rs948854 is linked to higher symptom severity and poorer treatment response in premenopausal women with MDD. 2. Research Gaps: Further studies are needed to explore the impact of estrogen levels on GAL expression and its effects on treatment outcomes. 3. Genetic Implications: The G-allele may indicate a subtype of MDD with specific treatment needs.",
+            "severity": "high"
+          },
+          {
+            "gene": "htr3a",
+            "drug": "clozapine",
+            "alert": "Further studies are necessary to confirm the reported associations.",
+            "severity": "high"
+          },
+          {
+            "gene": "grin2b",
+            "drug": "valproic acid",
+            "alert": "Patients with variant genotypes of GRIN2B -200T>G may need lower doses of VPA to achieve the same target therapeutic levels than patients with wild-types.",
+            "severity": "high"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "bupropion",
+            "alert": "Patients homozygous for the G allele of rs2770296 were approximately 5-fold more likely to be remitters following bupropion treatment.",
+            "severity": "high"
+          },
+          {
+            "gene": "htr2a",
+            "drug": "risperidone",
+            "alert": "Future studies are needed to evaluate the role of this gene in antipsychotic drug response.",
+            "severity": "high"
+          },
+          {
+            "gene": "akt1",
+            "drug": "risperidone",
+            "alert": "Further studies will be required for conclusive results; however, this evidence may lead to an improvement of response prediction and/or treatment selection for antipsychotics.",
+            "severity": "high"
+          },
+          {
+            "gene": "tjp1",
+            "drug": "risperidone",
+            "alert": "1. Clinical Relevance: The study suggests that TJP1 may mediate the effects of risperidone on patient-reported severity. 2. Research Gaps: Further investigation is needed to understand the specific role of TJP1 in schizophrenia treatment response. 3. Genetic Implications: The association of TJP1 with treatment Efficacy highlights its potential as a biomarker for personalized medicine in schizophrenia.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp1a1",
+            "drug": "carbamazepine",
+            "alert": "1. Clinical Relevance: Patients with genotype AA may require adjusted dosing due to increased predictive value for recurrent seizures. 2. Research Gaps: Further studies are needed to explore the role of CYP1A1 variants in the metabolism of reproductive steroids in women. 3. Genetic Implications: The CC genotype was associated with excellent response (no seizure group).",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp1a1",
+            "drug": "phenobarbital",
+            "alert": "Patients with genotype CC may have reduced seizure susceptibility.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp1a1",
+            "drug": "phenytoin",
+            "alert": "Patients with genotype AA may require adjusted dosing due to increased toxicity risk.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp1a1",
+            "drug": "valproic acid",
+            "alert": "This patient\u2019s genetic profile suggests a increased risk-involved response to valproic acid; seizure frequency, compliance to medications, adverse effects, and drug levels were monitored using clinical assessments.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp1a2",
+            "drug": "chlorpromazine",
+            "alert": "Patients with the wild type C allele may require more frequent ECG monitoring.",
+            "severity": "high"
+          },
+          {
+            "gene": "cyp1a2",
+            "drug": "carbamazepine",
+            "alert": "Genotyping of CYP1A2 in Serbian pediatric patients prior to carbamazepine treatment might be advisable",
+            "severity": "high"
+          },
+          {
+            "gene": "cacna1h",
+            "drug": "ethosuximide",
+            "alert": "The study\u2019s prespecified approach examined polymorphisms with minor allele frequency /C2115% in 4 genes. Given this a priori restriction, we did not perform further corrections for multiple comparisons in the pharmacogenetic discovery phase, to not miss a signal or finding.",
+            "severity": "high"
+          },
+          {
+            "gene": "cacna1h",
+            "drug": "lamotrigine",
+            "alert": "Patients with genotype rs2753326 may require adjusted dosing due to increased risk of not achieving seizure freedom.",
+            "severity": "high"
+          },
+          {
+            "gene": "slc6a2",
+            "drug": "venlafaxine",
+            "alert": "Higher \u03c7\u00b2 scores, especially with significance, suggest that rs2242446 may influence the speed of remission, with carriers potentially reaching remission faster than non-carriers.",
+            "severity": "high"
+          },
+          {
+            "gene": "mc1r",
+            "drug": "desipramine",
+            "alert": "Replication in larger samples will be needed to confirm the associations reported here.",
+            "severity": "high"
+          },
+          {
+            "gene": "ccl2",
+            "drug": "risperidone",
+            "alert": "Patients with genotype AA may require adjusted dosing due to increased toxicity risk",
+            "severity": "high"
+          },
+          {
+            "gene": "hrh4",
+            "drug": "risperidone",
+            "alert": null,
+            "severity": "high"
+          },
+          {
+            "gene": "tnfrsf11a",
+            "drug": "risperidone",
+            "alert": null,
+            "severity": "high"
+          },
+          {
+            "gene": "gipr",
+            "drug": "olanzapine",
+            "alert": "1. Clinical Relevance: Patients with genotype A/T+A/A may experience increased weight gain when treated with olanzapine. 2. Research Gaps: Future studies are required to take accurate measurements of plasma GIP concentrations. 3. Genetic Implications: The A allele of rs10423928 may be a diabetes susceptibility allele. 4. Population-Specific Findings: The findings are specific to Japanese patients with schizophrenia. 5. Long-Term Effects: Long-term use of olanzapine in patients with this genotype may lead to increased risk of weight gain and associated metabolic disorders.",
+            "severity": "high"
+          },
+          {
+            "gene": "comt",
+            "drug": "risperidone",
+            "alert": "The results of our study confirmed the impact of COMT on schizophrenic patients\u2019 clinical response to risperidone medication. However, this effect was more significant in male patients.",
+            "severity": "high"
+          },
+          {
+            "gene": "comt",
+            "drug": "quetiapine",
+            "alert": "Patients with genotype AA may require adjusted dosing due to increased toxicity risk",
+            "severity": "high"
+          },
+          {
+            "gene": "cacna1i",
+            "drug": "ethosuximide",
+            "alert": "The CACNA1I variant is considered benign and not pathogenic for CAE. There are no prior reports of any pharmacogenetic clinical impact of this specific polymorphism.",
+            "severity": "high"
+          },
+          {
+            "gene": "gria3",
+            "drug": "citalopram",
+            "alert": "The validation of these findings through replication will be difficult, since treatment-emergent suicidal ideation is so uncommon.",
+            "severity": "high"
+          },
+          {
+            "gene": "gabrq",
+            "drug": "venlafaxine",
+            "alert": "Patients with genotype AA/AT may require adjusted dosing due to increased response rates when treated with venlafaxine.",
+            "severity": "high"
+          },
+          {
+            "gene": "CYP2C9",
+            "drug": "VALPROIC ACID",
+            "alert": "Age and gender significantly influence VPA serum concentration.",
+            "severity": "high"
+          },
+          {
+            "gene": "CYP3A5",
+            "drug": "CLOZAPINE",
+            "alert": "Further studies of the effects of polymorphisms in multiple CYPs on clozapine metabolism in larger-scale clinical trials are needed.",
+            "severity": "high"
+          },
+          {
+            "gene": "CYP2B6",
+            "drug": "SERTRALINE",
+            "alert": "CYP2B6 variants may have an impact on sertraline metabolism and have a role in development of adverse drug reactions in sertraline treatment.",
+            "severity": "high"
+          },
+          {
+            "gene": "CYP3A5",
+            "drug": "PERAMPANEL",
+            "alert": "Age younger than 4 years, comedication with enzyme inducers or valproic acid, and possession of the CYP3A5*3 genotype potentially predicted PER exposure in pediatric patients with epilepsy.",
+            "severity": "high"
+          }
+        ],
+        "actionable_recommendations": [
+          {
+            "gene": "lepr",
+            "drug": "valproic acid",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of weight gain when treated with valproic acid; body mass index (BMI) change was monitored to assess treatment effects."
+          },
+          {
+            "gene": "gsk3b",
+            "drug": "lithium",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to lithium; treatment efficacy was evaluated for 83 patients."
+          },
+          {
+            "gene": "gdnf",
+            "drug": "paroxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to paroxetine; the Hamilton Depression Rating Scale (HAM-D), which measures depression severity, was used to assess treatment response."
+          },
+          {
+            "gene": "drd1",
+            "drug": "dextroamphetamine",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of social withdrawal side effects when treated with dextroamphetamine; the Barkley side-effect scale, which measures the severity of side effects in children with ADHD, was used to assess treatment response."
+          },
+          {
+            "gene": "drd1",
+            "drug": "methylphenidate",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of social withdrawal side effects when treated with methylphenidate; the Barkley side-effect scale, which measures the severity of side effects in children with ADHD, was used to assess treatment response."
+          },
+          {
+            "gene": "dtnbp1",
+            "drug": "clozapine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to clozapine; the Positive and Negative Syndrome Scale score, which measures the severity of schizophrenia symptoms, was used to assess treatment response."
+          },
+          {
+            "gene": "htr1b",
+            "drug": "citalopram",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of agitation when treated with citalopram; the SSRI Side effect Profile Inventory (SEPI), which measures side effects associated with selective serotonin reuptake inhibitors, was used to assess treatment tolerability."
+          },
+          {
+            "gene": "htr1b",
+            "drug": "escitalopram",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of adverse cognitive effects when treated with escitalopram; the digit span test, which measures attention and working memory, was used to assess cognitive function."
+          },
+          {
+            "gene": "ust",
+            "drug": "nortriptyline",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to nortriptyline; the Montgomery-\u00c5sberg Depression Rating Scale (MADRS), which measures the severity of depressive symptoms, was used to assess treatment response."
+          },
+          {
+            "gene": "il6",
+            "drug": "peginterferon alfa-2b",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk-involved response to peginterferon alfa-2b; the Beck Depression Inventory and the Zung Self-Rating Depression Scale, which measure symptoms of depression, were used to assess treatment response."
+          },
+          {
+            "gene": "il6",
+            "drug": "ribavirin",
+            "recommendation": "This patient\u2019s genetic profile suggests a increased risk-involved response to ribavirin; the Beck Depression Inventory and the Zung Self-Rating Depression Scale, which measure symptoms of depression, were used to assess treatment response."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "nortriptyline",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of hypotension when treated with nortriptyline; the Hamilton Depression Rating Scale (HDRS) and Montgomery & Asberg Depression Rating Scale (MADRS), which measure depression severity, were used to assess treatment response."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "risperidone",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of severe hyperprolactinemia when treated with risperidone; plasma levels for the parent compound risperidone, active metabolite, and prolactin were measured to assess treatment response."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "aripiprazole",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to aripiprazole; the measure of response was used to assess treatment efficacy."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "phenobarbital",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to phenobarbital; blood plasma levels were monitored to assess treatment effectiveness."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "carbamazepine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to carbamazepine; plasma concentrations of carbamazepine and its major metabolites were monitored to assess treatment response."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "escitalopram",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to escitalopram; the measure of response was used to assess treatment efficacy."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "methylphenidate",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of adverse events with methylphenidate; the Barkley Stimulant Side Effect Rating Scale (BSSERS), which measures stimulant side effects in children with ADHD, was used to assess potential side effects."
+          },
+          {
+            "gene": "abcb1",
+            "drug": "risperidone",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to risperidone; the Autism Treatment Evaluation Checklist (ATEC), which measures treatment effectiveness in autism, was used to assess treatment response."
+          },
+          {
+            "gene": "htr7",
+            "drug": "paroxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to paroxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to assess treatment response."
+          },
+          {
+            "gene": "htr7",
+            "drug": "fluoxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to fluoxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response."
+          },
+          {
+            "gene": "htr7",
+            "drug": "atomoxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to atomoxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response."
+          },
+          {
+            "gene": "htr7",
+            "drug": "desvenlafaxine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to desvenlafaxine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to assess treatment response."
+          },
+          {
+            "gene": "htr7",
+            "drug": "duloxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to duloxetine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response."
+          },
+          {
+            "gene": "htr7",
+            "drug": "venlafaxine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to venlafaxine; the 21-item Hamilton Depression Rating Scale (HDRS-21), which measures depression severity, was used to evaluate treatment response."
+          },
+          {
+            "gene": "slc18a2",
+            "drug": "bupropion",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to bupropion; the 17-item Hamilton Depression Rating Scale (HAMD 17), which measures depression severity, was used to evaluate treatment response."
+          },
+          {
+            "gene": "th",
+            "drug": "methylphenidate",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to methylphenidate; the Clinical Global Impression-Improvement scale, which measures treatment effectiveness, was used to assess treatment response."
+          },
+          {
+            "gene": "bdnf",
+            "drug": "morphine",
+            "recommendation": "This patient\u2019s genetic profile suggests a increased risk-involved response to morphine; blood plasma levels and symptom scoring scales, which measure the severity of symptoms, were used to assess treatment response."
+          },
+          {
+            "gene": "bdnf",
+            "drug": "paroxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to paroxetine; the Hamilton Depression Rating Scale (HAM-D), which measures depression severity, was used to assess treatment response."
+          },
+          {
+            "gene": "ankk1",
+            "drug": "valproic acid",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of weight gain associated with valproic acid; the change in body mass index (BMI) was used to assess treatment response."
+          },
+          {
+            "gene": "ankk1",
+            "drug": "aripiprazole",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to aripiprazole; the positive and negative syndrome scale (PANSS), which measures symptom severity in schizophrenia, was used to assess treatment response."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "venlafaxine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to venlafaxine; the Hamilton Anxiety Scale (HAM-A), which measures anxiety severity, was used to assess treatment response."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "bupropion",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to bupropion; the Hamilton Rating Scale for Depression (HAMD 17), which measures depression severity, was used to evaluate treatment response."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "risperidone",
+            "recommendation": "This patient\u2019s genetic profile suggests a increased risk-involved response to risperidone; the Positive and Negative Syndrome Scale (PANSS), which measures symptom severity in schizophrenia, was used to assess treatment response."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "fluoxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to fluoxetine; the Clinical Global Impressions-Improvement score (CGI-I), which measures treatment improvement, was used to assess treatment response."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "escitalopram",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of adverse cognitive effects when treated with escitalopram; the digit span test, which measures attention and working memory, was used to assess cognitive function."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "citalopram",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of sexual dysfunction associated with citalopram; the Changes in Sexual Functioning Questionnaire (CSFQ), which measures sexual functioning, was used to assess potential side effects."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "fluoxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of sexual dysfunction when treated with fluoxetine; the Changes in Sexual Functioning Questionnaire (CSFQ), which measures sexual functioning, was used to assess treatment effects."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "paroxetine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of sexual dysfunction when treated with paroxetine; the Changes in Sexual Functioning Questionnaire (CSFQ), which measures sexual functioning, was used to assess potential side effects."
+          },
+          {
+            "gene": "htr2a",
+            "drug": "risperidone",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk-involved response to risperidone; the Autism Treatment Evaluation Checklist (ATEC), which measures the effectiveness of autism treatments, was used to assess treatment response."
+          },
+          {
+            "gene": "cyp1a2",
+            "drug": "chlorpromazine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of acquiring a longer QT interval when treated with chlorpromazine; QT intervals measured by 12-lead electrocardiography (ECG) were monitored to assess cardiac function."
+          },
+          {
+            "gene": "cyp1a2",
+            "drug": "carbamazepine",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to carbamazepine; blood plasma levels were monitored to assess treatment effectiveness."
+          },
+          {
+            "gene": "slc6a2",
+            "drug": "venlafaxine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to venlafaxine; the Montgomery-\u00c5sberg Depression Rating Scale (MADRS), which measures the severity of depressive symptoms, was used to assess treatment response."
+          },
+          {
+            "gene": "ces1",
+            "drug": "methylphenidate",
+            "recommendation": "This patient\u2019s genetic profile suggests an increased risk of appetite suppression when treated with methylphenidate; the Barkley Stimulant Side Effect Rating Scale, which measures appetite reduction, was used to assess treatment response."
+          },
+          {
+            "gene": "hrh4",
+            "drug": "risperidone",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to risperidone; the Positive and Negative Syndrome Scale (PANSS), which measures the severity of symptoms in schizophrenia, was used to assess treatment response."
+          },
+          {
+            "gene": "il11",
+            "drug": "escitalopram",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to escitalopram; the Montgomery-\u00c5sberg Depression Rating Scale (MADRS), which measures depression severity, was used to evaluate treatment response."
+          },
+          {
+            "gene": "comt",
+            "drug": "risperidone",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to risperidone; the Brief Psychiatric Rating Scale (BPRS), which measures psychiatric symptoms severity, was used to assess treatment response."
+          },
+          {
+            "gene": "cacng2",
+            "drug": "lithium",
+            "recommendation": "This patient\u2019s genetic profile suggests a better response to lithium; prospective data was used to assess treatment response."
+          },
+          {
+            "gene": "gria3",
+            "drug": "citalopram",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced risk of suicidal ideation when treated with citalopram; allele and genotype frequencies were used to assess the potential for treatment-emergent suicidal ideation."
+          },
+          {
+            "gene": "gabrq",
+            "drug": "venlafaxine",
+            "recommendation": "This patient\u2019s genetic profile suggests a reduced response to venlafaxine; the 17-item Hamilton Depression Rating Scale (HDRS-17), which measures depression severity, was used to evaluate treatment response."
+          }
+        ],
+        "overall_genetic_summary": "Validated Genetics data includes 164 row(s), 76 unique gene(s), 82 unique variant identifier(s), and 44 unique drug(s). 161 source-backed alert point(s) were identified."
+      }
+    }
+  }
+}

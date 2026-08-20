@@ -1,0 +1,31 @@
+{
+    "file_name": "ictal10_ictal_20260118_084512.mat",
+    "patient_id": "Patient_001",
+    "phase": "ictal",
+    "modality": "EEG",
+    "signal_variable": "ictal",
+    "shape": [
+        1024
+    ],
+    "dimensions": 1,
+    "channels": 1,
+    "samples": 1024,
+    "global_statistics": {
+        "minimum": -235,
+        "maximum": 279,
+        "mean": -1.2099609375,
+        "std": 95.07722939388391,
+        "variance": 9039.679549217224
+    },
+    "channel_statistics": [
+        {
+            "channel": 0,
+            "minimum": -235,
+            "maximum": 279,
+            "mean": -1.2099609375,
+            "std": 95.07722939388391,
+            "variance": 9039.679549217224,
+            "median": -11.0
+        }
+    ]
+}

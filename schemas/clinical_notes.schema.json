@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Clinical Notes Section",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "chief_complaint",
+    "history_of_present_illness",
+    "diagnoses",
+    "medications",
+    "allergies",
+    "plan",
+    "notable_findings"
+  ],
+  "properties": {
+    "chief_complaint": {
+      "type": ["string", "null"]
+    },
+    "history_of_present_illness": {
+      "type": ["string", "null"]
+    },
+    "diagnoses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "medications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allergies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "plan": {
+      "type": ["string", "null"]
+    },
+    "notable_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

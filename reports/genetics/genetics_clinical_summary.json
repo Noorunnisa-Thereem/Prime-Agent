@@ -1,0 +1,1128 @@
+{
+  "report_type": "Pharmacogenomic (PGx) Clinical Interpretation Report",
+  "patient": {
+    "patient_id": null,
+    "report_date": "2026-08-18",
+    "specimen": null,
+    "ordering_context": null,
+    "variants_analyzed": 76,
+    "drugs_covered": 47
+  },
+  "purpose": "This report summarizes a pharmacogenomic (PGx) panel that cross-references the patient's genotype at 76 pharmacologically relevant loci against the gene-drug annotations present in the source dataset, covering 47 medications. It predicts likely efficacy and toxicity/side-effect risk; this is a decision-support tool, not a diagnosis. It does not indicate which condition(s) the patient has.",
+  "metabolizer_profile": [
+    {
+      "gene": "CYP2D6",
+      "status": "GG",
+      "impact": "Methylphenidate - reduced efficacy signal"
+    },
+    {
+      "gene": "CYP2C19",
+      "status": "GA",
+      "impact": "Citalopram - moderate response"
+    },
+    {
+      "gene": "CYP2C9",
+      "status": "*1/*3 - Intermediate metabolizer",
+      "impact": "Valproic Acid - reduced efficacy signal"
+    },
+    {
+      "gene": "CYP2B6",
+      "status": "*1/*6 - Intermediate metabolizer",
+      "impact": "Sertraline - increased adverse-reaction risk"
+    },
+    {
+      "gene": "CYP3A5",
+      "status": "*3/*3 - Poor metabolizer",
+      "impact": "Clozapine - moderate response; Perampanel - reduced efficacy signal"
+    },
+    {
+      "gene": "CYP1A2",
+      "status": "AA",
+      "impact": "Chlorpromazine - increased adverse-reaction risk; Carbamazepine - favorable efficacy signal"
+    },
+    {
+      "gene": "CYP3A4",
+      "status": "TT",
+      "impact": "Lamotrigine, Phenytoin, Primidone, Valproic Acid - reduced efficacy signal"
+    },
+    {
+      "gene": "UGT1A4",
+      "status": "*1/*3A - Decreased function",
+      "impact": "Olanzapine - increased adverse-reaction risk"
+    },
+    {
+      "gene": "POR",
+      "status": "*1/*28 - Decreased function",
+      "impact": "Clobazam, Risperidone - moderate response"
+    }
+  ],
+  "findings_by_therapeutic_class": {
+    "antidepressants": [
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "CREB1 (AA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "METTL21A (AA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "GSK3B (AG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Fluoxetine",
+        "genetic_basis": "GSK3B (AG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Paroxetine",
+        "genetic_basis": "GDNF (AA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "SRP19 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Fluoxetine",
+        "genetic_basis": "SRP19 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Paroxetine",
+        "genetic_basis": "SRP19 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Sertraline",
+        "genetic_basis": "SRP19 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clomipramine",
+        "genetic_basis": "FKBP5 (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Nefazodone",
+        "genetic_basis": "FKBP5 (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Venlafaxine",
+        "genetic_basis": "FKBP5 (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "FKBP5 (AG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "HTR1B (CG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "HTR1B (CG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Paroxetine",
+        "genetic_basis": "HTR1B (TA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Clomipramine",
+        "genetic_basis": "HTR1B (TA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Nefazodone",
+        "genetic_basis": "HTR1B (TA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Venlafaxine",
+        "genetic_basis": "HTR1B (TA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Escitalopram",
+        "genetic_basis": "HTR1B (AC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Nortriptyline",
+        "genetic_basis": "UST (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "CRHR2 (GC)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Nortriptyline",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": false
+      },
+      {
+        "drug": "Escitalopram",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": false
+      },
+      {
+        "drug": "Clomipramine",
+        "genetic_basis": "ABCB1 (CC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Nefazodone",
+        "genetic_basis": "ABCB1 (CC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "SERPINE1 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Fluoxetine",
+        "genetic_basis": "SERPINE1 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Nortriptyline",
+        "genetic_basis": "SLC39A14 (CT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Paroxetine",
+        "genetic_basis": "HTR7 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Fluoxetine",
+        "genetic_basis": "HTR7 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Desvenlafaxine",
+        "genetic_basis": "HTR7 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Duloxetine",
+        "genetic_basis": "HTR7 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Venlafaxine",
+        "genetic_basis": "HTR7 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "CYP2C19 (GA)",
+        "predicted_effect": "moderate",
+        "significant": true
+      },
+      {
+        "drug": "Bupropion",
+        "genetic_basis": "SLC18A2 (CC)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Paroxetine",
+        "genetic_basis": "BDNF (CT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Escitalopram",
+        "genetic_basis": "BDNF (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Nortriptyline",
+        "genetic_basis": "BDNF (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Mirtazapine",
+        "genetic_basis": "GAL (TT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Duloxetine",
+        "genetic_basis": "NCAM1 (TC)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Venlafaxine",
+        "genetic_basis": "HTR2A (AG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Bupropion",
+        "genetic_basis": "HTR2A (TT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Fluoxetine",
+        "genetic_basis": "HTR2A (AA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Escitalopram",
+        "genetic_basis": "HTR2A (TT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "HTR2A (TT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Escitalopram",
+        "genetic_basis": "HTR2A (TT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Fluoxetine",
+        "genetic_basis": "HTR2A (TT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Paroxetine",
+        "genetic_basis": "HTR2A (TT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Venlafaxine",
+        "genetic_basis": "SLC6A2 (TT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Desipramine",
+        "genetic_basis": "MC1R (AG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Venlafaxine",
+        "genetic_basis": "SLC6A4 (TC)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "NEDD4L (AA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Escitalopram",
+        "genetic_basis": "IL11 (TT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Citalopram",
+        "genetic_basis": "GRIA3 (A)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Venlafaxine",
+        "genetic_basis": "GABRQ (T)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Sertraline",
+        "genetic_basis": "CYP2B6 (*1/*6)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      }
+    ],
+    "antipsychotics": [
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "MTHFR (TG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "MTHFR (TG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "MTHFR (TG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "MTHFR (TG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "SLC26A9 (AA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "GCG (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "GCG (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "TMEFF2 (TG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "UGT1A4 (TG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "PPA2 (AC)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Quetiapine",
+        "genetic_basis": "PDE4D (GA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "ADRB2 (AA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "DTNBP1 (TT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "CNR1 (CT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "PLAGL1 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Chlorpromazine",
+        "genetic_basis": "EPM2A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "EPM2A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Haloperidol",
+        "genetic_basis": "EPM2A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "EPM2A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Quetiapine",
+        "genetic_basis": "EPM2A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "EPM2A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Trifluoperazine",
+        "genetic_basis": "EPM2A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "POR (CT)",
+        "predicted_effect": "moderate",
+        "significant": false
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "POR (CT)",
+        "predicted_effect": "moderate",
+        "significant": false
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Aripiprazole",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": false
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "SLC1A1 (GA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "SLC1A1 (GA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "SLC1A1 (GA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "CHAT (GA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "CYP2C18 (CT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "BDNF (CT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "BDNF (CT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Iloperidone",
+        "genetic_basis": "CNTF (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Iloperidone",
+        "genetic_basis": "ZFP91-CNTF (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "ANKK1 (AA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Aripiprazole",
+        "genetic_basis": "ANKK1 (AA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "HTR3A (CC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "HTR2A (AA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "HTR2A (TT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "AKT1 (TC)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "TJP1 (TC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Chlorpromazine",
+        "genetic_basis": "CYP1A2 (AA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "SLC6A4 (TC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "CCL2 (TC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "HRH4 (TT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "TNFRSF11A (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Olanzapine",
+        "genetic_basis": "GIPR (TA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Risperidone",
+        "genetic_basis": "COMT (CG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Quetiapine",
+        "genetic_basis": "COMT (CG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clozapine",
+        "genetic_basis": "CYP3A5 (*3/*3)",
+        "predicted_effect": "moderate",
+        "significant": false
+      }
+    ],
+    "mood_stabilizers_antiepileptics": [
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "LEPR (GG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Carbamazepine",
+        "genetic_basis": "EPHX1 (AG)",
+        "predicted_effect": "moderate",
+        "significant": true
+      },
+      {
+        "drug": "Clobazam",
+        "genetic_basis": "SCN1A (CT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Ethosuximide",
+        "genetic_basis": "SCN1A (CT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Lamotrigine",
+        "genetic_basis": "SCN1A (CT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Levetiracetam",
+        "genetic_basis": "SCN1A (CT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Oxcarbazepine",
+        "genetic_basis": "SCN1A (CT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Lithium",
+        "genetic_basis": "GSK3B (AG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Cannabidiol",
+        "genetic_basis": "ABCC5 (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Carbamazepine",
+        "genetic_basis": "GABRA1 (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Phenytoin",
+        "genetic_basis": "GABRA1 (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "GABRA1 (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Lithium",
+        "genetic_basis": "FKBP5 (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Lithium",
+        "genetic_basis": "HTR1B (TA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Lithium",
+        "genetic_basis": "ADCY1 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Clobazam",
+        "genetic_basis": "POR (CT)",
+        "predicted_effect": "moderate",
+        "significant": false
+      },
+      {
+        "drug": "Phenobarbital",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Carbamazepine",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": false
+      },
+      {
+        "drug": "Lithium",
+        "genetic_basis": "ABCB1 (CC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Lamotrigine",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": false
+      },
+      {
+        "drug": "Lamotrigine",
+        "genetic_basis": "CYP3A4 (TT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Phenytoin",
+        "genetic_basis": "CYP3A4 (TT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Primidone",
+        "genetic_basis": "CYP3A4 (TT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "CYP3A4 (TT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "ANKK1 (AA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Lithium",
+        "genetic_basis": "GRAMD1B (GA)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "GRIN2B (CA)",
+        "predicted_effect": "moderate",
+        "significant": true
+      },
+      {
+        "drug": "Carbamazepine",
+        "genetic_basis": "CYP1A1 (CA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Phenobarbital",
+        "genetic_basis": "CYP1A1 (CA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Phenytoin",
+        "genetic_basis": "CYP1A1 (CA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "CYP1A1 (CA)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Carbamazepine",
+        "genetic_basis": "CYP1A2 (AA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Ethosuximide",
+        "genetic_basis": "CACNA1H (CT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Lamotrigine",
+        "genetic_basis": "CACNA1H (AG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "XBP1 (GC)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Lithium",
+        "genetic_basis": "CACNG2 (CT)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Ethosuximide",
+        "genetic_basis": "CACNA1I (CT)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Valproic Acid",
+        "genetic_basis": "CYP2C9 (*1/*3)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Perampanel",
+        "genetic_basis": "CYP3A5 (*3/*3)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      }
+    ],
+    "adhd_stimulants": [
+      {
+        "drug": "Dextroamphetamine",
+        "genetic_basis": "DRD1 (CT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Methylphenidate",
+        "genetic_basis": "DRD1 (CT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Methylphenidate",
+        "genetic_basis": "ABCB1 (CC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Atomoxetine",
+        "genetic_basis": "HTR7 (GG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Methylphenidate",
+        "genetic_basis": "TH (AG)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Methylphenidate",
+        "genetic_basis": "CES1 (AC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Methylphenidate",
+        "genetic_basis": "CYP2D6 (GG)",
+        "predicted_effect": "reduced efficacy",
+        "significant": true
+      }
+    ],
+    "other_panel_entries": [
+      {
+        "drug": "Liothyronine",
+        "genetic_basis": "FKBP5 (TC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Liothyronine",
+        "genetic_basis": "HTR1B (TA)",
+        "predicted_effect": "efficacy",
+        "significant": true
+      },
+      {
+        "drug": "Peginterferon Alfa-2B",
+        "genetic_basis": "IL6 (GG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Ribavirin",
+        "genetic_basis": "IL6 (GG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Liothyronine",
+        "genetic_basis": "ABCB1 (CC)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Atorvastatin",
+        "genetic_basis": "ABCB1 (GG)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      },
+      {
+        "drug": "Morphine",
+        "genetic_basis": "BDNF (CT)",
+        "predicted_effect": "toxicity",
+        "significant": true
+      }
+    ]
+  },
+  "priority_safety_flags": [
+    {
+      "flag": "ABCB1 (CC)",
+      "risk": "Increased adverse-reaction risk on Clomipramine, Liothyronine, Lithium, Nefazodone",
+      "severity": "high"
+    },
+    {
+      "flag": "BDNF (TC)",
+      "risk": "Increased adverse-reaction risk on Escitalopram, Nortriptyline",
+      "severity": "high"
+    },
+    {
+      "flag": "CREB1 (AA)",
+      "risk": "Increased adverse-reaction risk on Citalopram",
+      "severity": "high"
+    },
+    {
+      "flag": "FKBP5 (TC)",
+      "risk": "Increased adverse-reaction risk on Clomipramine, Liothyronine, Lithium, Nefazodone, Venlafaxine",
+      "severity": "high"
+    },
+    {
+      "flag": "GRIA3 (A)",
+      "risk": "Increased adverse-reaction risk on Citalopram",
+      "severity": "high"
+    },
+    {
+      "flag": "HTR1B (TA)",
+      "risk": "Increased adverse-reaction risk on Paroxetine",
+      "severity": "high"
+    },
+    {
+      "flag": "METTL21A (AA)",
+      "risk": "Increased adverse-reaction risk on Citalopram",
+      "severity": "high"
+    },
+    {
+      "flag": "CYP1A2 (AA)",
+      "risk": "Increased adverse-reaction risk on Chlorpromazine",
+      "severity": "moderate"
+    },
+    {
+      "flag": "CYP2B6",
+      "risk": "Increased adverse-reaction risk on Sertraline",
+      "severity": "moderate"
+    },
+    {
+      "flag": "UGT1A4 (TG)",
+      "risk": "Increased adverse-reaction risk on Olanzapine",
+      "severity": "moderate"
+    }
+  ],
+  "boxed_warning_note": "23 medication(s) in this panel carry an FDA boxed warning in the source data (Aripiprazole, Bupropion, Carbamazepine, Chlorpromazine, Citalopram, Clobazam, Clozapine, Desipramine, Escitalopram, Fluoxetine...). Standard FDA boxed warnings apply independent of these genetic findings; see each drug's own prescribing information.",
+  "clinical_conclusion": {
+    "impression": "The profile shows reduced-function metabolizer status across 5 gene(s) (CYP2C9, CYP2B6, CYP3A5, UGT1A4, POR), predicting atypical drug clearance for the medications linked to those genes. 7 genetic marker(s) (ABCB1 (CC), BDNF (TC), CREB1 (AA), FKBP5 (TC), GRIA3 (A), HTR1B (TA), METTL21A (AA)) flag an elevated adverse-effect risk that should prompt caution or enhanced monitoring for the associated medications.",
+    "recommendations": [
+      {
+        "action": "Avoid or use with heightened monitoring",
+        "detail": "See priority_safety_flags for the specific gene-drug pairs (ABCB1 (CC), BDNF (TC), CREB1 (AA), FKBP5 (TC), GRIA3 (A), HTR1B (TA), METTL21A (AA)).",
+        "priority": "high"
+      },
+      {
+        "action": "Dose with caution / consider therapeutic drug monitoring",
+        "detail": "See metabolizer_profile for reduced-function genes (CYP2C9, CYP2B6, CYP3A5, UGT1A4, POR).",
+        "priority": "moderate"
+      },
+      {
+        "action": "Contextualize",
+        "detail": "Interpret alongside actual clinical history, current medication list, and labs -- this panel alone does not establish a diagnosis.",
+        "priority": "informational"
+      }
+    ]
+  }
+}

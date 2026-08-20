@@ -1,0 +1,130 @@
+{
+  "scope": "agent-cbc",
+  "updated_at": "2026-08-18T09:59:33Z",
+  "records": [
+    {
+      "key": "last_run::task-06c705b084cd",
+      "scope": "agent-cbc",
+      "kind": "episodic",
+      "content": "attempt=1 files=12 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-06c705b084cd",
+        "at": "2026-08-18T06:31:23Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_01_20260101_090649.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_02_20260128_131501.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_03_20260203_085001.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_04_20260222_134139.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_05_20260303_153929.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_06_20260316_100511.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_07_20260403_095400.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_08_20260428_163156.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_09_20260511_110442.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_10_20260516_165829.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_11_20260612_093843.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_12_20260630_093237.pdf"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T06:31:23Z",
+      "updated_at": "2026-08-18T06:31:23Z"
+    },
+    {
+      "key": "last_run::task-b66badf1421c",
+      "scope": "agent-cbc",
+      "kind": "episodic",
+      "content": "attempt=1 files=12 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-b66badf1421c",
+        "at": "2026-08-18T06:22:26Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_01_20260101_090649.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_02_20260128_131501.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_03_20260203_085001.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_04_20260222_134139.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_05_20260303_153929.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_06_20260316_100511.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_07_20260403_095400.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_08_20260428_163156.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_09_20260511_110442.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_10_20260516_165829.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_11_20260612_093843.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_12_20260630_093237.pdf"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T06:22:26Z",
+      "updated_at": "2026-08-18T06:22:26Z"
+    },
+    {
+      "key": "last_run::task-c4d077d091ef",
+      "scope": "agent-cbc",
+      "kind": "episodic",
+      "content": "attempt=1 files=12 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-c4d077d091ef",
+        "at": "2026-08-18T07:01:08Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_01_20260101_090649.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_02_20260128_131501.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_03_20260203_085001.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_04_20260222_134139.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_05_20260303_153929.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_06_20260316_100511.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_07_20260403_095400.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_08_20260428_163156.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_09_20260511_110442.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_10_20260516_165829.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_11_20260612_093843.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_12_20260630_093237.pdf"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T07:01:08Z",
+      "updated_at": "2026-08-18T07:01:08Z"
+    },
+    {
+      "key": "last_run::task-fad210204f74",
+      "scope": "agent-cbc",
+      "kind": "episodic",
+      "content": "attempt=1 files=12 schema_issues=0 fixed=False",
+      "tags": [
+        "run"
+      ],
+      "metadata": {
+        "task_id": "task-fad210204f74",
+        "at": "2026-08-18T09:59:33Z",
+        "source_files": [
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_01_20260101_090649.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_02_20260128_131501.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_03_20260203_085001.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_04_20260222_134139.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_05_20260303_153929.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_06_20260316_100511.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_07_20260403_095400.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_08_20260428_163156.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_09_20260511_110442.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_10_20260516_165829.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_11_20260612_093843.pdf",
+          "D:\\Prime Agent\\patient_data\\CBC\\CBC_12_20260630_093237.pdf"
+        ]
+      },
+      "version": 1,
+      "hits": 0,
+      "created_at": "2026-08-18T09:59:33Z",
+      "updated_at": "2026-08-18T09:59:33Z"
+    }
+  ]
+}

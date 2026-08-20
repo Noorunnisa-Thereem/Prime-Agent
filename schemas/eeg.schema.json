@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EEG Section",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "study_date",
+    "background",
+    "epileptiform_activity",
+    "events",
+    "impression",
+    "notable_abnormalities"
+  ],
+  "properties": {
+    "study_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "background": {
+      "type": ["string", "null"]
+    },
+    "epileptiform_activity": {
+      "type": ["string", "null"]
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "impression": {
+      "type": ["string", "null"]
+    },
+    "notable_abnormalities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

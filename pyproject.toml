@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "patient-prime-agent"
+version = "0.2.0"
+description = "Prime Agent-style runtime for integrating patient data into a validated digital twin report"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pypdf>=4.0",
+    "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+# Local open-source model support (Hugging Face transformers, no Ollama).
+llm = [
+    "torch>=2.2",
+    "transformers>=4.40",
+    "accelerate>=0.30",
+    "sentencepiece>=0.2",
+    "psutil>=5.9",
+]
+# 4-bit quantization; only usable on CUDA machines.
+quant = [
+    "bitsandbytes>=0.43; platform_system != 'Darwin'",
+]
+test = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+prime-patient-agent = "patient_prime_agent.cli:main"
+prime-agent = "patient_prime_agent.agentic.cli:main"
+
+[tool.setuptools]
+packages = [
+    "patient_prime_agent",
+    "patient_prime_agent.extractors",
+    "patient_prime_agent.agentic",
+]
+
+[tool.setuptools.package-data]
+patient_prime_agent = ["skills/**/SKILL.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Keep temp projects inside the repo: the system temp dir is not always writable
+# on locked-down Windows profiles.
+addopts = "-q -p no:cacheprovider --basetemp=.pytest-tmp"

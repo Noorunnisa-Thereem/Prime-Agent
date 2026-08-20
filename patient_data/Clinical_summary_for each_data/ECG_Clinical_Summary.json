@@ -1,0 +1,298 @@
+{
+  "title": "ECG Digital Twin Dataset - Signal-Level Statistical Report",
+  "reporting_period": {
+    "start_date": "2026-01-03",
+    "end_date": "2026-06-29"
+  },
+  "generated": "2026-07-11",
+  "overview": [
+    "This report summarizes the signal-level statistical characteristics of the ECG digital twin dataset, comprising 12 recording sessions captured between January and June 2026. Each entry in the source dataset represents a single-channel ECG waveform recorded from the digital twin data stream, described only in terms of amplitude distribution (minimum, maximum, mean, median, standard deviation, and percentiles)."
+    
+  ],
+  "dataset_summary": {
+    "number_of_recordings": 12,
+    "date_range": "2026-01-03 to 2026-06-29",
+    "total_recorded_duration": "99h 11m",
+    "channel_configuration": "single channel (\"ECG SD\") in every recording",
+    "sampling_rate_hz": 256,
+    "amplitude_units": "microvolts (uV)"
+  },
+  "recording_log": [
+    {
+      "date": "2026-01-03",
+      "time": "10:38:26",
+      "duration": "3h 9m",
+      "samples": 2913280,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-01-20",
+      "time": "12:35:36",
+      "duration": "6h 39m",
+      "samples": 6142464,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-02-04",
+      "time": "10:40:32",
+      "duration": "10h 51m",
+      "samples": 10005504,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-02-19",
+      "time": "16:24:30",
+      "duration": "1h 30m",
+      "samples": 1386752,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-03-09",
+      "time": "12:24:30",
+      "duration": "21h 39m",
+      "samples": 19957504,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-03-25",
+      "time": "11:59:59",
+      "duration": "22h 27m",
+      "samples": 20697344,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-04-11",
+      "time": "16:52:55",
+      "duration": "1h 11m",
+      "samples": 1104896,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-04-23",
+      "time": "11:49:39",
+      "duration": "13h 12m",
+      "samples": 12174592,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-05-05",
+      "time": "09:19:39",
+      "duration": "7h 58m",
+      "samples": 7355392,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-05-25",
+      "time": "19:14:29",
+      "duration": "1h 43m",
+      "samples": 1591296,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-06-02",
+      "time": "09:19:23",
+      "duration": "4h 22m",
+      "samples": 4034816,
+      "sampling_rate_hz": 256.0
+    },
+    {
+      "date": "2026-06-29",
+      "time": "11:15:34",
+      "duration": "4h 23m",
+      "samples": 4043776,
+      "sampling_rate_hz": 256.0
+    }
+  ],
+  "amplitude_statistics_uV": [
+    {
+      "date": "2026-01-03",
+      "min": -1356.0,
+      "max": 1398.0,
+      "mean": -2.83,
+      "median": -20.96,
+      "std_dev": 82.58
+    },
+    {
+      "date": "2026-01-20",
+      "min": -1689.0,
+      "max": 1700.0,
+      "mean": -5.79,
+      "median": -21.99,
+      "std_dev": 171.1
+    },
+    {
+      "date": "2026-02-04",
+      "min": -1314.0,
+      "max": 1418.0,
+      "mean": -2.42,
+      "median": -34.98,
+      "std_dev": 89.62
+    },
+    {
+      "date": "2026-02-19",
+      "min": -1245.0,
+      "max": 1711.0,
+      "mean": 1.3,
+      "median": -29.99,
+      "std_dev": 103.96
+    },
+    {
+      "date": "2026-03-09",
+      "min": -1720.9,
+      "max": 1674.0,
+      "mean": -2.33,
+      "median": -30.99,
+      "std_dev": 124.43
+    },
+    {
+      "date": "2026-03-25",
+      "min": -1826.0,
+      "max": 1751.0,
+      "mean": -10.46,
+      "median": -20.01,
+      "std_dev": 183.27
+    },
+    {
+      "date": "2026-04-11",
+      "min": -1698.9,
+      "max": 1713.0,
+      "mean": -2.6,
+      "median": -25.98,
+      "std_dev": 206.06
+    },
+    {
+      "date": "2026-04-23",
+      "min": -1680.0,
+      "max": 1718.0,
+      "mean": -5.6,
+      "median": -21.99,
+      "std_dev": 132.06
+    },
+    {
+      "date": "2026-05-05",
+      "min": -1718.0,
+      "max": 1755.0,
+      "mean": -8.09,
+      "median": -7.97,
+      "std_dev": 303.13
+    },
+    {
+      "date": "2026-05-25",
+      "min": -1242.0,
+      "max": 1241.0,
+      "mean": 31.6,
+      "median": -19.99,
+      "std_dev": 175.81
+    },
+    {
+      "date": "2026-06-02",
+      "min": -1324.0,
+      "max": 1595.0,
+      "mean": -2.44,
+      "median": -13.96,
+      "std_dev": 89.71
+    },
+    {
+      "date": "2026-06-29",
+      "min": -1324.0,
+      "max": 1595.0,
+      "mean": -2.45,
+      "median": -13.96,
+      "std_dev": 89.66
+    }
+  ],
+  "percentile_distribution_uV": [
+    {
+      "date": "2026-01-03",
+      "p5": -96.0,
+      "p25": -34.0,
+      "p75": 15.0,
+      "p95": 128.0
+    },
+    {
+      "date": "2026-01-20",
+      "p5": -206.0,
+      "p25": -52.0,
+      "p75": 34.0,
+      "p95": 218.0
+    },
+    {
+      "date": "2026-02-04",
+      "p5": -77.0,
+      "p25": -51.0,
+      "p75": 13.0,
+      "p95": 196.0
+    },
+    {
+      "date": "2026-02-19",
+      "p5": -83.0,
+      "p25": -55.0,
+      "p75": 25.0,
+      "p95": 208.0
+    },
+    {
+      "date": "2026-03-09",
+      "p5": -144.0,
+      "p25": -53.0,
+      "p75": 32.0,
+      "p95": 211.0
+    },
+    {
+      "date": "2026-03-25",
+      "p5": -256.0,
+      "p25": -63.0,
+      "p75": 44.0,
+      "p95": 243.0
+    },
+    {
+      "date": "2026-04-11",
+      "p5": -206.0,
+      "p25": -47.0,
+      "p75": 28.0,
+      "p95": 245.0
+    },
+    {
+      "date": "2026-04-23",
+      "p5": -129.0,
+      "p25": -41.0,
+      "p75": 21.0,
+      "p95": 154.0
+    },
+    {
+      "date": "2026-05-05",
+      "p5": -539.0,
+      "p25": -147.0,
+      "p75": 126.0,
+      "p95": 529.0
+    },
+    {
+      "date": "2026-05-25",
+      "p5": -66.0,
+      "p25": -35.0,
+      "p75": 20.0,
+      "p95": 235.0
+    },
+    {
+      "date": "2026-06-02",
+      "p5": -117.0,
+      "p25": -40.0,
+      "p75": 30.0,
+      "p95": 145.0
+    },
+    {
+      "date": "2026-06-29",
+      "p5": -117.0,
+      "p25": -40.0,
+      "p75": 30.0,
+      "p95": 145.0
+    }
+  ],
+  "notable_observations": [
+    "All 12 recordings use a single channel sampled at 256 Hz, so statistics are directly comparable across sessions.",
+    "Recording duration varies considerably, from about 1h 11m (2026-04-11) to about 22h 27m (2026-03-25).",
+    "The 2026-06-02 and 2026-06-29 recordings have matching percentile values and near-identical histogram shapes, suggesting very similar signal characteristics or a data duplication between the two sessions.",
+    "Standard deviation of amplitude ranges from about 82.6 uV (2026-01-03) to about 303.1 uV (2026-05-05), indicating substantially different signal variability/noise levels between sessions.",
+    "Peak-to-peak amplitude (max minus min) ranges from roughly 2,480 uV (2026-05-25) to about 3,470 uV (2026-05-05)."
+  ],
+  "scope_and_limitations": "This report is derived strictly from the statistical fields present in the source dataset. It does not represent a clinical or diagnostic ECG interpretation. Any assessment of cardiac rhythm, heart rate, or abnormality requires review of the underlying waveform by a qualified clinician or an appropriately validated diagnostic algorithm, neither of which is reflected in this report."
+}

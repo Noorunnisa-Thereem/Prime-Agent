@@ -1,0 +1,31 @@
+{
+    "file_name": "preictal12_pre_ictal_20260221_113137.mat",
+    "patient_id": "Patient_001",
+    "phase": "pre_ictal",
+    "modality": "EEG",
+    "signal_variable": "preictal",
+    "shape": [
+        1024
+    ],
+    "dimensions": 1,
+    "channels": 1,
+    "samples": 1024,
+    "global_statistics": {
+        "minimum": -66,
+        "maximum": 52,
+        "mean": -0.203125,
+        "std": 20.50285207865908,
+        "variance": 420.366943359375
+    },
+    "channel_statistics": [
+        {
+            "channel": 0,
+            "minimum": -66,
+            "maximum": 52,
+            "mean": -0.203125,
+            "std": 20.50285207865908,
+            "variance": 420.366943359375,
+            "median": 0.0
+        }
+    ]
+}

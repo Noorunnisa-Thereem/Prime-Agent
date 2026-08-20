@@ -1,0 +1,5756 @@
+{
+  "report_label": "Merged Prime Agent CBC Longitudinal Summary",
+  "patient_profile": {
+    "patient_name": "Jordan A. Sample (SYNTHETIC PATIENT)",
+    "patient_id": "SYN-100482",
+    "age": 34,
+    "sex": "M"
+  },
+  "patient_id": "SYN-100482",
+  "observation_window": {
+    "start_date": "2026-01-01",
+    "end_date": "2026-06-30",
+    "number_of_reports": 12,
+    "source_folder": "patient_data\\CBC"
+  },
+  "cbc_reports": [
+    {
+      "report_date": "2026-01-01",
+      "report_metadata": {
+        "report_date": "2026-01-01",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 14.4,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 5.0,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 44.7,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 90.0,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 27.6,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.1,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 12.1,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 5761.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 58.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 22.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 251725.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 14.4,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 5.0,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 44.7,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 90.0,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 27.6,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.1,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 12.1,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 5761.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 58.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 22.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 4.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 3.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 251725.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-01-28",
+      "report_metadata": {
+        "report_date": "2026-01-28",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 14.2,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 46.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 90.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 28.7,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.3,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.2,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 9630.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 61.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 25.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 0.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 211559.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 14.2,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 4.9,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 46.4,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 90.8,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 28.7,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.3,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.2,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 9630.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 61.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 25.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 5.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 0.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 211559.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-02-03",
+      "report_metadata": {
+        "report_date": "2026-02-03",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 15.1,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 5.2,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 43.9,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 97.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 27.8,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.7,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 6740.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 52.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 30.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 6.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 322620.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 15.1,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 5.2,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 43.9,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 97.8,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 27.8,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.7,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.3,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 6740.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 52.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 30.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 3.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 6.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 322620.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-02-22",
+      "report_metadata": {
+        "report_date": "2026-02-22",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 14.1,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 4.8,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 47.3,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 96.9,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 29.0,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.9,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.4,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 9973.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 55.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 29.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 309677.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 14.1,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 4.8,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 47.3,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 96.9,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 29.0,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.9,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.4,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 9973.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 55.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 29.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 309677.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-03-03",
+      "report_metadata": {
+        "report_date": "2026-03-03",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 13.6,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 42.7,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 98.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 29.8,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 34.1,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.1,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 8205.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 56.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 27.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 373102.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 13.6,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 4.9,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 42.7,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 98.8,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 29.8,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 34.1,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.1,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 8205.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 56.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 27.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 2.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 2.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 373102.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-03-16",
+      "report_metadata": {
+        "report_date": "2026-03-16",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 14.3,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 5.1,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 44.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 88.9,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 28.7,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 34.3,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 12.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 5476.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 55.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 26.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 8.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 248423.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 14.3,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 5.1,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 44.4,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 88.9,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 28.7,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 34.3,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 12.3,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 5476.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 55.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 26.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 4.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 8.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 248423.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-04-03",
+      "report_metadata": {
+        "report_date": "2026-04-03",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 13.5,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 44.3,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 89.2,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 29.2,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.5,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 12.2,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 5630.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 54.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 31.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 7.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 254670.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 13.5,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 4.9,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 44.3,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 89.2,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 29.2,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.5,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 12.2,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 5630.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 54.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 31.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 3.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 7.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 2.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 254670.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-04-28",
+      "report_metadata": {
+        "report_date": "2026-04-28",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 14.7,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 5.1,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 42.2,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 98.6,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 30.4,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.5,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 12.4,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 5767.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 60.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 27.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 8.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 0.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 322838.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 14.7,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 5.1,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 42.2,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 98.6,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 30.4,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.5,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 12.4,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 5767.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 60.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 27.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 2.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 8.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 0.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 322838.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-05-11",
+      "report_metadata": {
+        "report_date": "2026-05-11",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 15.9,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 42.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 88.6,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 28.5,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.7,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 5530.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 53.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 34.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 365822.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 15.9,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 4.9,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 42.4,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 88.6,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 28.5,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.7,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.3,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 5530.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 53.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 34.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 4.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 3.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 2.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 365822.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-05-16",
+      "report_metadata": {
+        "report_date": "2026-05-16",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 15.8,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 5.3,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 48.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 88.4,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 28.8,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.8,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 6469.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 52.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 26.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 189551.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 15.8,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 5.3,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 48.4,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 88.4,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 28.8,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.8,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.3,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 6469.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 52.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 26.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 5.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 5.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 189551.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-06-12",
+      "report_metadata": {
+        "report_date": "2026-06-12",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 14.4,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 5.0,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 47.6,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 88.5,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 31.1,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 32.9,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 5984.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 55.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 28.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 252879.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 14.4,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 5.0,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 47.6,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 88.5,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 31.1,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 32.9,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.3,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 5984.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 55.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 28.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 3.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 5.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 252879.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    },
+    {
+      "report_date": "2026-06-30",
+      "report_metadata": {
+        "report_date": "2026-06-30",
+        "sample_type": "Blood",
+        "laboratory": "Fictional Reference Pathology Laboratory (Synthetic Dataset)"
+      },
+      "cbc_parameters": {
+        "hemoglobin": {
+          "parameter": "Hemoglobin (Hb)",
+          "value": 15.1,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "reference_low": 13.0,
+          "reference_high": 17.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rbc_count": {
+          "parameter": "Total RBC count",
+          "value": 5.1,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "reference_low": 4.5,
+          "reference_high": 5.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "pcv_hematocrit": {
+          "parameter": "Packed Cell Volume (PCV)",
+          "value": 43.5,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "reference_low": 40.0,
+          "reference_high": 50.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mcv": {
+          "parameter": "Mean Corpuscular Volume (MCV)",
+          "value": 97.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "reference_low": 83.0,
+          "reference_high": 101.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mch": {
+          "parameter": "MCH",
+          "value": 29.9,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "reference_low": 27.0,
+          "reference_high": 32.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "mchc": {
+          "parameter": "MCHC",
+          "value": 33.0,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "reference_low": 32.5,
+          "reference_high": 34.5,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "rdw": {
+          "parameter": "RDW",
+          "value": 13.5,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "reference_low": 11.6,
+          "reference_high": 14.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "total_wbc_count": {
+          "parameter": "Total WBC count",
+          "value": 9630.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "reference_low": 4000.0,
+          "reference_high": 11000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "neutrophils": {
+          "parameter": "Neutrophils",
+          "value": 54.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "reference_low": 50.0,
+          "reference_high": 62.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "lymphocytes": {
+          "parameter": "Lymphocytes",
+          "value": 29.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "reference_low": 20.0,
+          "reference_high": 40.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "eosinophils": {
+          "parameter": "Eosinophils",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "reference_low": 0.0,
+          "reference_high": 6.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "monocytes": {
+          "parameter": "Monocytes",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "reference_low": 0.0,
+          "reference_high": 10.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "basophils": {
+          "parameter": "Basophils",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "reference_low": 0.0,
+          "reference_high": 2.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        "platelet_count": {
+          "parameter": "Platelet Count",
+          "value": 209427.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "reference_low": 150000.0,
+          "reference_high": 410000.0,
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      },
+      "abnormal_findings": [],
+      "hematological_assessment": {
+        "overall_status": "within_reference_ranges",
+        "red_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "white_cell_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "platelet_assessment": {
+          "status": "within_reference_ranges",
+          "abnormal_parameters": [],
+          "basis": "All extracted lineage parameters are within report-provided reference ranges."
+        },
+        "severity": "none",
+        "summary": "Red cell, white cell, and platelet parameters are within the report-provided reference ranges."
+      },
+      "overall_cbc_impression": "No CBC parameter abnormality identified based on extracted values and report reference ranges.",
+      "clinical_flags": {
+        "anemia": false,
+        "polycythemia": false,
+        "leukocytosis": false,
+        "leukopenia": false,
+        "neutropenia": null,
+        "thrombocytopenia": false,
+        "thrombocytosis": false
+      },
+      "risk_assessment": {
+        "overall_risk": "no_cbc_abnormality_detected",
+        "basis": "CBC-specific assessment based only on extracted values and report-provided reference ranges; overall patient risk is not determined from CBC alone.",
+        "supporting_parameters": [
+          {
+            "parameter": "Hemoglobin (Hb)",
+            "value": 15.1,
+            "unit": "g/dL",
+            "reference_range": "13.0 - 17.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total RBC count",
+            "value": 5.1,
+            "unit": "mill/cumm",
+            "reference_range": "4.5 - 5.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Packed Cell Volume (PCV)",
+            "value": 43.5,
+            "unit": "%",
+            "reference_range": "40.0 - 50.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Mean Corpuscular Volume (MCV)",
+            "value": 97.8,
+            "unit": "fL",
+            "reference_range": "83.0 - 101.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCH",
+            "value": 29.9,
+            "unit": "pg",
+            "reference_range": "27.0 - 32.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "MCHC",
+            "value": 33.0,
+            "unit": "g/dL",
+            "reference_range": "32.5 - 34.5",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "RDW",
+            "value": 13.5,
+            "unit": "%",
+            "reference_range": "11.6 - 14.0",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Total WBC count",
+            "value": 9630.0,
+            "unit": "cumm",
+            "reference_range": "4000 - 11000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Neutrophils",
+            "value": 54.0,
+            "unit": "%",
+            "reference_range": "50 - 62",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Lymphocytes",
+            "value": 29.0,
+            "unit": "%",
+            "reference_range": "20 - 40",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Eosinophils",
+            "value": 4.0,
+            "unit": "%",
+            "reference_range": "0 - 6",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Monocytes",
+            "value": 3.0,
+            "unit": "%",
+            "reference_range": "0 - 10",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Basophils",
+            "value": 1.0,
+            "unit": "%",
+            "reference_range": "0 - 2",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          },
+          {
+            "parameter": "Platelet Count",
+            "value": 209427.0,
+            "unit": "cumm",
+            "reference_range": "150000 - 410000",
+            "status": "normal",
+            "source_page": 1,
+            "confidence": 0.98
+          }
+        ]
+      },
+      "digital_twin_health_state": {
+        "red_cell_status": "within_reference_ranges",
+        "white_cell_status": "within_reference_ranges",
+        "platelet_status": "within_reference_ranges",
+        "overall_hematological_status": "stable_within_reference_ranges",
+        "active_flags": []
+      }
+    }
+  ],
+  "longitudinal_trends": {
+    "hemoglobin": {
+      "parameter": "Hemoglobin (Hb)",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 14.4,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 14.2,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 15.1,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 14.1,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 13.6,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 14.3,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 13.5,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 14.7,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 15.9,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 15.8,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 14.4,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 15.1,
+          "unit": "g/dL",
+          "reference_range": "13.0 - 17.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 14.4,
+      "latest_value": 15.1,
+      "minimum_value": 13.5,
+      "maximum_value": 15.9,
+      "trend_direction": "increasing",
+      "abnormal_dates": []
+    },
+    "rbc_count": {
+      "parameter": "Total RBC count",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 5.0,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 5.2,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 4.8,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 5.1,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 5.1,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 4.9,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 5.3,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 5.0,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 5.1,
+          "unit": "mill/cumm",
+          "reference_range": "4.5 - 5.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 5.0,
+      "latest_value": 5.1,
+      "minimum_value": 4.8,
+      "maximum_value": 5.3,
+      "trend_direction": "increasing",
+      "abnormal_dates": []
+    },
+    "pcv_hematocrit": {
+      "parameter": "Packed Cell Volume (PCV)",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 44.7,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 46.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 43.9,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 47.3,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 42.7,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 44.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 44.3,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 42.2,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 42.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 48.4,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 47.6,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 43.5,
+          "unit": "%",
+          "reference_range": "40.0 - 50.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 44.7,
+      "latest_value": 43.5,
+      "minimum_value": 42.2,
+      "maximum_value": 48.4,
+      "trend_direction": "decreasing",
+      "abnormal_dates": []
+    },
+    "mcv": {
+      "parameter": "Mean Corpuscular Volume (MCV)",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 90.0,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 90.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 97.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 96.9,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 98.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 88.9,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 89.2,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 98.6,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 88.6,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 88.4,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 88.5,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 97.8,
+          "unit": "fL",
+          "reference_range": "83.0 - 101.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 90.0,
+      "latest_value": 97.8,
+      "minimum_value": 88.4,
+      "maximum_value": 98.8,
+      "trend_direction": "increasing",
+      "abnormal_dates": []
+    },
+    "mch": {
+      "parameter": "MCH",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 27.6,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 28.7,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 27.8,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 29.0,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 29.8,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 28.7,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 29.2,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 30.4,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 28.5,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 28.8,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 31.1,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 29.9,
+          "unit": "pg",
+          "reference_range": "27.0 - 32.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 27.6,
+      "latest_value": 29.9,
+      "minimum_value": 27.6,
+      "maximum_value": 31.1,
+      "trend_direction": "increasing",
+      "abnormal_dates": []
+    },
+    "mchc": {
+      "parameter": "MCHC",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 33.1,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 33.3,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 33.7,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 33.9,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 34.1,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 34.3,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 33.5,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 33.5,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 33.7,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 33.8,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 32.9,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 33.0,
+          "unit": "g/dL",
+          "reference_range": "32.5 - 34.5",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 33.1,
+      "latest_value": 33.0,
+      "minimum_value": 32.9,
+      "maximum_value": 34.3,
+      "trend_direction": "decreasing",
+      "abnormal_dates": []
+    },
+    "rdw": {
+      "parameter": "RDW",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 12.1,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 13.2,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 13.4,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 13.1,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 12.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 12.2,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 12.4,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 13.3,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 13.5,
+          "unit": "%",
+          "reference_range": "11.6 - 14.0",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 12.1,
+      "latest_value": 13.5,
+      "minimum_value": 12.1,
+      "maximum_value": 13.5,
+      "trend_direction": "increasing",
+      "abnormal_dates": []
+    },
+    "total_wbc_count": {
+      "parameter": "Total WBC count",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 5761.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 9630.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 6740.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 9973.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 8205.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 5476.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 5630.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 5767.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 5530.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 6469.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 5984.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 9630.0,
+          "unit": "cumm",
+          "reference_range": "4000 - 11000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 5761.0,
+      "latest_value": 9630.0,
+      "minimum_value": 5476.0,
+      "maximum_value": 9973.0,
+      "trend_direction": "increasing",
+      "abnormal_dates": []
+    },
+    "neutrophils": {
+      "parameter": "Neutrophils",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 58.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 61.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 52.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 55.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 56.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 55.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 54.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 60.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 53.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 52.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 55.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 54.0,
+          "unit": "%",
+          "reference_range": "50 - 62",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 58.0,
+      "latest_value": 54.0,
+      "minimum_value": 52.0,
+      "maximum_value": 61.0,
+      "trend_direction": "decreasing",
+      "abnormal_dates": []
+    },
+    "lymphocytes": {
+      "parameter": "Lymphocytes",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 22.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 25.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 30.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 29.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 27.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 26.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 31.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 27.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 34.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 26.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 28.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 29.0,
+          "unit": "%",
+          "reference_range": "20 - 40",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 22.0,
+      "latest_value": 29.0,
+      "minimum_value": 22.0,
+      "maximum_value": 34.0,
+      "trend_direction": "increasing",
+      "abnormal_dates": []
+    },
+    "eosinophils": {
+      "parameter": "Eosinophils",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 4.0,
+          "unit": "%",
+          "reference_range": "0 - 6",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 4.0,
+      "latest_value": 4.0,
+      "minimum_value": 1.0,
+      "maximum_value": 5.0,
+      "trend_direction": "stable",
+      "abnormal_dates": []
+    },
+    "monocytes": {
+      "parameter": "Monocytes",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 6.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 8.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 7.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 8.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 5.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 3.0,
+          "unit": "%",
+          "reference_range": "0 - 10",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 3.0,
+      "latest_value": 3.0,
+      "minimum_value": 1.0,
+      "maximum_value": 8.0,
+      "trend_direction": "stable",
+      "abnormal_dates": []
+    },
+    "basophils": {
+      "parameter": "Basophils",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 0.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 0.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 2.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 1.0,
+          "unit": "%",
+          "reference_range": "0 - 2",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 1.0,
+      "latest_value": 1.0,
+      "minimum_value": 0.0,
+      "maximum_value": 2.0,
+      "trend_direction": "stable",
+      "abnormal_dates": []
+    },
+    "platelet_count": {
+      "parameter": "Platelet Count",
+      "values": [
+        {
+          "date": "2026-01-01",
+          "value": 251725.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-01-28",
+          "value": 211559.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-03",
+          "value": 322620.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-02-22",
+          "value": 309677.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-03",
+          "value": 373102.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-03-16",
+          "value": 248423.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-03",
+          "value": 254670.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 322838.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-11",
+          "value": 365822.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-05-16",
+          "value": 189551.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-12",
+          "value": 252879.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        },
+        {
+          "date": "2026-06-30",
+          "value": 209427.0,
+          "unit": "cumm",
+          "reference_range": "150000 - 410000",
+          "status": "normal",
+          "confidence": 0.98,
+          "source_page": 1
+        }
+      ],
+      "first_value": 251725.0,
+      "latest_value": 209427.0,
+      "minimum_value": 189551.0,
+      "maximum_value": 373102.0,
+      "trend_direction": "decreasing",
+      "abnormal_dates": []
+    }
+  },
+  "abnormal_findings_over_time": [],
+  "digital_twin_state": {
+    "overall_hematological_status": "stable_within_reference_ranges",
+    "active_flags_by_date": {
+      "2026-01-01": [],
+      "2026-01-28": [],
+      "2026-02-03": [],
+      "2026-02-22": [],
+      "2026-03-03": [],
+      "2026-03-16": [],
+      "2026-04-03": [],
+      "2026-04-28": [],
+      "2026-05-11": [],
+      "2026-05-16": [],
+      "2026-06-12": [],
+      "2026-06-30": []
+    },
+    "unsupported_clinical_risk": "Overall patient risk is not determined from CBC values alone; this summary only reports CBC-specific abnormalities against report-provided reference ranges."
+  },
+  "executive_summary": {
+    "clinical_conclusion": "12 CBC report(s) from 2026-01-01 to 2026-06-30 were processed. No CBC parameter abnormality was identified against the report-provided reference ranges.",
+    "basis": "Generated from extracted CBC PDF values, units, source pages, and report-provided reference ranges. No reference report values were copied."
+  },
+  "processing_manifest": {
+    "source_type": "pdf",
+    "detected_count": 12,
+    "processed_count": 12,
+    "failed_count": 0,
+    "skipped_count": 0,
+    "status": "complete",
+    "detected_files": [
+      "patient_data\\CBC\\CBC_01_20260101_090649.pdf",
+      "patient_data\\CBC\\CBC_02_20260128_131501.pdf",
+      "patient_data\\CBC\\CBC_03_20260203_085001.pdf",
+      "patient_data\\CBC\\CBC_04_20260222_134139.pdf",
+      "patient_data\\CBC\\CBC_05_20260303_153929.pdf",
+      "patient_data\\CBC\\CBC_06_20260316_100511.pdf",
+      "patient_data\\CBC\\CBC_07_20260403_095400.pdf",
+      "patient_data\\CBC\\CBC_08_20260428_163156.pdf",
+      "patient_data\\CBC\\CBC_09_20260511_110442.pdf",
+      "patient_data\\CBC\\CBC_10_20260516_165829.pdf",
+      "patient_data\\CBC\\CBC_11_20260612_093843.pdf",
+      "patient_data\\CBC\\CBC_12_20260630_093237.pdf"
+    ],
+    "processed_files": [
+      "patient_data\\CBC\\CBC_01_20260101_090649.pdf",
+      "patient_data\\CBC\\CBC_02_20260128_131501.pdf",
+      "patient_data\\CBC\\CBC_03_20260203_085001.pdf",
+      "patient_data\\CBC\\CBC_04_20260222_134139.pdf",
+      "patient_data\\CBC\\CBC_05_20260303_153929.pdf",
+      "patient_data\\CBC\\CBC_06_20260316_100511.pdf",
+      "patient_data\\CBC\\CBC_07_20260403_095400.pdf",
+      "patient_data\\CBC\\CBC_08_20260428_163156.pdf",
+      "patient_data\\CBC\\CBC_09_20260511_110442.pdf",
+      "patient_data\\CBC\\CBC_10_20260516_165829.pdf",
+      "patient_data\\CBC\\CBC_11_20260612_093843.pdf",
+      "patient_data\\CBC\\CBC_12_20260630_093237.pdf"
+    ],
+    "failed_files": [],
+    "skipped_files": [],
+    "confidence": 1.0
+  }
+}

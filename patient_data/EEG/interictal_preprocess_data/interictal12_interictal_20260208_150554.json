@@ -1,0 +1,31 @@
+{
+    "file_name": "interictal12_interictal_20260208_150554.mat",
+    "patient_id": "Patient_001",
+    "phase": "interictal",
+    "modality": "EEG",
+    "signal_variable": "interictal",
+    "shape": [
+        1024
+    ],
+    "dimensions": 1,
+    "channels": 1,
+    "samples": 1024,
+    "global_statistics": {
+        "minimum": -34,
+        "maximum": 32,
+        "mean": -0.1005859375,
+        "std": 11.68075672983892,
+        "variance": 136.44007778167725
+    },
+    "channel_statistics": [
+        {
+            "channel": 0,
+            "minimum": -34,
+            "maximum": 32,
+            "mean": -0.1005859375,
+            "std": 11.68075672983892,
+            "variance": 136.44007778167725,
+            "median": -1.0
+        }
+    ]
+}

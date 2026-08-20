@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Questionnaire Section",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reported_symptoms",
+    "symptom_onset",
+    "duration",
+    "severity",
+    "relevant_history",
+    "patient_concerns"
+  ],
+  "properties": {
+    "reported_symptoms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "symptom_onset": {
+      "type": ["string", "null"]
+    },
+    "duration": {
+      "type": ["string", "null"]
+    },
+    "severity": {
+      "type": ["string", "null"]
+    },
+    "relevant_history": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "patient_concerns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

@@ -1,0 +1,91 @@
+{
+  "report_type": "MRI Structural Assessment",
+  "patient_id": "sub-00001, sub-00002, sub-00003",
+  "observation_period": "3 MRI study identifiers represented by 6 series; scan dates unavailable in metadata",
+  "mri_summary": {
+    "overall_status": "Metadata-supported structural stability, diagnostic interpretation not available",
+    "clinical_impression": "6 MRI series were available across 3 study identifiers, including 3D T1-weighted MRI, T2-FLAIR MRI. Preprocessed metadata show consistent 3D acquisition characteristics and no metadata-level evidence of major global structural progression. A radiology report, lesion segmentation, hippocampal volumetry, and cortical thickness analysis were not available, so subtle pathology cannot be excluded from these metadata alone."
+  },
+  "imaging_details": {
+    "modalities": [
+      "3D T1-weighted MRI",
+      "T2-FLAIR MRI"
+    ],
+    "brain_coverage": "Volumetric 3D MRI metadata available for 6 series; paired T1w and FLAIR data present for 3 study identifiers; anatomic coverage was not radiologically verified",
+    "image_quality": "Preprocessed metadata complete for all available MRI series; diagnostic image quality requires radiology review",
+    "spatial_resolution": "FLAIR 1 mm x 1 mm x 1 mm; T1w 0.8 mm x 0.8 mm x 0.8 mm",
+    "image_consistency": "FLAIR spacing consistent; dimensions vary across 3 series; T1w dimensions and spacing consistent across 3 series"
+  },
+  "structural_findings": {
+    "brain_morphology": {
+      "status": "Not directly assessed",
+      "finding": "The provided files include volumetric MRI metadata, but no radiologist interpretation or morphometric segmentation was available for direct morphology assessment."
+    },
+    "brain_volume": {
+      "status": "Stable within available metadata",
+      "finding": "T1w nonzero volume range: 8387642 to 8777268 mm3 (mean 8641065 mm3; range 4.5%). FLAIR nonzero volume range: 6022385 to 6625690 mm3 (mean 6231344 mm3; range 9.7%). These are preprocessing-derived nonzero voxel volumes, not formal brain volumetry."
+    },
+    "tissue_signal_characteristics": {
+      "status": "Quantitatively summarized, not diagnostically interpreted",
+      "finding": "FLAIR mean intensity 28.76 to 32.27; standard deviation 47.57 to 54.16; T1w mean intensity 99.82 to 105.56; standard deviation 153.13 to 162.05. Intensity statistics are useful for preprocessing consistency but are not diagnostic tissue-signal interpretation."
+    },
+    "white_matter": {
+      "status": "Not assessed",
+      "finding": "FLAIR sequences are present, but automated white matter lesion analysis was not provided."
+    },
+    "hippocampus": {
+      "status": "Not assessed",
+      "finding": "Hippocampal segmentation or volumetric analysis was not available in the MRI metadata."
+    },
+    "cortical_structure": {
+      "status": "Not assessed",
+      "finding": "Cortical thickness, cortical dysplasia, and regional morphology were not evaluated."
+    },
+    "mass_lesion": {
+      "status": "Not determined",
+      "finding": "No lesion detection output or radiology impression was available in the provided files."
+    },
+    "hemorrhage": {
+      "status": "Not determined",
+      "finding": "Hemorrhage cannot be assessed from acquisition metadata alone."
+    },
+    "infarction": {
+      "status": "Not determined",
+      "finding": "Infarction cannot be assessed from acquisition metadata alone."
+    }
+  },
+  "longitudinal_assessment": {
+    "overall_trend": "Stable by available preprocessing metadata",
+    "comparison_with_previous_scans": "Comparison is based on 6 preprocessed series. T1w spacing and dimensions are consistent, while FLAIR spacing is consistent with small slice-count variation. T1w nonzero volume varied by 4.5% and FLAIR by 9.7%.",
+    "evidence_of_progression": "No metadata-level evidence of major global structural progression. This does not replace radiological review or quantitative regional analysis.",
+    "structural_stability": "Maintained within metadata-level limits"
+  },
+  "clinical_inference": {
+    "positive_observations": [
+      "6 preprocessed MRI metadata files were available.",
+      "Paired T1w and FLAIR acquisitions were present for 3 study identifiers.",
+      "T1w acquisitions used consistent high-resolution 0.8 mm isotropic spacing.",
+      "FLAIR acquisitions used consistent 1.0 mm isotropic spacing.",
+      "Referenced NIfTI image files were present for all metadata records.",
+      "The dataset is suitable for formal longitudinal registration and quantitative structural analysis."
+    ],
+    "overall_interpretation": "Available MRI metadata support reliable longitudinal structural monitoring because each study has paired T1w and FLAIR data and consistent voxel spacing within sequence type. The data do not include diagnostic image interpretation, so clinically important focal lesions or subtle epilepsy-related structural abnormalities require formal MRI review or quantitative neuroimaging analysis."
+  },
+  "recommendations": {
+    "follow_up": [
+      "Perform formal radiology review of the MRI image volumes.",
+      "Run automated brain segmentation and longitudinal registration across the three study identifiers.",
+      "Perform hippocampal volumetry because epilepsy-related mesial temporal abnormalities cannot be excluded from metadata alone.",
+      "Run FLAIR white matter lesion analysis if clinically relevant.",
+      "Compare future MRI studies using the same T1w and FLAIR acquisition strategy when possible."
+    ],
+    "clinical": [
+      "Correlate MRI findings with seizure semiology and neurological examination.",
+      "Review MRI together with EEG findings for seizure-focus localization.",
+      "Repeat or escalate imaging review if new neurological deficits, worsening seizures, or new focal symptoms occur."
+    ]
+  },
+  "conclusion": {
+    "summary": "MRI source data include 6 preprocessed 3D MRI series across 3 study identifiers. The available metadata show flair 1 mm x 1 mm x 1 mm; t1w 0.8 mm x 0.8 mm x 0.8 mm and flair spacing consistent; dimensions vary across 3 series; t1w dimensions and spacing consistent across 3 series. No metadata-level evidence of major structural progression is present, but diagnostic structural findings such as white matter lesions, hippocampal abnormality, mass lesion, hemorrhage, or infarction were not directly assessed."
+  }
+}

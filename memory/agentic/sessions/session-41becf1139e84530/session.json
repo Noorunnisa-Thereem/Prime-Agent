@@ -1,0 +1,27 @@
+{
+  "session_id": "session-41becf1139e84530",
+  "objective": "Scan patient files and generate one validated integrated digital twin report.",
+  "created_at": "2026-08-18T09:59:22Z",
+  "updated_at": "2026-08-18T09:59:35Z",
+  "status": "open",
+  "run_count": 1,
+  "agent_ids": [
+    "agent-cbc",
+    "agent-clinical_notes",
+    "agent-ct",
+    "agent-ecg",
+    "agent-eeg",
+    "agent-genetics",
+    "agent-main",
+    "agent-mri",
+    "agent-questionnaire"
+  ],
+  "metrics": {
+    "categories": 8,
+    "failed_tasks": 0,
+    "refinements": 0,
+    "verified": true,
+    "report_path": "D:\\Prime Agent\\reports\\Digital_Twin_Integrated_Report.json"
+  },
+  "notes": []
+}
