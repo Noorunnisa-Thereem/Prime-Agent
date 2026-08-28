@@ -96,3 +96,19 @@
 {"timestamp": "2026-08-18T11:11:41Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_11_20260612_093843.pdf", "notes": []}}
 {"timestamp": "2026-08-18T11:11:41Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_12_20260630_093237.pdf", "notes": []}}
 {"timestamp": "2026-08-18T11:11:41Z", "event": "category_completed", "payload": {"issue_count": 0, "evidence_count": 6}}
+{"timestamp": "2026-08-21T07:01:18Z", "event": "agent_booted", "payload": {"agent_id": "agent-cbc", "boot_count": 7, "directives": 0}}
+{"timestamp": "2026-08-21T07:01:18Z", "event": "category_started", "payload": {"files": ["D:\\Prime Agent\\patient_data\\CBC\\CBC_01_20260101_090649.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_02_20260128_131501.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_03_20260203_085001.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_04_20260222_134139.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_05_20260303_153929.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_06_20260316_100511.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_07_20260403_095400.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_08_20260428_163156.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_09_20260511_110442.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_10_20260516_165829.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_11_20260612_093843.pdf", "D:\\Prime Agent\\patient_data\\CBC\\CBC_12_20260630_093237.pdf"], "skill": "D:\\Prime Agent\\patient_prime_agent\\skills\\cbc\\SKILL.md"}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_01_20260101_090649.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_02_20260128_131501.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_03_20260203_085001.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_04_20260222_134139.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:20Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_05_20260303_153929.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:20Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_06_20260316_100511.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:20Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_07_20260403_095400.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:20Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_08_20260428_163156.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:21Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_09_20260511_110442.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:21Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_10_20260516_165829.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:21Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_11_20260612_093843.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:21Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_12_20260630_093237.pdf", "notes": []}}
+{"timestamp": "2026-08-21T07:01:21Z", "event": "category_completed", "payload": {"issue_count": 0, "evidence_count": 6}}
+{"timestamp": "2026-08-21T07:01:21Z", "event": "agent_task_completed", "payload": {"agent_id": "agent-cbc", "task_id": "task-255382382551", "attempt": 1, "file_count": 12, "schema_issue_count": 0, "repaired": false}}

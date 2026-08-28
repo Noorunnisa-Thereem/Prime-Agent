@@ -137,3 +137,14 @@
 {"timestamp": "2026-08-18T11:11:40Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-iso08_T1w.nii", "notes": ["unsupported_extension:.nii"]}}
 {"timestamp": "2026-08-18T11:11:40Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-T2sel_FLAIR.nii", "notes": ["unsupported_extension:.nii"]}}
 {"timestamp": "2026-08-18T11:11:40Z", "event": "category_completed", "payload": {"issue_count": 6, "evidence_count": 1}}
+{"timestamp": "2026-08-21T07:01:18Z", "event": "agent_booted", "payload": {"agent_id": "agent-mri", "boot_count": 7, "directives": 0}}
+{"timestamp": "2026-08-21T07:01:18Z", "event": "category_started", "payload": {"files": ["D:\\Prime Agent\\patient_data\\MRI\\MRI_summary.json", "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-iso08_T1w.nii", "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-T2sel_FLAIR.nii", "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-iso08_T1w.nii", "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-T2sel_FLAIR.nii", "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-iso08_T1w.nii", "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-T2sel_FLAIR.nii"], "skill": "D:\\Prime Agent\\patient_prime_agent\\skills\\mri\\SKILL.md"}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\MRI_summary.json", "notes": []}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-iso08_T1w.nii", "notes": ["unsupported_extension:.nii"]}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00001_acq-T2sel_FLAIR.nii", "notes": ["unsupported_extension:.nii"]}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-iso08_T1w.nii", "notes": ["unsupported_extension:.nii"]}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00002_acq-T2sel_FLAIR.nii", "notes": ["unsupported_extension:.nii"]}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-iso08_T1w.nii", "notes": ["unsupported_extension:.nii"]}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "file_loaded", "payload": {"file": "D:\\Prime Agent\\patient_data\\MRI\\sub-00003_acq-T2sel_FLAIR.nii", "notes": ["unsupported_extension:.nii"]}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "category_completed", "payload": {"issue_count": 6, "evidence_count": 1}}
+{"timestamp": "2026-08-21T07:01:19Z", "event": "agent_task_completed", "payload": {"agent_id": "agent-mri", "task_id": "task-ff7a442d6a1a", "attempt": 1, "file_count": 7, "schema_issue_count": 0, "repaired": false}}

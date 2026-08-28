@@ -8,6 +8,8 @@ This is a synthetic-data research/engineering project (every source file is labe
 
 - [What This Project Does](#what-this-project-does)
 - [The Three Ways a Report Gets Built](#the-three-ways-a-report-gets-built)
+- [Drug-Drug Interaction (DDI) Screen](#drug-drug-interaction-ddi-screen)
+- [PDF Report Rendering](#pdf-report-rendering)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
 - [Category Processing (Clinical Notes, CBC, CT, MRI, ECG, EEG, Genetics, Questionnaire)](#category-processing)
@@ -48,9 +50,50 @@ This repository grew from a single schema-validated pipeline into three compleme
 | --- | --- | --- | --- |
 | **A. Schema-validated pipeline** | Generic extractors pull a fixed 6–12 field set per category, validated against `schemas/*.schema.json` | `python -m patient_prime_agent` (legacy) or `prime-agent run` (agent runtime) | `reports/Digital_Twin_Integrated_Report.json` |
 | **B. Standalone category generators** | One purpose-built script per category that parses that category's real file format in depth and produces a rich, category-native report | `python -m patient_prime_agent.<category>_summary` | `reports/<category>/<Name>.json` |
-| **C. Consolidated report** | Merges the 8 standalone reports from path B verbatim (byte-for-byte) into one file | `python -m patient_prime_agent.digital_twin_report` | `reports/Digital_Twin_Consolidated_Report.json` |
+| **C. Consolidated report** | Merges the 8 standalone reports from path B, plus path D's DDI screen, verbatim (byte-for-byte) into one file | `python -m patient_prime_agent.digital_twin_report` | `reports/Digital_Twin_Consolidated_Report.json` |
+| **D. DDI screen** | Additive drug-drug-interaction and therapy-evidence layer over path B's clinical/genetics/EEG/ECG/CBC outputs — see [Drug-Drug Interaction (DDI) Screen](#drug-drug-interaction-ddi-screen) | `python -m patient_prime_agent.ddi_summary` | `reports/ddi/DDI_Clinical_Assessment.json` |
 
-Path A is what the agent runtime (Plan → Delegate → Execute → Validate → Fix/Retry → Verify → Integrate) drives, is schema-validated end to end, and is the only path with automated tests. Path B is deeper per-category extraction — e.g. the CBC generator captures the exact reference range and page number for every lab parameter across 12 visits, which the generic schema (path A) doesn't have fields for. Path C exists purely to combine B's outputs; it performs no extraction of its own.
+Path A is what the agent runtime (Plan → Delegate → Execute → Validate → Fix/Retry → Verify → Integrate) drives and is schema-validated end to end. Path B is deeper per-category extraction — e.g. the CBC generator captures the exact reference range and page number for every lab parameter across 12 visits, which the generic schema (path A) doesn't have fields for. Path D is an additive layer on top of path B's outputs; it never modifies them. Path C exists purely to combine B and D's outputs; it performs no extraction of its own. Paths A and D have automated test coverage (see [Testing](#testing)); B and C are verified manually.
+
+Path C's consolidated JSON can then be rendered as a print-ready PDF — see [PDF Report Rendering](#pdf-report-rendering).
+
+## Drug-Drug Interaction (DDI) Screen
+
+`patient_prime_agent/ddi_summary.py` and the `patient_prime_agent/ddi/` package are an additive layer that never invents a drug the patient isn't actually on, a dose the source doesn't state, or a pharmacokinetic mechanism no reference source supports. It reads the current medication regimen out of `clinical_notes`'s own output (not a hard-coded drug list) and cross-references it against genetics, EEG, ECG, and CBC — all already-generated path B outputs — plus one small bundled reference table of real, published, cited drug-metabolism facts.
+
+| Module | Responsibility |
+| --- | --- |
+| `normalizer.py` | Parses `current_regimen` into normalized `Medication` records; detects same-drug dose conflicts across sources |
+| `pairing.py` | Generates current×current, current×proposed, and proposed×proposed medication pairs, tagging each with its `pair_context` so a proposed drug can never be reported as an active interaction |
+| `reference_data.py` | A small, versioned, source-cited table of real CYP450 substrate/inhibitor/inducer relationships (`FLOCKHART_SOURCE`/`FLOCKHART_VERSION`) for the drugs actually in scope — pharmacology reference facts, not per-patient data |
+| `pharmacodynamic_rules.py` | Class-level rules (CNS depression, serotonergic burden, seizure threshold) that fire only when the regimen actually contains the relevant drug classes |
+| `pgx_modifiers.py` | Reads this patient's own `metabolizer_profile`/`findings_by_therapeutic_class`/`priority_safety_flags` from the genetics report and surfaces only the findings that name a current-regimen drug directly |
+| `clinical_context.py` | Pulls seizure burden, EEG risk, and CBC safety status into evidence items; explicitly marks kidney function, therapeutic drug levels, and liver enzymes as unavailable rather than inventing them, since this dataset has none |
+| `aggregation.py` | Classifies every evidence item as supporting/counter/unresolved, and applies the plan's conflict-resolution rules — a genotype finding never manufactures pair-level severity without an actual pharmacokinetic/pharmacodynamic mechanism behind it; "unresolved" is never collapsed into "no interaction" |
+| `severity.py` | Deterministic multi-factor scoring (minor/moderate/major/critical); the score is kept for traceability, only the category and rationale are ever shown |
+
+A **SuperCYPsPred** predicted-interaction adapter is stubbed but always returns "not evaluated locally" — no local snapshot of that model's output exists in this project, and rather than fabricate a plausible-looking probability, the module reports the gap honestly (see the module docstrings in `patient_prime_agent/ddi/reference_data.py`).
+
+Output feeds `report_builder`-style into path C (`digital_twin_report.py`'s `SOURCE_REPORTS` includes `("ddi", "reports/ddi/DDI_Clinical_Assessment.json", "DDI_Clinical_Assessment")`) and, from there, into the PDF's Drug Interactions and Pharmacogenomics sections. If `ddi_summary.py` was never run, path C and the PDF both degrade gracefully — the merge just omits that section and the PDF shows an explicit data-gap notice instead of silently disappearing.
+
+Covered by `tests/test_ddi.py` (6 tests): real-data regimen normalization, dose-conflict detection against a synthetic conflicting-dose fixture, proposed-drug pairs never reported as active, no invented drugs beyond what `clinical_notes` actually states, and pair severity never escalating without an established mechanism.
+
+## PDF Report Rendering
+
+`patient_prime_agent/report_html.py` renders path C's consolidated JSON as a polished, doctor-facing PDF — no ReportLab drawing code, no matplotlib. The pipeline:
+
+1. Build a styled HTML document (inline SVG bar/line charts, card-based layout, navy/teal clinical-dashboard CSS) purely from data already in the consolidated JSON.
+2. Print that HTML to PDF via headless **Microsoft Edge** (`msedge.exe --headless --disable-gpu --print-to-pdf=...`) — Edge ships with Windows already, so this adds no new dependency for layout/typography.
+3. Overlay a repeating header (title + patient label), footer, and "Page X of Y" onto every page using `reportlab` + `pypdf` — both already project dependencies — since Chromium's plain `--print-to-pdf` CLI mode can't template a running header/footer itself.
+
+```powershell
+python -m patient_prime_agent.report_html                 # reads reports/Digital_Twin_Consolidated_Report.json
+python -m patient_prime_agent.report_html --input path/to/report.json --output path/to/out.pdf
+```
+
+Output: `reports/Digital_Twin_Integrated_Report.pdf` (14 sections: Patient Snapshot, Executive Summary, 6-Month Timeline, Seizure Trends, Aura & Triggers, Medication Response, Pharmacogenomics, Drug Interactions, EEG, MRI/CT, ECG, CBC/Labs, Sleep/Cognition/QoL, Digital Twin Risk Dashboard, Clinical Action Plan), plus an intermediate `reports/Digital_Twin_Integrated_Report.html` (the exact HTML that was printed — useful for debugging, regenerated on every run, safe to delete).
+
+Every value in the PDF is read directly out of the consolidated JSON via `_get`/`_t` helpers with a single HTML-escape point; nothing is derived, estimated, or invented at render time. The Pharmacogenomics section shows, per current-regimen drug, only its single most clinically significant finding (worst predicted effect, tie-broken by the source panel's own significance flag) with its gene/genotype and a real per-finding citation (a PMID/PMCID carried through from the raw genetics spreadsheet, not a generic panel-level note) — the full panel data is unchanged in the JSON, only what's displayed is reduced. Requires Microsoft Edge at a standard Windows install path (or on `PATH` as `msedge`) — this pipeline does not run headless-PDF rendering on non-Windows platforms.
 
 ## Architecture
 
@@ -95,6 +138,10 @@ flowchart TD
         G8[questionnaire_summary.py]
     end
 
+    subgraph PathD["Path D: DDI screen (additive)"]
+        DDI[ddi_summary.py + ddi/*.py]
+    end
+
     SourceData --> Scan --> Plan --> Ext
     Main --> A2A --> Sub --> Ext
     Harness --> Main
@@ -113,8 +160,13 @@ flowchart TD
     G7 --> OutB7[reports/genetics/*.json]
     G8 --> OutB8[reports/questionnaire/*.json]
 
-    OutB1 & OutB2 & OutB3 & OutB4 & OutB5 & OutB6 & OutB7 & OutB8 --> Merge[digital_twin_report.py]
+    OutB1 & OutB7 & OutB6 & OutB5 & OutB2 --> DDI
+    DDI --> OutD[reports/ddi/DDI_Clinical_Assessment.json]
+
+    OutB1 & OutB2 & OutB3 & OutB4 & OutB5 & OutB6 & OutB7 & OutB8 & OutD --> Merge[digital_twin_report.py]
     Merge --> OutC[reports/Digital_Twin_Consolidated_Report.json]
+    OutC --> Render[report_html.py<br/>HTML/CSS + headless Edge + reportlab/pypdf overlay]
+    Render --> OutPDF[reports/Digital_Twin_Integrated_Report.pdf]
 ```
 
 ### The Seven-Phase Agent Loop (Path A, agent runtime)
@@ -181,14 +233,20 @@ Prime Agent
 |   |-- eeg_summary.py            # Path B: EEG standalone generator
 |   |-- genetics_summary.py       # Path B: genetics standalone generator
 |   |-- questionnaire_summary.py  # Path B: questionnaire standalone generator
-|   |-- digital_twin_report.py    # Path C: merges Path B outputs verbatim
+|   |-- digital_twin_report.py    # Path C: merges Path B + Path D outputs verbatim
+|   |-- ddi_summary.py            # Path D: DDI screen entry point -- see DDI section
+|   |-- ddi/                      # Path D: additive DDI engine modules
+|   |   |-- normalizer.py, pairing.py, reference_data.py
+|   |   |-- pharmacodynamic_rules.py, pgx_modifiers.py
+|   |   `-- clinical_context.py, aggregation.py, severity.py
+|   |-- report_html.py            # renders Path C's JSON as a styled PDF -- see PDF Report Rendering
 |   |-- skills/                   # SKILL.md per category (see below)
 |   `-- agentic/                  # the Prime Agent runtime (Path A driver)
 |       |-- settings.py, model_loader.py, llm.py
 |       |-- a2a.py, session.py, memory.py, harness.py, refine.py
 |       |-- runtime.py, subagents.py, main_agent.py
 |       `-- cli.py                # prime-agent command line
-|-- tests/                        # 159 tests, all covering the agent runtime (Path A) — see Testing
+|-- tests/                        # 165 tests across 9 files -- see Testing
 |-- schemas/                      # one *.schema.json per category + digital_twin_report.schema.json
 |-- memory/                       # legacy + agentic persistent state (see below)
 |-- reports/                      # every generated output (see Inputs and Outputs)
@@ -385,13 +443,29 @@ python -m patient_prime_agent.questionnaire_summary
 
 Each accepts `--input-dir`/`--input` and `--output` to override its defaults (see each script's `DEFAULT_INPUT_DIR`/`DEFAULT_OUTPUT_PATH`).
 
+### Path D — DDI screen
+
+```powershell
+python -m patient_prime_agent.ddi_summary
+```
+
+Run Path B's `clinical_notes_summary.py` and `genetics_summary.py` first — the DDI screen reads the current regimen and PGx findings from their output. `--clinical-notes`, `--genetics`, `--eeg`, `--ecg`, `--cbc`, and `--output` override the defaults.
+
 ### Path C — consolidated report
 
 ```powershell
 python -m patient_prime_agent.digital_twin_report
 ```
 
-Run Path B (or at least the categories you care about) first — Path C only merges files that already exist and silently omits any category whose standalone report hasn't been generated yet (see `source_manifest.sections_missing` in its output).
+Run Path B (or at least the categories you care about) first — Path C only merges files that already exist and silently omits any category whose standalone report hasn't been generated yet (see `source_manifest.sections_missing` in its output). Path D is optional; if `reports/ddi/DDI_Clinical_Assessment.json` doesn't exist yet, Path C just omits that section too.
+
+### PDF rendering
+
+```powershell
+python -m patient_prime_agent.report_html
+```
+
+Run Path C first — this reads `reports/Digital_Twin_Consolidated_Report.json` and writes `reports/Digital_Twin_Integrated_Report.pdf`. Requires Microsoft Edge (see [PDF Report Rendering](#pdf-report-rendering)).
 
 ### Agent runtime inspection (`prime-agent`)
 
@@ -451,6 +525,9 @@ reports/ecg/ECG_Clinical_Summary.json                 # Path B
 reports/eeg/EEG_clinical_summary.json                 # Path B
 reports/genetics/genetics_clinical_summary.json       # Path B
 reports/questionnaire/Questionnaire_consolidated_summary.json  # Path B
+reports/ddi/DDI_Clinical_Assessment.json              # Path D: DDI screen (additive, folded into Path C)
+reports/Digital_Twin_Integrated_Report.pdf            # rendered PDF (from Path C's JSON, see PDF Report Rendering)
+reports/Digital_Twin_Integrated_Report.html           # intermediate HTML behind the PDF; regenerated every run, safe to delete
 ```
 
 No generator writes anywhere under `patient_data/`; every SKILL.md's Verification section states this explicitly.
@@ -461,22 +538,23 @@ No generator writes anywhere under `patient_data/`; every SKILL.md's Verificatio
 python -m pytest
 ```
 
-**159 tests, all passing**, across 8 files, all exercising **Path A (the schema-validated pipeline and agent runtime)**:
+**165 tests, all passing**, across 9 files:
 
 | File | Covers |
 | --- | --- |
 | `test_model_loader.py` (27) | `.env`/env-var/JSON config resolution, hardware detection, device/dtype selection, 4-bit only where supported, automatic model tiering, lazy loading |
-| `test_rlm_delegation.py` (16) | Agent registration, delegation, retry budget, recovery, exception capture, trajectory recording, state persistence across instances |
-| `test_persistent_subagents.py` (18) | One agent per category, extractor reuse, schema-valid sections, null-only output with no source files, evidence traceability, episodic memory, persisted counters |
-| `test_a2a.py` (11) | Message ids, request/response correlation, broadcast, inboxes, history filters, error messages, disk persistence and reload |
-| `test_harness_crud.py` (22) | Component CRUD, prompt policies, skill entries, sub-agent CRUD, enable/disable, revisions, rollback and rollback-of-rollback |
 | `test_memory_refinement.py` (27) | Memory CRUD/versioning, scope isolation, target classification, one targeted update per issue class, history, rollback per target |
-| `test_schema_validation.py` (18) | Schema presence, defaults, type/required/extra/date rejection, repair behaviour, integrated report contract |
+| `test_harness_crud.py` (22) | Component CRUD, prompt policies, skill entries, sub-agent CRUD, enable/disable, revisions, rollback and rollback-of-rollback |
 | `test_integration.py` (20) | Full seven-phase run, report validity, traceability, verification gates, session resume, persistence layout, CLI |
+| `test_persistent_subagents.py` (18) | One agent per category, extractor reuse, schema-valid sections, null-only output with no source files, evidence traceability, episodic memory, persisted counters |
+| `test_schema_validation.py` (18) | Schema presence, defaults, type/required/extra/date rejection, repair behaviour, integrated report contract |
+| `test_rlm_delegation.py` (16) | Agent registration, delegation, retry budget, recovery, exception capture, trajectory recording, state persistence across instances |
+| `test_a2a.py` (11) | Message ids, request/response correlation, broadcast, inboxes, history filters, error messages, disk persistence and reload |
+| `test_ddi.py` (6) | Path D: real-data regimen normalization, dose-conflict detection, proposed drugs never reported as an active interaction, no drug invented beyond what `clinical_notes` states, pair severity never escalating without an established mechanism, unresolved DDI coverage always flagged per therapy |
 
-Every test runs against a temp-directory copy of the schemas and skill files (`tests/conftest.py`), so nothing mutates the real repository, and no test downloads model weights.
+The first 8 files exercise **Path A** (the schema-validated pipeline and agent runtime) against a temp-directory copy of the schemas and skill files (`tests/conftest.py`), so nothing mutates the real repository and no test downloads model weights. `test_ddi.py` exercises **Path D** directly against this repository's own generated `reports/*` fixtures (skipped automatically if those fixtures aren't present).
 
-**Not currently covered by automated tests**: the 8 Path B standalone generators (`clinical_notes_summary.py`, `cbc_summary.py`, `ct_scan_summary.py`, `mri_summary.py`, `ecg_summary.py`, `eeg_summary.py`, `genetics_summary.py`, `questionnaire_summary.py`) and Path C (`digital_twin_report.py`). These were verified manually against reference reports during development (see each category's `SKILL.md` for the specific checks performed) but have no `tests/` entries — this is a real gap, not an oversight to gloss over.
+**Not currently covered by automated tests**: the 8 Path B standalone generators (`clinical_notes_summary.py`, `cbc_summary.py`, `ct_scan_summary.py`, `mri_summary.py`, `ecg_summary.py`, `eeg_summary.py`, `genetics_summary.py`, `questionnaire_summary.py`), Path C (`digital_twin_report.py`), and the PDF renderer (`report_html.py`). These were verified manually against reference reports (Path B/C) or by rendering and visually reviewing every page (`report_html.py`) during development, but have no `tests/` entries — this is a real gap, not an oversight to gloss over.
 
 ## Error Handling
 
@@ -510,6 +588,8 @@ The Path B generators use the same principle but express it differently per cate
 - 4-bit quantization requires CUDA + `bitsandbytes`; on CPU-only machines it is always disabled, and the default 3B model needs ~12 GB resident memory in `float32` to run.
 - The questionnaire generator deliberately includes every patient-reported answer (including "No"/"Never"/"None") in `recurring_patient_reported_findings`, which is more complete than some hand-authored reference reports for this dataset that silently excluded negative findings — documented as an intentional choice in `skills/questionnaire/SKILL.md`, not a bug.
 - `prime-agent run` and `python -m patient_prime_agent --agentic` both write to `reports/Digital_Twin_Integrated_Report.json`; running Path B/C alongside them is safe (different files), but two *concurrent* Path A runs against the same `reports/` directory are not coordinated against each other.
+- The DDI screen's curated CYP450 reference table (`ddi/reference_data.py`) covers only the drugs actually seen in this dataset's regimen, not a general drug database; a drug outside that table is reported as `unresolved`, never as confirmed-safe. SuperCYPsPred predicted-interaction coverage is stubbed and always reports "not evaluated locally" — no local snapshot of that model exists in this project.
+- `report_html.py`'s PDF rendering depends on Microsoft Edge being installed at a standard Windows path (or reachable as `msedge` on `PATH`); it does not run on non-Windows platforms as written.
 
 ## How to Add a New Category
 
@@ -531,4 +611,5 @@ This project is an extraction and summarization tool, not a medical device or di
 - It must not invent missing patient values — this is enforced throughout the codebase (see [What This Project Does](#what-this-project-does) and every category's `SKILL.md` Rules section) and independently checked by the agent runtime's Verify phase.
 - MRI/CT summaries are metadata- and lookup-based, not a radiologist's interpretation of image content.
 - The genetics report's classification-style labels (e.g. metabolizer status framing) describe what the source dataset's own gene/drug annotations say, not a clinician-verified diagnosis — see `skills/genetics/SKILL.md` Rules.
+- The DDI screen (path D) never makes or implies a prescribing decision — no dose, start, or stop recommendation is generated anywhere in `patient_prime_agent/ddi/`; it only classifies existing evidence as supporting/counter/unresolved for a clinician to review. See [Drug-Drug Interaction (DDI) Screen](#drug-drug-interaction-ddi-screen).
 - PDF extraction depends on extractable text; scanned image-only PDFs are not OCR'd.

@@ -23,6 +23,7 @@ SOURCE_REPORTS: tuple[tuple[str, str, str], ...] = (
     ("eeg", "reports/eeg/EEG_clinical_summary.json", "EEG_clinical_summary"),
     ("questionnaire", "reports/questionnaire/Questionnaire_consolidated_summary.json", "Questionnaire_consolidated_summary"),
     ("genetics", "reports/genetics/genetics_clinical_summary.json", "genetics_clinical_summary"),
+    ("ddi", "reports/ddi/DDI_Clinical_Assessment.json", "DDI_Clinical_Assessment"),
 )
 
 DEFAULT_OUTPUT_PATH = Path("reports") / "Digital_Twin_Consolidated_Report.json"
@@ -50,6 +51,7 @@ def main(argv: list[str] | None = None) -> int:
     ensure_dir(args.output.parent)
     args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Wrote consolidated Digital Twin report to {args.output}")
+
     return 0
 
 

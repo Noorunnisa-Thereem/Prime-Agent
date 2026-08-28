@@ -1,0 +1,383 @@
+{
+  "report_type": "Drug-Drug Interaction & Therapy Evidence Assessment",
+  "patient_id": "SYN-100482",
+  "generated_at": "2026-08-28T15:43:28",
+  "medication_reconciliation": {
+    "normalized_medications": [
+      {
+        "id": "med-01-lamotrigine",
+        "normalized_name": "lamotrigine",
+        "source_name": "Lamotrigine",
+        "dose": {
+          "value": 150.0,
+          "unit": "mg"
+        },
+        "frequency": "BID",
+        "route": null,
+        "status": "current",
+        "source_reference": "clinical_notes.clinical_inference.medication_response.current_regimen",
+        "reconciliation_flags": []
+      },
+      {
+        "id": "med-02-levetiracetam",
+        "normalized_name": "levetiracetam",
+        "source_name": "Levetiracetam (Keppra)",
+        "dose": {
+          "value": 1000.0,
+          "unit": "mg"
+        },
+        "frequency": "BID",
+        "route": null,
+        "status": "current",
+        "source_reference": "clinical_notes.clinical_inference.medication_response.current_regimen",
+        "reconciliation_flags": []
+      }
+    ],
+    "conflicts": []
+  },
+  "source_coverage": {
+    "flockhart_source": "Flockhart Cytochrome P450 Drug Interaction Table",
+    "flockhart_version": "curated-snapshot-2024",
+    "supercypspred_source": "SuperCYPsPred",
+    "supercypspred_version": null,
+    "resolved_drugs": [
+      "lamotrigine",
+      "levetiracetam"
+    ],
+    "unresolved_drugs": [],
+    "not_evaluated_drugs": []
+  },
+  "clinical_context": {
+    "diagnosis": [
+      "Focal impaired-awareness seizures",
+      "Secondary generalized tonic-clonic seizures"
+    ],
+    "seizure_course": {
+      "persistent_activity": true,
+      "peak_count": 11,
+      "clustering": true,
+      "latest_trend": "fluctuating burden across visits (7, 4, 5, 11, 5 reported episodes), with stable clinician impression rather than documented progressive decline"
+    },
+    "eeg": {
+      "total_recordings": 35,
+      "future_seizure_risk": "Elevated",
+      "risk_level": "Elevated",
+      "technical_limitations": []
+    },
+    "ecg": {
+      "recording_count": 12,
+      "total_duration": "99h 11m",
+      "diagnostic_rhythm_assessment_available": false,
+      "qt_assessment_available": false,
+      "technical_limitations": [
+        "This report is derived strictly from the statistical fields present in the source dataset. It does not represent a clinical or diagnostic ECG interpretation. Any assessment of cardiac rhythm, heart rate, or abnormality requires review of the underlying waveform by a qualified clinician or an appropriately validated diagnostic algorithm, neither of which is reflected in this report."
+      ]
+    },
+    "therapeutic_drug_monitoring": [],
+    "kidney_function": null,
+    "liver_function": null,
+    "laboratory_abnormalities": []
+  },
+  "current_pair_assessments": [
+    {
+      "drug_a": "Lamotrigine",
+      "drug_b": "Levetiracetam (Keppra)",
+      "pair_context": "current_current",
+      "status": "no_interaction_detected",
+      "mechanisms": [],
+      "evidence": [
+        {
+          "modality": "pharmacokinetic_ddi",
+          "direction": "supporting",
+          "statement": "No established pharmacokinetic (CYP-mediated) mechanism was identified between lamotrigine and levetiracetam in curated reference data (Flockhart Cytochrome P450 Drug Interaction Table, curated-snapshot-2024). Levetiracetam undergoes minimal hepatic metabolism (partial non-CYP enzymatic hydrolysis) and is predominantly renally eliminated; it is not listed in curated CYP-relationship references as a significant CYP450 substrate, inhibitor, or inducer.",
+          "source_reference": "Flockhart Cytochrome P450 Drug Interaction Table (curated-snapshot-2024)",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "pharmacokinetic_ddi",
+          "direction": "unresolved",
+          "statement": "SuperCYPsPred predicted-interaction evidence is not available locally for lamotrigine and levetiracetam.",
+          "source_reference": "SuperCYPsPred (no local snapshot)",
+          "evidence_level": "predicted",
+          "patient_specific": false
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "supporting",
+          "statement": "SCN1A (CT): efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "counter",
+          "statement": "ABCB1 (GG): reduced efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "counter",
+          "statement": "CYP3A4 (TT): reduced efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "supporting",
+          "statement": "CACNA1H (AG): efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        }
+      ],
+      "severity": "minor",
+      "severity_rationale": [],
+      "patient_specific_interpretation": "No resolved pharmacokinetic or pharmacodynamic interaction mechanism was identified between Lamotrigine and Levetiracetam (Keppra) in the available curated and rule-based sources. Predicted-model coverage (SuperCYPsPred) remains unresolved; absence of data does not establish absence of risk.",
+      "monitoring": [
+        "Review the priority safety flags in the Pharmacogenomics section before adding or changing an interacting medication."
+      ],
+      "limitations": [
+        "Predicted (SuperCYPsPred) pharmacokinetic evidence is not available locally for this pair."
+      ]
+    }
+  ],
+  "proposed_pair_assessments": [],
+  "therapy_assessments": [
+    {
+      "medication": {
+        "id": "med-01-lamotrigine",
+        "normalized_name": "lamotrigine",
+        "source_name": "Lamotrigine",
+        "dose": {
+          "value": 150.0,
+          "unit": "mg"
+        },
+        "frequency": "BID",
+        "route": null,
+        "status": "current",
+        "source_reference": "clinical_notes.clinical_inference.medication_response.current_regimen",
+        "reconciliation_flags": []
+      },
+      "supporting_evidence": [
+        {
+          "modality": "pharmacogenomic",
+          "direction": "supporting",
+          "statement": "SCN1A (CT): efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "supporting",
+          "statement": "CACNA1H (AG): efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "laboratory",
+          "direction": "supporting",
+          "statement": "CBC status across the observation window: stable within reference ranges; no documented hematological toxicity.",
+          "source_reference": "CBC_consolidated_summary.json:digital_twin_state",
+          "evidence_level": "high",
+          "patient_specific": true
+        },
+        {
+          "modality": "clinical",
+          "direction": "supporting",
+          "statement": "No documented drug toxicity for this agent in the clinical-notes source.",
+          "source_reference": "clinical__notes_summary.json:clinical_inference.medication_response",
+          "evidence_level": "high",
+          "patient_specific": true
+        }
+      ],
+      "counter_evidence": [
+        {
+          "modality": "pharmacogenomic",
+          "direction": "counter",
+          "statement": "ABCB1 (GG): reduced efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "counter",
+          "statement": "CYP3A4 (TT): reduced efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "clinical",
+          "direction": "counter",
+          "statement": "Breakthrough seizures persisted on the current regimen, with a recorded peak of 11 episodes on 2026-02-15.",
+          "source_reference": "clinical__notes_summary.json:clinical_inference.seizure_analysis",
+          "evidence_level": "high",
+          "patient_specific": true
+        },
+        {
+          "modality": "clinical",
+          "direction": "counter",
+          "statement": "Seizure clustering was documented during the observation window.",
+          "source_reference": "clinical__notes_summary.json:clinical_inference.seizure_analysis",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "eeg",
+          "direction": "counter",
+          "statement": "EEG synthesis remained consistent with active epilepsy (EEG-derived risk: Elevated; future seizure probability: Elevated).",
+          "source_reference": "EEG_clinical_summary.json:digital_twin_state",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        }
+      ],
+      "unresolved_evidence": [
+        {
+          "modality": "laboratory",
+          "direction": "unresolved",
+          "statement": "No renal function (eGFR), hepatic enzyme, or therapeutic drug concentration data is present in the available source reports for this patient.",
+          "source_reference": "not available in source data",
+          "evidence_level": "low",
+          "patient_specific": true
+        },
+        {
+          "modality": "pharmacokinetic_ddi",
+          "direction": "unresolved",
+          "statement": "Lamotrigine was not resolved against a live drug-drug interaction knowledge base in the available sources; only curated reference pharmacology and this patient's own pharmacogenomic findings were evaluated.",
+          "source_reference": "curated reference pharmacology only (see reference_data)",
+          "evidence_level": "low",
+          "patient_specific": false
+        }
+      ],
+      "clinical_impression": "4 supporting, 5 counter, and 2 unresolved evidence item(s) were identified for Lamotrigine. Clinical-notes inference: Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression.",
+      "position": "effectiveness_incomplete",
+      "recommended_monitoring": [
+        "Continue EEG-derived seizure-risk monitoring.",
+        "Continue periodic CBC and safety-laboratory monitoring.",
+        "Continue seizure frequency, duration, and clustering tracking.",
+        "Review the priority safety flags in the Pharmacogenomics section before adding or changing an interacting medication."
+      ]
+    },
+    {
+      "medication": {
+        "id": "med-02-levetiracetam",
+        "normalized_name": "levetiracetam",
+        "source_name": "Levetiracetam (Keppra)",
+        "dose": {
+          "value": 1000.0,
+          "unit": "mg"
+        },
+        "frequency": "BID",
+        "route": null,
+        "status": "current",
+        "source_reference": "clinical_notes.clinical_inference.medication_response.current_regimen",
+        "reconciliation_flags": []
+      },
+      "supporting_evidence": [
+        {
+          "modality": "pharmacogenomic",
+          "direction": "supporting",
+          "statement": "SCN1A (CT): efficacy",
+          "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "laboratory",
+          "direction": "supporting",
+          "statement": "CBC status across the observation window: stable within reference ranges; no documented hematological toxicity.",
+          "source_reference": "CBC_consolidated_summary.json:digital_twin_state",
+          "evidence_level": "high",
+          "patient_specific": true
+        },
+        {
+          "modality": "clinical",
+          "direction": "supporting",
+          "statement": "No documented drug toxicity for this agent in the clinical-notes source.",
+          "source_reference": "clinical__notes_summary.json:clinical_inference.medication_response",
+          "evidence_level": "high",
+          "patient_specific": true
+        }
+      ],
+      "counter_evidence": [
+        {
+          "modality": "clinical",
+          "direction": "counter",
+          "statement": "Breakthrough seizures persisted on the current regimen, with a recorded peak of 11 episodes on 2026-02-15.",
+          "source_reference": "clinical__notes_summary.json:clinical_inference.seizure_analysis",
+          "evidence_level": "high",
+          "patient_specific": true
+        },
+        {
+          "modality": "clinical",
+          "direction": "counter",
+          "statement": "Seizure clustering was documented during the observation window.",
+          "source_reference": "clinical__notes_summary.json:clinical_inference.seizure_analysis",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        },
+        {
+          "modality": "eeg",
+          "direction": "counter",
+          "statement": "EEG synthesis remained consistent with active epilepsy (EEG-derived risk: Elevated; future seizure probability: Elevated).",
+          "source_reference": "EEG_clinical_summary.json:digital_twin_state",
+          "evidence_level": "moderate",
+          "patient_specific": true
+        }
+      ],
+      "unresolved_evidence": [
+        {
+          "modality": "laboratory",
+          "direction": "unresolved",
+          "statement": "No renal function (eGFR), hepatic enzyme, or therapeutic drug concentration data is present in the available source reports for this patient.",
+          "source_reference": "not available in source data",
+          "evidence_level": "low",
+          "patient_specific": true
+        },
+        {
+          "modality": "pharmacokinetic_ddi",
+          "direction": "unresolved",
+          "statement": "Levetiracetam (Keppra) was not resolved against a live drug-drug interaction knowledge base in the available sources; only curated reference pharmacology and this patient's own pharmacogenomic findings were evaluated.",
+          "source_reference": "curated reference pharmacology only (see reference_data)",
+          "evidence_level": "low",
+          "patient_specific": false
+        }
+      ],
+      "clinical_impression": "3 supporting, 3 counter, and 2 unresolved evidence item(s) were identified for Levetiracetam (Keppra). Clinical-notes inference: Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression.",
+      "position": "effectiveness_incomplete",
+      "recommended_monitoring": [
+        "Continue EEG-derived seizure-risk monitoring.",
+        "Continue periodic CBC and safety-laboratory monitoring.",
+        "Continue seizure frequency, duration, and clustering tracking.",
+        "Review the priority safety flags in the Pharmacogenomics section before adding or changing an interacting medication."
+      ]
+    }
+  ],
+  "overall_interpretation": {
+    "clinically_relevant_current_findings": [],
+    "principal_uncertainties": [
+      "SuperCYPsPred predicted pharmacokinetic evidence is not available locally for any drug in this regimen.",
+      "No therapeutic drug concentration data is present in the source reports.",
+      "No renal function (eGFR) data is present in the source reports."
+    ],
+    "recommended_monitoring": [
+      "Continue EEG-derived seizure-risk monitoring.",
+      "Continue periodic CBC and safety-laboratory monitoring.",
+      "Continue seizure frequency, duration, and clustering tracking.",
+      "Review the priority safety flags in the Pharmacogenomics section before adding or changing an interacting medication."
+    ]
+  },
+  "limitations": [
+    "This assessment is clinical decision support, not an automated prescribing system; no dose, start, or stop decision is made or implied here.",
+    "No proposed/candidate medication list is present in the source data, so only the current regimen's pairwise and therapy-level evidence is evaluated.",
+    "Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug not listed there is reported as unresolved, not as free of interactions."
+  ]
+}

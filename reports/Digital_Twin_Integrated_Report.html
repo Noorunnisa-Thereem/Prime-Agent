@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Neuro Digital Twin Integrated Clinical Report</title>
+<style>
+:root {
+  --ink:#132238; --muted:#5b6b7a; --line:#dce5e9; --card:#fff;
+  --navy:#10243c; --navy2:#1f3b57; --teal:#087c83; --cyan:#35b9b0;
+  --mint:#dff5ef; --blue:#eef4f8; --gray-bg:#f3f5f7;
+  --amber:#a86505; --amber-bg:#fff1d6; --red:#b53c48; --red-bg:#fdebed;
+  --green:#247a5a; --green-bg:#dff5ef;
+  --sans: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif;
+  --shadow: 0 3px 10px rgba(16,36,60,.07);
+}
+* { box-sizing: border-box; }
+@page { size: A4; margin: 20mm 14mm 15mm; }
+html, body { margin:0; padding:0; background:#fff; color:var(--ink); font-family:var(--sans); font-size:9.6px; line-height:1.42; }
+h1,h2,h3,h4,p,ul,ol,dl,dd { margin:0; }
+.section { break-inside: avoid-page; margin-bottom: 10px; }
+.section-head { display:flex; align-items:baseline; gap:8px; border-bottom:1.6px solid var(--navy); padding-bottom:4px; margin-bottom:8px; }
+.section-num { font-weight:800; font-size:12.5px; color:#fff; background:var(--navy); border-radius:5px; padding:1.5px 7px; }
+.section-title { font-weight:800; font-size:14.5px; color:var(--navy); letter-spacing:-.01em; }
+.section-sub { color:var(--muted); font-size:8.6px; margin-left:auto; text-align:right; }
+.h2 { font-weight:800; font-size:10px; color:var(--navy2); margin: 6px 0 4px; }
+.muted { color:var(--muted); }
+.small { font-size:8.4px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); padding:9px 11px; break-inside: avoid; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.grid4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; }
+.grid5 { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+.grid6 { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; }
+.stack { display:flex; flex-direction:column; gap:8px; }
+dl.kv { margin:0; }
+dl.kv > div { display:grid; grid-template-columns:118px 1fr; gap:8px; padding:4px 0; border-top:1px solid var(--line); }
+dl.kv > div:first-child { border-top:0; }
+dl.kv dt { font-weight:700; font-size:8.4px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); }
+dl.kv dd { font-size:9.4px; }
+table { border-collapse:collapse; width:100%; font-size:8.8px; }
+table.datatable th { background:var(--navy); color:#fff; text-align:left; padding:4px 6px; font-size:8px; text-transform:uppercase; letter-spacing:.03em; }
+table.datatable td { padding:4px 6px; border-top:1px solid var(--line); vertical-align:top; }
+table.datatable tr:nth-child(even) td { background:var(--gray-bg); }
+.stat { border-top:3px solid var(--teal); background:var(--blue); border-radius:0 0 6px 6px; padding:6px 8px; text-align:center; }
+.stat b { display:block; font-size:15px; color:var(--navy); line-height:1.1; }
+.stat span { font-size:7.6px; color:var(--muted); }
+.chip { border:1px solid var(--line); border-radius:6px; padding:5px 7px; background:#fff; }
+.chip b { display:block; font-size:8.6px; color:var(--navy2); }
+.chip span { font-weight:800; font-size:9.4px; text-transform:capitalize; }
+.sev-high { color:var(--red); } .sev-high-bg { background:var(--red-bg); border-color:#f3c6cb; }
+.sev-mod { color:var(--amber); } .sev-mod-bg { background:var(--amber-bg); border-color:#f0d79a; }
+.sev-low { color:var(--green); } .sev-low-bg { background:var(--green-bg); border-color:#b7e4d3; }
+.sev-neutral { color:var(--muted); }
+.badge { display:inline-block; font-size:7.4px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; padding:2px 6px; border-radius:99px; }
+.callout { background:var(--blue); border-left:3px solid var(--teal); border-radius:4px; padding:6px 9px; font-size:8.8px; }
+.callout.warn { background:var(--amber-bg); border-left-color:var(--amber); }
+.callout.gap { background:var(--gray-bg); border-left-color:var(--muted); }
+.meter-row { display:grid; grid-template-columns:120px 1fr 46px; align-items:center; gap:6px; padding:2.5px 0; }
+.meter-track { height:6px; background:var(--gray-bg); border-radius:99px; overflow:hidden; }
+.meter-fill { height:100%; background:linear-gradient(90deg,var(--cyan),var(--teal)); }
+.timeline { position:relative; padding-left:14px; border-left:2px solid var(--line); }
+.tl-item { position:relative; padding:0 0 8px 10px; }
+.tl-item:before { content:""; position:absolute; left:-17.5px; top:2px; width:8px; height:8px; border-radius:50%; background:var(--teal); border:2px solid #fff; box-shadow:0 0 0 1.4px var(--teal); }
+.tl-item time { display:block; font-weight:800; font-size:8px; color:var(--teal); text-transform:uppercase; }
+.tl-item p { font-size:8.8px; margin-top:1px; }
+.list-compact { margin:0; padding-left:14px; }
+.list-compact li { font-size:8.8px; margin:2px 0; }
+.pill-row { display:flex; flex-wrap:wrap; gap:5px; }
+.pill { font-size:7.8px; border:1px solid var(--line); background:var(--blue); border-radius:99px; padding:2.5px 8px; }
+.hero { background:var(--navy); color:#fff; border-radius:9px; padding:14px 16px; margin-bottom:10px; }
+.hero .eyebrow { color:var(--cyan); font-weight:800; font-size:8.6px; letter-spacing:.06em; text-transform:uppercase; }
+.hero h1 { font-size:19px; font-weight:800; margin:4px 0 4px; letter-spacing:-.01em; }
+.hero p.lede { color:#c7d4dd; font-size:9.6px; max-width:80%; }
+.identity { background:#fff; border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:10px; }
+.identity > .ihead { background:var(--gray-bg); padding:6px 10px; font-weight:800; font-size:9.6px; color:var(--navy); display:flex; justify-content:space-between; }
+.identity .igrid { display:grid; grid-template-columns:repeat(4,1fr); }
+.identity .icell { padding:6px 10px; border-top:1px solid var(--line); border-right:1px solid var(--line); }
+.identity .icell:nth-child(4n) { border-right:0; }
+.identity .icell small { display:block; font-size:7.4px; text-transform:uppercase; color:var(--muted); font-weight:700; }
+.identity .icell strong { display:block; font-size:9.6px; }
+.identity .icell span { display:block; font-size:7.8px; color:var(--muted); margin-top:1px; }
+.identity .ifull { grid-column:1/-1; }
+.page-break { break-before: page; }
+.no-break { break-inside: avoid; }
+svg text { font-family:var(--sans); }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="eyebrow">Epilepsy Digital Twin Report &middot; Integrated Neurological Decision Support</div>
+  <h1>Neuro Digital Twin Integrated Clinical Report</h1>
+  <p class="lede">An integrated clinical assessment combining follow-up visits, seizure history, EEG, ECG, CT/MRI imaging, laboratory results, and pharmacogenomic testing for Focal impaired-awareness seizures.</p>
+</section>
+<div class="identity">
+  <div class="ihead"><span>Patient &amp; Clinical Context</span><span class="muted small">9/9 data categories included &middot; generated 2026-08-28T15:43:28</span></div>
+  <div class="igrid">
+    <div class="icell"><small>Patient</small><strong>John Doe</strong><span>Patient ID SYN-100482</span></div>
+    <div class="icell"><small>Age / Sex</small><strong>34 years · Male</strong><span>&nbsp;</span></div>
+    <div class="icell"><small>Primary Diagnosis</small><strong>Focal impaired-awareness seizures</strong><span>Secondary diagnosis: Secondary generalized tonic-clonic seizures</span></div>
+    <div class="icell"><small>Diagnosed Since</small><strong>12 May 2021</strong><span>&nbsp;</span></div>
+    <div class="icell ifull"><small>Current Clinical Status</small><strong>Stable outpatient epilepsy state with persistent breakthrough seizure risk</strong></div>
+    <div class="icell ifull"><small>Current Therapy</small><strong>Levetiracetam (Keppra) 1000 mg BID · Lamotrigine 150 mg BID</strong></div>
+    <div class="icell ifull">
+      <small>Reporting Period</small>
+      <strong>Data reviewed: 01 Jan – 30 Jun 2026 (~6 months)</strong>
+      <span>Clinic visit notes cover 01 Jan 2026 to 02 Mar 2026; laboratory, imaging, EEG/ECG, and questionnaire data continue through 30 Jun 2026.</span>
+    </div>
+  </div>
+</div>
+<div class="grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:10px"><div class="stat"><b>5</b><span>Clinical Visits</span></div><div class="stat"><b>12</b><span>CBC Reports</span></div><div class="stat"><b>6</b><span>CT Studies</span></div><div class="stat"><b>6</b><span>MRI Series</span></div><div class="stat"><b>12</b><span>ECG Sessions</span></div><div class="stat"><b>35</b><span>EEG Recordings</span></div><div class="stat"><b>12</b><span>Questionnaires</span></div></div>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">01</span><span class="section-title">Executive Summary</span></div>
+  <div class="card" style="margin-bottom:8px"><p style="font-size:10px">Across five clinical-note visits from 2026-01-01 to 2026-03-02, the patient has chronic focal epilepsy with persistent breakthrough seizures on levetiracetam and lamotrigine. The clinician repeatedly documented reasonably stable seizure control and favorable quality-of-life trajectory, while seizure burden, sleep quality, trigger exposure, aura symptoms, and medication tolerability continued to fluctuate.</p></div>
+  <div class="grid4"><div class="stat"><b>67%</b><span>Overall Health Score</span></div><div class="stat"><b>Moderate</b><span>Overall Clinical Risk</span></div><div class="stat"><b>Elevated</b><span>EEG-Derived Seizure Risk</span></div><div class="stat"><b>10 (7 high)</b><span>Genetic Safety Flags</span></div></div>
+  <p class="small muted" style="margin-top:6px">Domain the patient rates worst on questionnaires: Epileptic Triggers. See the Digital Twin Risk Dashboard (Section 13) for the full risk breakdown.</p>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">02</span><span class="section-title">6-Month Timeline</span></div>
+  <div class="card"><div class="timeline"><div class="tl-item"><time>01 Jan 2026</time><p><b>Routine epilepsy follow-up with stable clinician impression</b> — Contributes to longitudinal assessment of seizure burden, triggers, sleep, and tolerability.</p></div><div class="tl-item"><time>16 Jan 2026</time><p><b>Seizure clustering documented during follow-up</b> — Raises near-term seizure-monitoring priority despite otherwise stable clinician impression.</p></div><div class="tl-item"><time>03 Feb 2026</time><p><b>CBC/LFT safety review documented</b> — Supports medication-safety monitoring without a documented abnormal lab signal.</p></div><div class="tl-item"><time>15 Feb 2026</time><p><b>Highest recorded seizure burden in clinical-note window</b> — 11 reported episodes make this the peak burden visit.</p></div><div class="tl-item"><time>02 Mar 2026</time><p><b>Routine epilepsy follow-up with stable clinician impression</b> — Contributes to longitudinal assessment of seizure burden, triggers, sleep, and tolerability.</p></div><div class="tl-item"><time>28 Aug 2026</time><p><b>Pharmacogenomic (PGx) panel reported</b> — 76 variants analyzed across 47 medications; see Pharmacogenomics.</p></div></div></div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">03</span><span class="section-title">Seizure Trends</span><span class="section-sub">Clinical-note episode counts, clustering, and duration</span></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="h2">Reported Episodes per Visit</div>
+      <svg viewBox="0 0 560 150" width="100%" xmlns="http://www.w3.org/2000/svg"><line x1="28" y1="124.0" x2="552" y2="124.0" stroke="#dce5e9" stroke-width="1"/><line x1="28" y1="69.0" x2="552" y2="69.0" stroke="#dce5e9" stroke-width="1"/><line x1="28" y1="14.0" x2="552" y2="14.0" stroke="#dce5e9" stroke-width="1"/><rect x="57.4" y="64.7" width="46.0" height="59.3" rx="2" fill="#087c83"/><text x="80.4" y="60.7" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">7</text><text x="80.4" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">01 Jan</text><rect x="162.2" y="90.1" width="46.0" height="33.9" rx="2" fill="#b53c48"/><text x="185.2" y="86.1" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">4</text><text x="185.2" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">16 Jan</text><rect x="267.0" y="81.6" width="46.0" height="42.4" rx="2" fill="#087c83"/><text x="290.0" y="77.6" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">5</text><text x="290.0" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">03 Feb</text><rect x="371.8" y="30.8" width="46.0" height="93.2" rx="2" fill="#b53c48"/><text x="394.8" y="26.8" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">11</text><text x="394.8" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">15 Feb</text><rect x="476.6" y="81.6" width="46.0" height="42.4" rx="2" fill="#087c83"/><text x="499.6" y="77.6" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">5</text><text x="499.6" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">02 Mar</text></svg>
+      <p class="small muted">Red bars mark visits with a high-importance clinical event.</p>
+    </div>
+    <div class="card">
+      <dl class="kv">
+        <div><dt>Overall Pattern</dt><dd>Breakthrough seizure burden fluctuated across visits without a sustained monotonic worsening pattern.</dd></div>
+        <div><dt>Highest Burden</dt><dd>11 episodes on 15 Feb 2026</dd></div>
+        <div><dt>Lowest Burden</dt><dd>4 episodes on 16 Jan 2026</dd></div>
+        <div><dt>Clustering</dt><dd>Yes</dd></div>
+        <div><dt>Clinical Interpretation</dt><dd>Seizure risk remains clinically relevant because events persist on dual therapy and clustering was documented once.</dd></div>
+      </dl>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px"><div class="h2">Average Seizure Duration per Visit (minutes)</div><svg viewBox="0 0 560 140" width="100%" xmlns="http://www.w3.org/2000/svg"><line x1="34" y1="116.0" x2="550" y2="116.0" stroke="#dce5e9" stroke-width="1"/><line x1="34" y1="65.0" x2="550" y2="65.0" stroke="#dce5e9" stroke-width="1"/><line x1="34" y1="14.0" x2="550" y2="14.0" stroke="#dce5e9" stroke-width="1"/><path d="M 34.0 116.0 L 34.0 104.2 L 163.0 25.8 L 292.0 58.0 L 421.0 37.0 L 550.0 88.8 L 550.0 116.0 Z" fill="#1f3b57" opacity="0.12"/><path d="M 34.0 104.2 L 163.0 25.8 L 292.0 58.0 L 421.0 37.0 L 550.0 88.8" fill="none" stroke="#1f3b57" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="34.0" cy="104.2" r="2.2" fill="#1f3b57"/><circle cx="163.0" cy="25.8" r="3.4" fill="#1f3b57"/><circle cx="292.0" cy="58.0" r="2.2" fill="#1f3b57"/><circle cx="421.0" cy="37.0" r="2.2" fill="#1f3b57"/><circle cx="550.0" cy="88.8" r="2.2" fill="#1f3b57"/><text x="163.0" y="18.8" font-size="8" font-weight="700" fill="#1f3b57" text-anchor="middle">9m</text><text x="34.0" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">01 Jan</text><text x="163.0" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">16 Jan</text><text x="292.0" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">03 Feb</text><text x="421.0" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">15 Feb</text><text x="550.0" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">02 Mar</text></svg></div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">04</span><span class="section-title">Aura &amp; Triggers</span><span class="section-sub">Prodromal patterns and patient-reported trigger exposure</span></div>
+  <div class="card" style="margin-bottom:8px">
+    <div class="h2">Persistent Aura / Prodromal Patterns</div>
+    <div class="pill-row"><span class="pill">Deja vu frequency</span><span class="pill">Epigastric rising sensation</span><span class="pill">Feeling of derealization/detachment</span><span class="pill">Metallic taste in mouth</span><span class="pill">Racing heartbeat prior to episode</span><span class="pill">Sudden dizziness before seizure onset</span><span class="pill">Sudden intense anxiety or fear</span><span class="pill">Tingling or numbness sensations</span><span class="pill">Unusual smells (olfactory aura)</span><span class="pill">Visual distortions or flashing lights</span></div>
+    <p class="small" style="margin-top:5px">Aura and prodromal symptoms remain useful warning signals for episode tracking.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="h2">Aura &amp; Prodromal Symptoms &mdash; Questionnaire Domain</div>
+      <p class="small">Latest score <b>71.7/100</b> (first 66.7, trend increasing)</p>
+      <ul class="list-compact"><li>Did you experience an epigastric "rising" sensation in the stomach: <b>Frequent</b></li><li>Frequency of sudden, unprovoked psychological anxiety or panic feelings (ictal fear): <b>Rare</b></li><li>Frequency of sudden Deja vu or Jamais vu experiences: <b>Never</b></li><li>Did you notice an anomalous metallic, chemical, or bitter taste in your mouth: <b>Rare sensory distortion</b></li><li>Did you experience unprovoked olfactory distortions (strange, non-existent smells): <b>Never</b></li></ul>
+    </div>
+    <div class="card sev-mod-bg" style="border-color:#f0d79a">
+      <div class="h2">Epileptic Triggers &mdash; Lowest-Scoring Domain</div>
+      <p class="small">Latest score <b>56.7/100</b> (min 56.7, trend stable)</p>
+      <ul class="list-compact"><li>Rate your average psychological stress and workload level this month: <b>High/Distressing</b></li><li>Did you experience a delayed or completely missed dose of your anti-seizure medication: <b>1 missed dose</b></li><li>Exposure to flickering/flashing lights, high-contrast patterns, or prolonged screen glare: <b>Prolonged exposure</b></li><li>Daily average volume of dietary caffeine intake (coffee, tea, energy drinks): <b>1 cup</b></li><li>Any consumption of alcoholic beverages or exposure to hangover states this month: <b>Occasional drinking</b></li></ul>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">05</span><span class="section-title">Medication Response</span><span class="section-sub">Current regimen, tolerability, and reported side effects</span></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="h2">Current Regimen</div>
+      <table class="datatable"><thead><tr><th>Drug</th><th>Dose</th></tr></thead><tbody><tr><td>Levetiracetam (Keppra)</td><td>1000 mg BID</td></tr><tr><td>Lamotrigine</td><td>150 mg BID</td></tr></tbody></table>
+      <dl class="kv" style="margin-top:6px">
+        <div><dt>Effectiveness</dt><dd>Partial response</dd></div>
+        <div><dt>Tolerability</dt><dd>Generally tolerated with intermittent dizziness and variable side-effect burden</dd></div>
+        <div><dt>Documented Toxicity</dt><dd>No</dd></div>
+        <div><dt>Clinical Interpretation</dt><dd>Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression.</dd></div>
+      </dl>
+    </div>
+    <div class="card">
+      <div class="h2">Persistent Side Effects (clinical notes)</div>
+      <div class="pill-row"><span class="pill">Memory fog post-dose</span><span class="pill">Tremor in hands</span><span class="pill">Weight change since last visit</span><span class="pill">Gum hypertrophy</span><span class="pill">Mood irritability</span><span class="pill">Nausea after taking medication</span><span class="pill">Skin rash or itching</span><span class="pill">Daytime drowsiness</span><span class="pill">Dizziness/lightheadedness</span><span class="pill">Unsteady gait (ataxia)</span></div>
+      <div class="h2" style="margin-top:8px">Medication Side Effects &mdash; Questionnaire Domain</div>
+      <p class="small">Latest score <b>78.3/100</b> (first 68.3, trend increasing)</p>
+      <ul class="list-compact"><li>Rate the severity of daytime drowsiness or somnolence: <b>Mild (Manageable)</b></li><li>Experience of dizziness, vertigo, or lightheadedness after taking medication: <b>Never</b></li><li>Presence of physical instability, unsteadiness, or clumsy movements (ataxia): <b>Slight imbalance</b></li><li>Frequency of unprovoked irritability, anger, or mood volatility: <b>Mild irritability</b></li><li>Signs of dermatological distress or unexplained skin rashes: <b>Clear skin</b></li></ul>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">06</span><span class="section-title">Pharmacogenomics</span><span class="section-sub">76 variants across 47 medications · reported 28 Aug 2026</span></div>
+  <div class="callout" style="margin-bottom:8px"><b>PGx summary for the current regimen:</b> the single most clinically significant finding per drug, with its genetic basis and source citation.</div>
+  <table class="datatable"><thead><tr><th>Drug</th><th>Gene (Genotype)</th><th>Worst / Most Significant Outcome</th><th>Citation</th></tr></thead><tbody><tr><td>Lamotrigine</td><td>CYP3A4 (TT)</td><td><span class="badge sev-mod">Reduced efficacy</span></td><td>PMID:28343093</td></tr><tr><td>Levetiracetam</td><td>SCN1A (CT)</td><td><span class="badge sev-low">Efficacy</span></td><td>PMID:28753467</td></tr></tbody></table>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">07</span><span class="section-title">Drug Interactions</span><span class="section-sub">2 current medication(s) reconciled · Flockhart Cytochrome P450 Drug Interaction Table (curated-snapshot-2024)</span></div>
+  <div class="card">
+    <div class="h2">Medication Reconciliation</div>
+    <table class="datatable"><thead><tr><th>Drug</th><th>Dose</th><th>Status</th><th>Flags</th></tr></thead>
+      <tbody><tr><td>Lamotrigine</td><td>150.0 mg BID</td><td>current</td><td>&mdash;</td></tr><tr><td>Levetiracetam (Keppra)</td><td>1000.0 mg BID</td><td>current</td><td>&mdash;</td></tr></tbody></table>
+    <div class="callout" style="margin-top:6px">No conflicting doses found for the same drug across the reconciled source data.</div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <div class="h2">Clinically Relevant Interactions</div>
+    <div class="callout">No clinically required drug-drug interaction was identified for the current regimen.</div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <div class="h2">Essential Monitoring</div>
+    <div class="pill-row"><span class="pill">Continue EEG-derived seizure-risk monitoring.</span><span class="pill">Continue periodic CBC and safety-laboratory monitoring.</span><span class="pill">Continue seizure frequency, duration, and clustering tracking.</span><span class="pill">Review the priority safety flags in the Pharmacogenomics section before adding or changing an interacting medication.</span></div>
+  </div>
+  <div class="callout gap" style="margin-top:6px"><b>Limitations of this screen:</b> This assessment is clinical decision support, not an automated prescribing system; no dose, start, or stop decision is made or implied here. No proposed/candidate medication list is present in the source data, so only the current regimen's pairwise and therapy-level evidence is evaluated. Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug not listed there is reported as unresolved, not as free of interactions.</div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">08</span><span class="section-title">EEG</span><span class="section-sub">Longitudinal interictal / preictal / ictal signal characteristics</span></div>
+  <div class="grid4" style="margin-bottom:8px"><div class="stat"><b>35</b><span>Total Recordings</span></div><div class="stat"><b>12</b><span>Interictal</span></div><div class="stat"><b>11</b><span>Preictal</span></div><div class="stat"><b>12</b><span>Ictal</span></div></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="h2">Signal Variance Midpoint by Phase (µV²)</div>
+      <svg viewBox="0 0 560 150" width="100%" xmlns="http://www.w3.org/2000/svg"><line x1="28" y1="124.0" x2="552" y2="124.0" stroke="#dce5e9" stroke-width="1"/><line x1="28" y1="69.0" x2="552" y2="69.0" stroke="#dce5e9" stroke-width="1"/><line x1="28" y1="14.0" x2="552" y2="14.0" stroke="#dce5e9" stroke-width="1"/><rect x="92.3" y="123.2" width="46.0" height="0.8" rx="2" fill="#247a5a"/><text x="115.3" y="119.2" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">344.45</text><text x="115.3" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">Interictal</text><rect x="267.0" y="114.4" width="46.0" height="9.6" rx="2" fill="#a86505"/><text x="290.0" y="110.4" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">4343.59</text><text x="290.0" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">Preictal</text><rect x="441.7" y="30.8" width="46.0" height="93.2" rx="2" fill="#b53c48"/><text x="464.7" y="26.8" font-size="8.5" font-weight="700" fill="#10243c" text-anchor="middle">42395.2</text><text x="464.7" y="142.0" font-size="7.6" fill="#5b6b7a" text-anchor="middle">Ictal</text></svg>
+      <div class="pill-row" style="margin-top:6px">
+        <span class="pill sev-high">EEG-derived risk: Elevated</span>
+        <span class="pill sev-high">Future seizure probability: Elevated</span>
+        <span class="pill">Dominant feature: Signal Variance</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="h2">Phase Analysis</div>
+      <table class="datatable"><thead><tr><th>Phase</th><th>State</th><th>Activity</th><th>Variability</th></tr></thead><tbody><tr><td>Interictal</td><td>Baseline</td><td>Stable</td><td>Low</td></tr><tr><td>Preictal</td><td>Transition</td><td>Increasing Instability</td><td>Moderate-High</td></tr><tr><td>Ictal</td><td>Seizure</td><td>Hypersynchronous</td><td>Very High</td></tr></tbody></table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <table class="datatable"><thead><tr><th>Phase</th><th>Amplitude Range</th><th>Std Dev Range</th><th>Variance Range</th></tr></thead><tbody><tr><td>Interictal</td><td>-89; 99</td><td>11.68; 23.5</td><td>136.44; 552.46</td></tr><tr><td>Preictal</td><td>-345; 440</td><td>14.48; 92.07</td><td>209.71; 8477.48</td></tr><tr><td>Ictal</td><td>-504; 784</td><td>52.5; 286.42</td><td>2756.47; 82033.96</td></tr></tbody></table>
+    <p class="small" style="margin-top:6px">Longitudinal EEG recordings demonstrate a consistent transition from stable interictal activity to preictal electrical instability followed by high-amplitude ictal seizure activity. Findings are consistent with the dataset's interictal/preictal/ictal phase taxonomy, indicating reproducible seizure-related signal evolution; this is a signal-classification observation, not a clinician-verified diagnosis.</p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">09</span><span class="section-title">MRI / CT</span><span class="section-sub">Structural imaging: neuroimaging key findings</span></div>
+  <div class="h2">CT &mdash; 6 studies, 12 Jan – 29 Jun 2026</div>
+  <div class="card" style="margin-bottom:8px">
+    <table class="datatable"><thead><tr><th>Date</th><th>Impression</th></tr></thead><tbody><tr><td>12 Jan 2026</td><td>No acute intracranial abnormality is evident on this single-image model-assisted review.</td></tr><tr><td>16 Feb 2026</td><td>No gross acute abnormality is evident on this limited skull-base level image; assessment is limited by slice level and image quality.</td></tr><tr><td>11 Mar 2026</td><td>No acute intracranial abnormality is evident on this single-image model-assisted review.</td></tr><tr><td>20 Apr 2026</td><td>No acute intracranial abnormality is evident on this high-convexity image; ventricular assessment is not available at this slice level.</td></tr><tr><td>14 May 2026</td><td>No acute intracranial abnormality is evident on this limited-quality near-vertex image.</td></tr><tr><td>29 Jun 2026</td><td>No acute intracranial abnormality is evident. Incidental bilateral choroid plexus calcifications are present.</td></tr></tbody></table>
+    <p class="small muted" style="margin-top:6px">Across the available CT image files, no gross acute intracranial hemorrhage, midline shift, or mass effect is evident on this model-assisted image-only review. Direct progression assessment is limited because the files represent single slices with different slice levels, resolutions, and image quality. This output is not a radiologist-verified diagnostic report.</p>
+  </div>
+  <div class="h2">MRI &mdash; Metadata-supported structural stability, diagnostic interpretation not available</div>
+  <div class="card">
+    <table class="datatable"><thead><tr><th>Finding</th><th>Status</th><th>Detail</th></tr></thead><tbody><tr><td>Brain Morphology</td><td><span class="badge sev-neutral" style="background:var(--gray-bg)">Not directly assessed</span></td><td>The provided files include volumetric MRI metadata, but no radiologist interpretation or morphometric segmentation was available for direct morphology assessment.</td></tr><tr><td>Brain Volume</td><td><span class="badge sev-neutral" style="background:var(--gray-bg)">Stable within available metadata</span></td><td>T1w nonzero volume range: 8387642 to 8777268 mm3 (mean 8641065 mm3; range 4.5%). FLAIR nonzero volume range: 6022385 to 6625690 mm3 (mean 6231344 mm3; range 9.7%). These are preprocessing-derived nonzero voxel volumes, not formal brain volumetry.</td></tr><tr><td>Tissue Signal Characteristics</td><td><span class="badge sev-neutral" style="background:var(--gray-bg)">Quantitatively summarized, not diagnostically interpreted</span></td><td>FLAIR mean intensity 28.76 to 32.27; standard deviation 47.57 to 54.16; T1w mean intensity 99.82 to 105.56; standard deviation 153.13 to 162.05. Intensity statistics are useful for preprocessing consistency but are not diagnostic tissue-signal interpretation.</td></tr></tbody></table>
+    <p class="small muted" style="margin-top:6px">Not directly assessed from the available imaging metadata (this means "not evaluated," not "abnormal"): White Matter, Hippocampus, Cortical Structure, Mass Lesion, Hemorrhage, Infarction.</p>
+    <p class="small" style="margin-top:4px">Stable by available preprocessing metadata. 6 MRI series were available across 3 study identifiers, including 3D T1-weighted MRI, T2-FLAIR MRI. Preprocessed metadata show consistent 3D acquisition characteristics and no metadata-level evidence of major global structural progression. A radiology report, lesion segmentation, hippocampal volumetry, and cortical thickness analysis were not available, so subtle pathology cannot be excluded from these metadata alone.</p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">10</span><span class="section-title">ECG</span><span class="section-sub">single channel ("ECG SD") in every recording</span></div>
+  <div class="grid3" style="margin-bottom:8px"><div class="stat"><b>12</b><span>Recordings</span></div><div class="stat"><b>99h 11m</b><span>Total Duration</span></div><div class="stat"><b>256</b><span>Sampling Rate (Hz)</span></div></div>
+  <div class="card">
+    <div class="h2">Amplitude Std Dev by Recording Date (µV)</div>
+    <svg viewBox="0 0 560 140" width="100%" xmlns="http://www.w3.org/2000/svg"><line x1="34" y1="116.0" x2="550" y2="116.0" stroke="#dce5e9" stroke-width="1"/><line x1="34" y1="65.0" x2="550" y2="65.0" stroke="#dce5e9" stroke-width="1"/><line x1="34" y1="14.0" x2="550" y2="14.0" stroke="#dce5e9" stroke-width="1"/><path d="M 34.0 116.0 L 34.0 104.2 L 80.9 72.7 L 127.8 101.7 L 174.7 96.6 L 221.6 89.3 L 268.5 68.4 L 315.5 60.3 L 362.4 86.6 L 409.3 25.8 L 456.2 71.1 L 503.1 101.7 L 550.0 101.7 L 550.0 116.0 Z" fill="#087c83" opacity="0.12"/><path d="M 34.0 104.2 L 80.9 72.7 L 127.8 101.7 L 174.7 96.6 L 221.6 89.3 L 268.5 68.4 L 315.5 60.3 L 362.4 86.6 L 409.3 25.8 L 456.2 71.1 L 503.1 101.7 L 550.0 101.7" fill="none" stroke="#087c83" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="34.0" cy="104.2" r="2.2" fill="#087c83"/><circle cx="80.9" cy="72.7" r="2.2" fill="#087c83"/><circle cx="127.8" cy="101.7" r="2.2" fill="#087c83"/><circle cx="174.7" cy="96.6" r="2.2" fill="#087c83"/><circle cx="221.6" cy="89.3" r="2.2" fill="#087c83"/><circle cx="268.5" cy="68.4" r="2.2" fill="#087c83"/><circle cx="315.5" cy="60.3" r="2.2" fill="#087c83"/><circle cx="362.4" cy="86.6" r="2.2" fill="#087c83"/><circle cx="409.3" cy="25.8" r="3.4" fill="#087c83"/><circle cx="456.2" cy="71.1" r="2.2" fill="#087c83"/><circle cx="503.1" cy="101.7" r="2.2" fill="#087c83"/><circle cx="550.0" cy="101.7" r="2.2" fill="#087c83"/><text x="409.3" y="18.8" font-size="8" font-weight="700" fill="#087c83" text-anchor="middle">303.13 µV</text><text x="34.0" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">03 Jan</text><text x="80.9" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">20 Jan</text><text x="127.8" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">04 Feb</text><text x="174.7" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">19 Feb</text><text x="221.6" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">09 Mar</text><text x="268.5" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">25 Mar</text><text x="315.5" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">11 Apr</text><text x="362.4" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">23 Apr</text><text x="409.3" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">05 May</text><text x="456.2" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">25 May</text><text x="503.1" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">02 Jun</text><text x="550.0" y="134" font-size="7.2" fill="#5b6b7a" text-anchor="middle">29 Jun</text></svg>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <ul class="list-compact"><li>All 12 recordings use a single channel sampled at 256 Hz, so statistics are directly comparable across sessions.</li><li>Recording duration varies considerably, from about 1h 11m (2026-04-11) to about 22h 27m (2026-03-25).</li><li>The 2026-06-02 and 2026-06-29 recordings have matching percentile values and near-identical histogram shapes, suggesting very similar signal characteristics or a data duplication between the two sessions.</li><li>Standard deviation of amplitude ranges from about 82.6 uV (2026-01-03) to about 303.1 uV (2026-05-05), indicating substantially different signal variability/noise levels between sessions.</li><li>Peak-to-peak amplitude (max minus min) ranges from roughly 2,483 uV (2026-05-25) to about 3,577 uV (2026-03-25).</li></ul>
+    <p class="small muted" style="margin-top:6px">This report is derived strictly from the statistical fields present in the source dataset. It does not represent a clinical or diagnostic ECG interpretation. Any assessment of cardiac rhythm, heart rate, or abnormality requires review of the underlying waveform by a qualified clinician or an appropriately validated diagnostic algorithm, neither of which is reflected in this report.</p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">11</span><span class="section-title">CBC / Labs</span><span class="section-sub">12 reports, 01 Jan – 30 Jun 2026</span></div>
+  <div class="card">
+    <p class="small"><b>Overall hematological status:</b> Stable within reference ranges. No CBC parameter abnormality was identified against the report-provided reference ranges across the observation period.</p>
+    <table class="datatable" style="margin-top:6px"><thead><tr><th>Parameter</th><th>First</th><th>Latest</th><th>Range</th><th>Trend</th></tr></thead><tbody><tr><td>Hemoglobin (Hb)</td><td>14.4</td><td>15.1</td><td>13.5 – 15.9</td><td>increasing</td></tr><tr><td>Total RBC count</td><td>5.0</td><td>5.1</td><td>4.8 – 5.3</td><td>increasing</td></tr><tr><td>Packed Cell Volume (PCV)</td><td>44.7</td><td>43.5</td><td>42.2 – 48.4</td><td>decreasing</td></tr><tr><td>Mean Corpuscular Volume (MCV)</td><td>90.0</td><td>97.8</td><td>88.4 – 98.8</td><td>increasing</td></tr><tr><td>MCH</td><td>27.6</td><td>29.9</td><td>27.6 – 31.1</td><td>increasing</td></tr><tr><td>MCHC</td><td>33.1</td><td>33.0</td><td>32.9 – 34.3</td><td>decreasing</td></tr><tr><td>RDW</td><td>12.1</td><td>13.5</td><td>12.1 – 13.5</td><td>increasing</td></tr><tr><td>Total WBC count</td><td>5761.0</td><td>9630.0</td><td>5476.0 – 9973.0</td><td>increasing</td></tr><tr><td>Neutrophils</td><td>58.0</td><td>54.0</td><td>52.0 – 61.0</td><td>decreasing</td></tr><tr><td>Lymphocytes</td><td>22.0</td><td>29.0</td><td>22.0 – 34.0</td><td>increasing</td></tr><tr><td>Eosinophils</td><td>4.0</td><td>4.0</td><td>1.0 – 5.0</td><td>stable</td></tr><tr><td>Monocytes</td><td>3.0</td><td>3.0</td><td>1.0 – 8.0</td><td>stable</td></tr><tr><td>Basophils</td><td>1.0</td><td>1.0</td><td>0.0 – 2.0</td><td>stable</td></tr><tr><td>Platelet Count</td><td>251725.0</td><td>209427.0</td><td>189551.0 – 373102.0</td><td>decreasing</td></tr></tbody></table>
+  </div>
+  <div class="callout warn" style="margin-top:8px"><b>Patient-reported vs. measured discrepancy:</b> the 30 Jun 2026 questionnaire records patient recollections of White Blood Cell (WBC) count baseline trend from your latest Complete Blood Count (CBC): Mild Leukopenia (Borderline low); Platelet Count profile stability from recent blood evaluations: Borderline Thrombocytopenia (Low); Liver Function Test (LFT) - SGOT/AST status: Mild Elevation (40-100 U/L); measured CBC values across all 12 reports in this period remained within their reference ranges throughout (see table below). The discrepancy likely reflects patient recall/perception rather than a measured lab abnormality.</div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">12</span><span class="section-title">Sleep, Cognition &amp; Quality of Life</span></div>
+  <div class="grid3">
+    <div class="card">
+      <div class="h2">Sleep</div>
+      <dl class="kv">
+        <div><dt>Trend</dt><dd>Sleep remained variable across visits</dd></div>
+        <div><dt>Average</dt><dd>6.2 hours per night across printed assessments</dd></div>
+      </dl>
+      <div class="pill-row" style="margin-top:5px"><span class="pill">Daytime naps needed</span><span class="pill">Difficulty falling back asleep</span><span class="pill">Fatigue level through the day</span><span class="pill">Waking up unrefreshed</span></div>
+    </div>
+    <div class="card">
+      <div class="h2">Cognition</div>
+      <dl class="kv">
+        <div><dt>Memory</dt><dd>Stable on clinician review, with low to intermittent patient-reported memory difficulty</dd></div>
+        <div><dt>Attention</dt><dd>Variable patient-reported concentration and attention symptoms</dd></div>
+        <div><dt>Language</dt><dd>Mild word-finding difficulty was noted but not described as worsening</dd></div>
+        <div><dt>Mental Clarity</dt><dd>Improved mental clarity was reported at the latest visit</dd></div>
+      </dl>
+    </div>
+    <div class="card">
+      <div class="h2">Quality of Life</div>
+      <dl class="kv">
+        <div><dt>Daily Function</dt><dd>Independence in daily activities was repeatedly normal, intact, or stable</dd></div>
+        <div><dt>Social Function</dt><dd>Intermittent social withdrawal or isolation symptoms were reported</dd></div>
+        <div><dt>Clinical Interpretation</dt><dd>Quality of life remains affected by seizures, sleep, triggers, and medication tolerability, despite generally stable outpatient status.</dd></div>
+      </dl>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px"><div class="h2">Latest Questionnaire Domain Scores (0-100)</div><div class="meter-row"><span class="small">Sleep Quality &amp; Architecture</span><div class="meter-track"><div class="meter-fill" style="width:91.7%"></div></div><span class="small" style="text-align:right">91.7/100</span></div><div class="meter-row"><span class="small">Cognitive &amp; Executive Function</span><div class="meter-track"><div class="meter-fill" style="width:83.3%"></div></div><span class="small" style="text-align:right">83.3/100</span></div><div class="meter-row"><span class="small">Lab Biomarkers &amp; Lifestyle</span><div class="meter-track"><div class="meter-fill" style="width:75.0%"></div></div><span class="small" style="text-align:right">75/100</span></div></div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">13</span><span class="section-title">Digital Twin Risk Dashboard</span><span class="section-sub">Overall clinical risk: Moderate</span></div>
+  <div class="grid4"><div class="chip sev-mod-bg"><b>Future Seizure Risk</b><span class="sev-mod">moderate</span></div><div class="chip sev-mod-bg"><b>Status Epilepticus Risk</b><span class="sev-mod">low to moderate</span></div><div class="chip sev-mod-bg"><b>Hospitalization Risk</b><span class="sev-mod">low to moderate</span></div><div class="chip sev-low-bg"><b>Cognitive Decline Risk</b><span class="sev-low">low</span></div><div class="chip sev-mod-bg"><b>Medication Toxicity Risk</b><span class="sev-mod">low to moderate</span></div><div class="chip sev-low-bg"><b>Functional Decline Risk</b><span class="sev-low">low</span></div><div class="chip sev-high-bg"><b>EEG-Derived Seizure Risk</b><span class="sev-high">Elevated</span></div><div class="chip sev-high-bg"><b>Genetic Safety Flags</b><span class="sev-high">10 flags, 7 high</span></div></div>
+  <div class="card" style="margin-top:8px"><div class="h2">State Vector (Health Metric Scores, 0-100)</div><div class="meter-row"><span class="small">Disease Stability</span><div class="meter-track"><div class="meter-fill" style="width:67.0%"></div></div><span class="small" style="text-align:right">67/100</span></div><div class="meter-row"><span class="small">Treatment Response</span><div class="meter-track"><div class="meter-fill" style="width:64.0%"></div></div><span class="small" style="text-align:right">64/100</span></div><div class="meter-row"><span class="small">Medication Safety</span><div class="meter-track"><div class="meter-fill" style="width:67.0%"></div></div><span class="small" style="text-align:right">67/100</span></div><div class="meter-row"><span class="small">Cognitive Health</span><div class="meter-track"><div class="meter-fill" style="width:69.0%"></div></div><span class="small" style="text-align:right">69/100</span></div><div class="meter-row"><span class="small">Sleep Health</span><div class="meter-track"><div class="meter-fill" style="width:66.0%"></div></div><span class="small" style="text-align:right">66/100</span></div><div class="meter-row"><span class="small">Quality Of Life</span><div class="meter-track"><div class="meter-fill" style="width:67.0%"></div></div><span class="small" style="text-align:right">67/100</span></div>
+    <p class="small muted" style="margin-top:5px">Each domain score is the mean of clinician-documented per-visit ratings across the clinical-note window; overall health score is the mean of the other domains. Derived digital-twin summary metrics, not a direct lab/imaging measurement.</p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-head"><span class="section-num">14</span><span class="section-title">Clinical Action Plan</span></div>
+  <div class="card" style="margin-bottom:8px">
+    <div class="h2">Priority Actions (Pharmacogenomics)</div>
+    <div class="timeline"><div class="tl-item"><span class="badge sev-high">high</span> <b>Avoid or use with heightened monitoring</b><p>See priority_safety_flags for the specific gene-drug pairs (ABCB1 (CC), BDNF (TC), CREB1 (AA), FKBP5 (TC), GRIA3 (A), HTR1B (TA), METTL21A (AA)).</p></div><div class="tl-item"><span class="badge sev-mod">moderate</span> <b>Dose with caution / consider therapeutic drug monitoring</b><p>See metabolizer_profile for reduced-function genes (CYP2C9, CYP2B6, CYP3A5, UGT1A4, POR).</p></div><div class="tl-item"><span class="badge sev-neutral">informational</span> <b>Contextualize</b><p>Interpret alongside actual clinical history, current medication list, and labs -- this panel alone does not establish a diagnosis.</p></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="h2">Recommended Actions</div>
+      <ul class="list-compact"><li>continue the documented antiseizure medication regimen unless changed by the treating clinician</li><li>maintain the documented plan for consistent sleep schedule and trigger avoidance</li><li>continue seizure and aura tracking across follow-up windows</li><li>continue periodic CBC, liver function, and antiseizure drug-level safety monitoring when scheduled</li><li>reassess at the planned follow-up interval</li></ul>
+      <div class="h2" style="margin-top:6px">Monitoring Priorities</div>
+      <ul class="list-compact"><li>seizure frequency by type</li><li>seizure clustering</li><li>average and longest seizure duration</li><li>post-ictal recovery time</li><li>aura pattern and severity</li><li>sleep duration and sleep fragmentation</li><li>missed medication doses and trigger exposure</li><li>dizziness and other medication side effects</li><li>CBC, liver function, and antiseizure drug-level tracking</li><li>word-finding, memory, and attention symptoms</li><li>Signal Variance</li><li>Amplitude Dynamics</li><li>Electrical Stability</li><li>Preictal Detection</li><li>Seizure Frequency</li><li>Temporal Disease Progression</li></ul>
+    </div>
+    <div class="card">
+      <div class="h2">MRI Follow-Up</div>
+      <ul class="list-compact"><li>Perform formal radiology review of the MRI image volumes.</li><li>Run automated brain segmentation and longitudinal registration across the three study identifiers.</li><li>Perform hippocampal volumetry because epilepsy-related mesial temporal abnormalities cannot be excluded from metadata alone.</li><li>Run FLAIR white matter lesion analysis if clinically relevant.</li><li>Compare future MRI studies using the same T1w and FLAIR acquisition strategy when possible.</li><li>Correlate MRI findings with seizure semiology and neurological examination.</li><li>Review MRI together with EEG findings for seizure-focus localization.</li><li>Repeat or escalate imaging review if new neurological deficits, worsening seizures, or new focal symptoms occur.</li></ul>
+      <div class="h2" style="margin-top:6px">Medication Reconciliation</div>
+      <ul class="list-compact"><li>Current regimen reconciled and checked against curated reference pharmacology and this patient's own pharmacogenomic findings (Section 07). Predicted-model (SuperCYPsPred) coverage is still unresolved, so a live, comprehensive DDI screen is recommended before adding or changing any interacting medication.</li></ul>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

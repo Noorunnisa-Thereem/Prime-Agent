@@ -155,9 +155,9 @@ def test_the_integrated_report_rejects_extra_top_level_keys(validator: SchemaVal
     assert validator.validate(report, "digital_twin_report")
 
 
-def test_a_generated_report_on_disk_still_validates(project: ProjectPaths, validator: SchemaValidator):
+def test_a_generated_report_on_disk_still_validates(project: ProjectPaths, validator: SchemaValidator, settings):
     from patient_prime_agent.agentic.main_agent import run_agentic_pipeline
 
-    outcome = run_agentic_pipeline(paths=project)
+    outcome = run_agentic_pipeline(paths=project, settings=settings)
     written = json.loads(Path(outcome.report_path).read_text(encoding="utf-8"))
     assert validator.validate(written, "digital_twin_report") == []

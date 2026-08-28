@@ -110,6 +110,7 @@ def load_rows(input_path: Path) -> list[dict[str, Any]]:
                 "therapeutic_interaction": _clean(record.get("Therapeutic Interaction")),
                 "fda_flag": _clean(record.get("FDA")),
                 "fda_boxed_warning": _clean(record.get("FDA Boxed Warning")),
+                "pmid": _clean(record.get("pmid")),
             }
         )
     return rows
@@ -223,6 +224,7 @@ def _build_findings_by_class(rows: list[dict[str, Any]]) -> dict[str, list[dict[
                 "genetic_basis": genetic_basis,
                 "predicted_effect": row["pgx_response"],
                 "significant": _is_significant(row),
+                "citation": row["pmid"],
             }
         )
     return {key: value for key, value in findings.items() if value}
