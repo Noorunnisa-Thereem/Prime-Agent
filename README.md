@@ -7,7 +7,7 @@ This is a synthetic-data research/engineering project (every source file is labe
 ## Table of Contents
 
 - [What This Project Does](#what-this-project-does)
-- [The Three Ways a Report Gets Built](#the-three-ways-a-report-gets-built)
+- [The Four Ways a Report Gets Built](#the-four-ways-a-report-gets-built)
 - [Drug-Drug Interaction (DDI) Screen](#drug-drug-interaction-ddi-screen)
 - [PDF Report Rendering](#pdf-report-rendering)
 - [Architecture](#architecture)
@@ -42,9 +42,9 @@ Given a `patient_data/` folder with one subfolder per data category, the project
 
 Nothing here calls a network API to interpret patient data. The only network access anywhere in the codebase is an *optional* one-time Hugging Face model download for the agent runtime's advisory narration, which never sees or produces a patient value (see [LLM Usage vs. Deterministic Extraction](#llm-usage-vs-deterministic-extraction)).
 
-## The Three Ways a Report Gets Built
+## The Four Ways a Report Gets Built
 
-This repository grew from a single schema-validated pipeline into three complementary paths. They read the same `patient_data/` folders but write different, non-overlapping output files, so none of them can silently clobber another.
+This repository grew from a single schema-validated pipeline into four complementary paths. They read the same `patient_data/` folders but write different, non-overlapping output files, so none of them can silently clobber another.
 
 | Path | What it is | Entry point | Output |
 | --- | --- | --- | --- |
