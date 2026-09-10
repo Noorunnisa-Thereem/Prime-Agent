@@ -10,6 +10,54 @@ Every part of this codebase is built around one non-negotiable rule: **never inv
 
 ## 2. Architecture
 
+```mermaid
+flowchart TD
+    PD["patient_data/<br/>(Clinical_Notes, CBC, CT, MRI, ECG, EEG, Genetics, Questionnaire)"]
+
+    PD -.->|independent pipeline, own output| A1
+    PD --> B1
+
+    subgraph PathA["Path A -- independent, own JSON output (never merges into Path C)"]
+        A1["cli.py / prime-agent run"] --> A2["path_a/orchestrator.py<br/>or agentic/main_agent.py"]
+        A2 --> A3["path_a/extractors/*.py"]
+        A3 --> A4["validation/schema_validator.py"]
+        A4 --> A5["Digital_Twin_Integrated_Report.json"]
+    end
+
+    subgraph PathB["Path B -- 8 standalone generators"]
+        B1["clinical_notes_summary.py, cbc_summary.py, ct_scan_summary.py,<br/>mri_summary.py, ecg_summary.py, eeg_summary.py,<br/>genetics_summary.py, questionnaire_summary.py"]
+        B1 --> B2["reports/&lt;category&gt;/*.json"]
+    end
+
+    subgraph PathD["Path D -- DDI screen"]
+        D1["ddi_summary.py + path_d/ddi/"] --> D2["DDI_Clinical_Assessment.json"]
+    end
+
+    subgraph Ext["External evidence layer"]
+        E1["external_evidence_summary.py<br/>PubMed / ClinVar / DailyMed / CPIC / ClinicalTrials.gov"] --> E2["External_Evidence_Report.json"]
+    end
+
+    B2 --> D1
+    B2 --> E1
+
+    subgraph PathC["Path C -- consolidation"]
+        C1["digital_twin_report.py"] --> C2["Digital_Twin_Consolidated_Report.json"]
+    end
+
+    D2 --> C1
+    E2 --> C1
+
+    subgraph Render["Rendering"]
+        R1["report_html.py"] --> R2["Digital_Twin_Integrated_Report.pdf"]
+    end
+
+    C2 --> R1
+```
+
+The dashed arrow marks Path A as a separate, independent track: it reads the same `patient_data/` but writes its own file (`reports/Digital_Twin_Integrated_Report.json`) and never feeds into Path C's consolidation. Path B's outputs are the ones that continue on into Path D and the external evidence layer, which both merge into Path C, which feeds the PDF renderer.
+
+The same flow, as plain text (for viewers without Mermaid support):
+
 ```
 patient_data/
 (Clinical_Notes, CBC, CT, MRI, ECG, EEG, Genetics, Questionnaire)
