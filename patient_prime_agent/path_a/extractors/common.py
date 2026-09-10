@@ -5,8 +5,8 @@ import re
 from datetime import datetime
 from typing import Any, Iterable
 
-from ..models import Evidence, LoadedDocument
-from ..utils import compact_excerpt, dedupe_preserve_order, normalize_whitespace, slugify
+from ...core.models import Evidence, LoadedDocument
+from ...core.utils import compact_excerpt, dedupe_preserve_order, normalize_whitespace, slugify
 
 
 DATE_PATTERNS = (

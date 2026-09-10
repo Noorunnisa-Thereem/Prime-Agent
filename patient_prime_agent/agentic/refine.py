@@ -22,10 +22,10 @@ from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any
 
-from ..memory_store import MemoryStore
-from ..models import ValidationIssue
-from ..skill_store import SkillRegistry
-from ..utils import atomic_write_json, atomic_write_text, ensure_dir, read_json, read_text, utc_now_iso
+from ..core.models import ValidationIssue
+from ..core.utils import atomic_write_json, atomic_write_text, ensure_dir, read_json, read_text, utc_now_iso
+from ..path_a.memory_store import MemoryStore
+from ..path_a.skill_store import SkillRegistry
 from .harness import ContinualHarness
 from .memory import AgentMemory
 

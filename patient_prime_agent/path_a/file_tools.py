@@ -10,9 +10,9 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 from typing import Any
 
-from .config import CATEGORY_ALIASES, CATEGORY_ORDER
-from .models import LoadedDocument
-from .utils import normalize_whitespace, read_text
+from ..core.config import CATEGORY_ALIASES, CATEGORY_ORDER
+from ..core.models import LoadedDocument
+from ..core.utils import normalize_whitespace, read_text
 
 
 SUPPORTED_TEXT_EXTENSIONS = {".txt", ".md", ".markdown", ".log", ".csv", ".tsv", ".json", ".xml", ".html", ".htm"}

@@ -2,7 +2,7 @@
   "report_type": "Pharmacogenomic (PGx) Clinical Interpretation Report",
   "patient": {
     "patient_id": null,
-    "report_date": "2026-08-28",
+    "report_date": "2026-09-10",
     "specimen": null,
     "ordering_context": null,
     "variants_analyzed": 76,

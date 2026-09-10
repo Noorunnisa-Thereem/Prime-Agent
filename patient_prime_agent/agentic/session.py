@@ -16,7 +16,7 @@ from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any
 
-from ..utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
+from ..core.utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
 
 SESSION_INDEX_FILENAME = "index.json"
 SESSION_FILENAME = "session.json"

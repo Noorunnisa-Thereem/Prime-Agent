@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .utils import ensure_dir
+from .core.utils import ensure_dir
 
 REPORT_VERSION = "1.0"
 
@@ -24,6 +24,7 @@ SOURCE_REPORTS: tuple[tuple[str, str, str], ...] = (
     ("questionnaire", "reports/questionnaire/Questionnaire_consolidated_summary.json", "Questionnaire_consolidated_summary"),
     ("genetics", "reports/genetics/genetics_clinical_summary.json", "genetics_clinical_summary"),
     ("ddi", "reports/ddi/DDI_Clinical_Assessment.json", "DDI_Clinical_Assessment"),
+    ("external_evidence", "reports/external_evidence/External_Evidence_Report.json", "External_Evidence_Report"),
 )
 
 DEFAULT_OUTPUT_PATH = Path("reports") / "Digital_Twin_Consolidated_Report.json"

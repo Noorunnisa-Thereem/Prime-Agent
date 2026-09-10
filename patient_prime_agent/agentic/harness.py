@@ -20,8 +20,8 @@ from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any
 
-from ..config import CATEGORY_LABELS, CATEGORY_ORDER, DEFAULT_OBJECTIVE, ProjectPaths
-from ..utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
+from ..core.config import CATEGORY_LABELS, CATEGORY_ORDER, DEFAULT_OBJECTIVE, ProjectPaths
+from ..core.utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
 
 HARNESS_FILENAME = "harness.json"
 REVISIONS_DIRNAME = "revisions"

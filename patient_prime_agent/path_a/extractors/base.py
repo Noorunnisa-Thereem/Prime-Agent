@@ -4,15 +4,15 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from ..config import ProjectPaths
+from ...core.config import ProjectPaths
+from ...core.models import CategoryResult, Evidence, ValidationIssue
+from ...core.utils import deep_merge_dict, slugify
+from ...validation.repair import repair_to_schema
+from ...validation.schema_validator import SchemaValidator
 from ..file_tools import load_document
 from ..memory_store import MemoryStore
-from ..models import CategoryResult, Evidence, ValidationIssue
 from ..refinement import RefinementManager
-from ..repair import repair_to_schema
-from ..schema_validator import SchemaValidator
 from ..skill_store import SkillRegistry
-from ..utils import deep_merge_dict, slugify
 
 
 class CategoryExtractorBase:

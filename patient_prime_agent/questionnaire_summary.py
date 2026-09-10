@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .utils import ensure_dir, normalize_whitespace
+from .core.utils import ensure_dir, normalize_whitespace
 
 DEFAULT_INPUT_DIR = Path("patient_data") / "Questionnaire"
 DEFAULT_OUTPUT_PATH = Path("reports") / "questionnaire" / "Questionnaire_consolidated_summary.json"

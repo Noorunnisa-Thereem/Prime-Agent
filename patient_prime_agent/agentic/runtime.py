@@ -21,7 +21,7 @@ from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any, Iterable
 
-from ..utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
+from ..core.utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
 from .a2a import A2ABus, A2AMessage, MessageType
 from .memory import AgentMemory
 from .session import Trajectory

@@ -18,8 +18,11 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import re
 import shutil
 import subprocess
+import tempfile
+import time
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -31,7 +34,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas as canvas_module
 from pypdf import PdfReader, PdfWriter
 
-from .utils import ensure_dir
+from .core.utils import ensure_dir
 
 DEFAULT_INPUT_PATH = Path("reports") / "Digital_Twin_Consolidated_Report.json"
 DEFAULT_OUTPUT_PATH = Path("reports") / "Digital_Twin_Integrated_Report.pdf"
@@ -51,6 +54,7 @@ SEC_EEG = "EEG_clinical_summary"
 SEC_QUESTIONNAIRE = "Questionnaire_consolidated_summary"
 SEC_GENETICS = "genetics_clinical_summary"
 SEC_DDI = "DDI_Clinical_Assessment"
+SEC_EXTERNAL_EVIDENCE = "External_Evidence_Report"
 
 CURRENT_REGIMEN_DRUG_NAMES = ("levetiracetam", "lamotrigine")
 
@@ -124,19 +128,48 @@ def _find_edge() -> str:
     raise RuntimeError("Microsoft Edge was not found (checked default install paths and PATH); cannot render the HTML report to PDF.")
 
 
-def _print_html_to_pdf(html_path: Path, pdf_path: Path) -> None:
+def _print_html_to_pdf(html_path: Path, pdf_path: Path, *, max_attempts: int = 2, poll_timeout: float = 12.0) -> None:
     edge = _find_edge()
-    cmd = [
-        edge,
-        "--headless",
-        "--disable-gpu",
-        "--no-pdf-header-footer",
-        f"--print-to-pdf={pdf_path.resolve()}",
-        html_path.resolve().as_uri(),
-    ]
-    result = subprocess.run(cmd, capture_output=True, timeout=90)
-    if result.returncode != 0 or not pdf_path.exists():
-        raise RuntimeError(f"Headless Edge failed to print the report to PDF (exit {result.returncode}): {result.stderr.decode(errors='replace')[:500]}")
+    last_result: subprocess.CompletedProcess | None = None
+    for attempt in range(1, max_attempts + 1):
+        # A fresh --user-data-dir per invocation avoids two real failure modes seen with
+        # Edge's default shared profile: (a) a launch can fail to print at all if the
+        # user's own Edge windows hold that profile's lock, and (b) repeated prints of the
+        # same local file path can silently serve a stale disk-cache render instead of the
+        # just-written HTML.
+        # ignore_cleanup_errors=True: Edge's crashpad/GPU helper processes can hold a lock
+        # on a profile-dir file for a moment after the main process exits -- without this,
+        # that race turns into an unrelated OSError on the way out.
+        with tempfile.TemporaryDirectory(prefix="prime_agent_edge_", ignore_cleanup_errors=True) as profile_dir:
+            cmd = [
+                edge,
+                "--headless",
+                "--disable-gpu",
+                "--disk-cache-dir=" + str(Path(profile_dir) / "cache"),
+                f"--user-data-dir={profile_dir}",
+                "--no-pdf-header-footer",
+                f"--print-to-pdf={pdf_path.resolve()}",
+                html_path.resolve().as_uri(),
+            ]
+            last_result = subprocess.run(cmd, capture_output=True, timeout=90)
+            if last_result.returncode == 0:
+                # Confirmed by direct observation: this Edge build can hand control back to
+                # this process (exit 0, no stdout/stderr) before a detached worker has
+                # actually finished writing the PDF -- the file has been seen to appear up
+                # to ~3s later. Poll here, inside the `with` block, so the profile/cache
+                # directory that worker may still be using stays alive while we wait,
+                # instead of racing its own cleanup against a background write.
+                deadline = time.monotonic() + poll_timeout
+                while time.monotonic() < deadline:
+                    if pdf_path.exists():
+                        return
+                    time.sleep(0.2)
+        if pdf_path.exists():
+            pdf_path.unlink(missing_ok=True)
+    raise RuntimeError(
+        f"Headless Edge failed to print the report to PDF after {max_attempts} attempt(s) "
+        f"(exit {last_result.returncode}): {last_result.stderr.decode(errors='replace')[:500]}"
+    )
 
 
 # ----------------------------------------------------------------------
@@ -379,6 +412,7 @@ table.datatable tr:nth-child(even) td {{ background:var(--gray-bg); }}
 .page-break {{ break-before: page; }}
 .no-break {{ break-inside: avoid; }}
 svg text {{ font-family:var(--sans); }}
+a {{ color:var(--teal); text-decoration:none; }}
 """
 
 
@@ -752,6 +786,366 @@ def _sec_medications(sections: dict[str, Any]) -> str:
 
 
 # ----------------------------------------------------------------------
+# Live external-evidence rendering, shared by Sections 06 and 07.
+#
+# Every cell below reads directly out of reports/external_evidence/
+# External_Evidence_Report.json (patient_prime_agent.external_evidence_summary),
+# which itself is the on-disk record of real HTTP calls this pipeline made to
+# PubMed, ClinVar, DailyMed, CPIC, and ClinicalTrials.gov -- see that module's
+# docstring for the request/cache contract. Nothing here re-queries an API or
+# invents a record; a missing section, a "no_results" status, or any of
+# http_client's failure statuses (rate_limited/network_error/http_error/
+# invalid_response -- see external_lookup/http_client.py) is displayed as
+# such via _error_message_cell, never silently upgraded to a finding.
+# ----------------------------------------------------------------------
+_GENE_TOKEN_RE = re.compile(r"^\s*([A-Za-z0-9]+)")
+_CITATION_PMID_RE = re.compile(r"(\d{6,9})")
+
+
+def _gene_from_basis(text: Any) -> str:
+    if not isinstance(text, str):
+        return ""
+    match = _GENE_TOKEN_RE.match(text)
+    return match.group(1).upper() if match else ""
+
+
+def _citation_pmid(citation: Any) -> str | None:
+    """Pull the bare PMID digits out of the patient genetics panel's own
+    citation field (e.g. "PMID:28343093") so it can be compared against a
+    live PubMed result's pmid -- a display comparison only, never a change
+    to either source's own data."""
+    if not isinstance(citation, str):
+        return None
+    match = _CITATION_PMID_RE.search(citation)
+    return match.group(1) if match else None
+
+
+def _live_badge(from_cache: bool) -> str:
+    cls = "sev-neutral" if from_cache else "sev-low"
+    label = "CACHED" if from_cache else "LIVE"
+    return f'<span class="badge {cls}">{label}</span>'
+
+
+def _is_cached(envelope: dict[str, Any]) -> bool:
+    """Whether ``envelope`` was recalled from external_lookup's long-term
+    memory store (memory_store.py, 30-day TTL) rather than freshly
+    verified this run. Prefers the explicit "verification" field
+    memory_store.recall_or_compute stamps on every envelope; falls back to
+    the older "from_cache" flag (set by http_client's own low-level,
+    no-TTL, per-URL disk cache) for any envelope that predates it."""
+    verification = envelope.get("verification")
+    if verification is not None:
+        return verification == "cached"
+    return bool(envelope.get("from_cache"))
+
+
+def _unresolved_badge() -> str:
+    """Missing or failed coverage is always labeled UNRESOLVED, never left
+    to read as a quiet, reassuring negative. A "no_results" status or any
+    of http_client's failure statuses means this exact query was not
+    resolved -- it says nothing about whether the underlying question has
+    a clean answer, and must never be presented as if it did."""
+    return '<span class="badge sev-neutral">UNRESOLVED</span>'
+
+
+def _unresolved_cell(message: str) -> str:
+    return f'{_unresolved_badge()} <span class="muted small">{_t(message)}</span>'
+
+
+def _error_message_cell(envelope: dict[str, Any]) -> str:
+    """Render a failed lookup's explanation. external_lookup's http_client
+    classifies *why* a call failed (rate-limited / network error / http
+    error / invalid response -- see http_client.classify_error) rather than
+    collapsing every failure into one generic status, so this prefers that
+    classification's "Not retrieved in this session" note and only falls
+    back to the raw error string when no note was attached. Always shown
+    with the same UNRESOLVED badge as a "no_results" cell -- a failed
+    lookup is missing coverage too, not a distinct, worse-sounding state."""
+    message = envelope.get("note") or f"Lookup error: {_raw_text(envelope.get('error'))}"
+    return _unresolved_cell(message)
+
+
+def _provenance_line(envelope: dict[str, Any], *, id_label: str, record_id: Any, version: Any = None) -> str:
+    """Provenance-minimum footer required on every rendered finding: the
+    resource name, the record's own ID, its version when the source
+    actually returns one (DailyMed's spl_version; every other source here
+    has no such field, shown as "Version &mdash;" -- never invented), the
+    retrieval date, and whether it was LIVE-verified this run or CACHED
+    from the long-term memory store."""
+    resource = _t(envelope.get("resource")) or "Unknown source"
+    retrieved = _pretty_date(envelope["retrieved_at"]) if envelope.get("retrieved_at") else NOT_AVAILABLE
+    version_part = f"v{_t(version)}" if version not in (None, "") else "Version &mdash;"
+    badge = _live_badge(_is_cached(envelope))
+    return (
+        f'<div class="small muted" style="margin-top:3px">{resource} &middot; {id_label} {_t(record_id)} '
+        f"&middot; {version_part} &middot; Retrieved {retrieved} {badge}</div>"
+    )
+
+
+def _evidence_scope_note() -> str:
+    """Fixed scope statement repeated on every live-evidence card: exactly
+    which sources this pipeline actually queries live, so absence of a
+    resource from this table is never mistaken for that resource having
+    nothing relevant -- see _known_limitations_block for the full,
+    already-generated limitations text this note points to."""
+    return (
+        '<p class="small muted" style="margin-top:6px"><b>Evidence Scope:</b> live-verified via ClinVar, CPIC, '
+        "DailyMed, PubMed, and ClinicalTrials.gov only. The rest of the NeuroTwin resource catalog "
+        "(PharmGKB, DrugBank, Reactome, STRING, GTEx, and others) is out of scope for this live-lookup layer "
+        "and is not reflected anywhere in this table &mdash; see Known Limitations below.</p>"
+    )
+
+
+def _known_limitations_block(external: dict[str, Any]) -> str:
+    """Renders external_evidence_summary's own recorded ``limitations`` list
+    verbatim -- real text already generated by that module, never invented
+    here -- so "see Known Limitations" above always points at something
+    concrete rather than a dangling reference."""
+    items = external.get("limitations") or []
+    if not items:
+        return ""
+    return (
+        '<div class="callout gap" style="margin-top:4px"><b>Known Limitations (External Evidence):</b>'
+        f'<ul class="list-compact">{"".join(f"<li>{_t(i)}</li>" for i in items)}</ul></div>'
+    )
+
+
+def _retrieved_cell(envelopes: list[dict[str, Any]]) -> str:
+    valid = [e for e in envelopes if isinstance(e, dict) and e.get("retrieved_at")]
+    if not valid:
+        return NOT_AVAILABLE
+    newest = max(valid, key=lambda e: e["retrieved_at"])
+    all_cached = all(_is_cached(e) for e in valid)
+    return f"{_pretty_date(newest['retrieved_at'])}<br>{_live_badge(all_cached)}"
+
+
+def _pubmed_cell(pubmed: dict[str, Any] | None) -> str:
+    if not pubmed:
+        return NOT_AVAILABLE
+    status = pubmed.get("status")
+    if status == "ok" and pubmed.get("records"):
+        rec = pubmed["records"][0]
+        # Full title, no hard character-count truncation: the table cell already wraps
+        # (no white-space:nowrap on .datatable td), and slicing an HTML-escaped string
+        # by character count risked both a mid-word cut and a mid-entity cut (e.g.
+        # "...Epileptic&amp" with the closing ";" sliced off).
+        title = _t(rec.get("title")) or "(title not returned by PubMed)"
+        return (
+            f'<a href="{xml_escape(_raw_text(rec.get("url")))}">PMID {_t(rec.get("pmid"))}</a>: {title}'
+            f'{_provenance_line(pubmed, id_label="PMID", record_id=rec.get("pmid"))}'
+        )
+    if status == "no_results":
+        return _unresolved_cell("No PubMed citation matched this exact query at the time checked.")
+    if pubmed.get("error"):
+        return _error_message_cell(pubmed)
+    return NOT_AVAILABLE
+
+
+def _clinvar_significance_badge(text: Any) -> str:
+    """Colors ClinVar's OWN clinical_significance text -- a display recolor
+    of a real, already-returned classification, never a new judgment
+    computed here. Green is reserved for a narrow, specific SUPPORTED
+    classification (Benign/Likely benign); red for a specific reported
+    CONFLICT (Pathogenic/Likely pathogenic, or ClinVar's own "Conflicting
+    interpretations" label); anything else (Uncertain significance, not
+    provided, ...) stays neutral -- it is not evidence either way and must
+    not be colored as if it were."""
+    lowered = str(text or "").lower()
+    if "conflicting" in lowered or "pathogenic" in lowered:
+        cls = "sev-high"
+    elif "benign" in lowered:
+        cls = "sev-low"
+    else:
+        cls = "sev-neutral"
+    return f'<span class="badge {cls}">{_t(text) or "Not classified"}</span>'
+
+
+def _clinvar_cell(clinvar: dict[str, Any] | None) -> str:
+    if not clinvar:
+        return NOT_AVAILABLE
+    status = clinvar.get("status")
+    if status == "ok" and clinvar.get("records"):
+        rec = clinvar["records"][0]
+        total = clinvar.get("total_matches_in_clinvar")
+        record_id = rec.get("accession") or rec.get("uid")
+        return (
+            f'<a href="{xml_escape(_raw_text(rec.get("url")))}">{_t(rec.get("accession"))}</a>: '
+            f'{_clinvar_significance_badge(rec.get("clinical_significance"))}'
+            f'<br><span class="small muted">{_t(total)} total ClinVar record(s) for this gene '
+            f"(gene-wide count, not variant-specific)</span>"
+            f'{_provenance_line(clinvar, id_label="Accession", record_id=record_id)}'
+        )
+    if status == "no_results":
+        return _unresolved_cell("No ClinVar record matched this exact gene query at the time checked.")
+    if clinvar.get("error"):
+        return _error_message_cell(clinvar)
+    return NOT_AVAILABLE
+
+
+def _cpic_guideline_badge(has_guideline: bool) -> str:
+    """Green is reserved for an actual active CPIC dosing guideline on this
+    exact gene-drug pair -- a narrow, specific, actionable proposition
+    CPIC itself published. No guideline is shown neutral, never green:
+    CPIC not having written a guideline for this pair is not the same as
+    CPIC having cleared it, and must not read as a reassuring result."""
+    return (
+        '<span class="badge sev-low">ACTIVE GUIDELINE</span>'
+        if has_guideline
+        else '<span class="badge sev-neutral">NO ACTIVE GUIDELINE</span>'
+    )
+
+
+def _cpic_cell(cpic: dict[str, Any] | None) -> str:
+    if not cpic:
+        return NOT_AVAILABLE
+    status = cpic.get("status")
+    if status == "ok" and cpic.get("records"):
+        rec = cpic["records"][0]
+        level = _t(rec.get("cpic_level"))
+        guideline = rec.get("guideline")
+        has_guideline = bool(guideline and guideline.get("url"))
+        detail = (
+            f'<a href="{xml_escape(_raw_text(guideline.get("url")))}">{_t(guideline.get("name"))}</a>'
+            if has_guideline
+            else "No active CPIC dosing guideline for this exact pair"
+        )
+        return (
+            f"{_cpic_guideline_badge(has_guideline)} Level {level}<br>{detail}"
+            f'{_provenance_line(cpic, id_label="DrugID", record_id=rec.get("drugid"))}'
+        )
+    if status == "no_results":
+        return _unresolved_cell(_t(cpic.get("note")) or "No CPIC gene-drug pair on record.")
+    if cpic.get("error"):
+        return _error_message_cell(cpic)
+    return NOT_AVAILABLE
+
+
+def _dailymed_cell(dailymed: dict[str, Any] | None) -> str:
+    if not dailymed:
+        return NOT_AVAILABLE
+    status = dailymed.get("status")
+    if status == "ok" and dailymed.get("records"):
+        rec = dailymed["records"][0]
+        title = _t(rec.get("title"))  # full title -- the cell wraps; see _pubmed_cell for why not sliced
+        return (
+            f'<a href="{xml_escape(_raw_text(rec.get("url")))}">{title}</a>'
+            f'<br><span class="small muted">Published {_t(rec.get("published_date"))}</span>'
+            f'{_provenance_line(dailymed, id_label="SetID", record_id=rec.get("setid"), version=rec.get("spl_version"))}'
+        )
+    if status == "no_results":
+        return _unresolved_cell("No DailyMed label matched this exact drug name at the time checked.")
+    if dailymed.get("error"):
+        return _error_message_cell(dailymed)
+    return NOT_AVAILABLE
+
+
+def _trials_cell(trials: dict[str, Any] | None) -> str:
+    if not trials:
+        return NOT_AVAILABLE
+    status = trials.get("status")
+    if status == "skipped":
+        return _unresolved_cell(_raw_text(trials.get("note")))
+    if status == "ok" and trials.get("records"):
+        rec = trials["records"][0]
+        total = trials.get("total_matches_on_clinicaltrials_gov")
+        total_note = f" &middot; {_t(total)} total match(es)" if total is not None else ""
+        title = _t(rec.get("brief_title"))  # full title -- the cell wraps; see _pubmed_cell for why not sliced
+        return (
+            f'<a href="{xml_escape(_raw_text(rec.get("url")))}">{_t(rec.get("nct_id"))}</a>: {title}'
+            f'<br><span class="small muted">{_t(rec.get("overall_status"))}{total_note}</span>'
+            f'{_provenance_line(trials, id_label="NCT", record_id=rec.get("nct_id"))}'
+        )
+    if status == "no_results":
+        return _unresolved_cell("No trial matched this exact condition/drug query at the time checked.")
+    if trials.get("error"):
+        return _error_message_cell(trials)
+    return NOT_AVAILABLE
+
+
+def _pgx_live_evidence_card(external: dict[str, Any], worst_findings: list[dict[str, Any]]) -> str:
+    """Live PubMed/ClinVar/CPIC evidence for exactly the gene-drug findings already
+    shown in the table above -- not every gene the panel found, only the ones the
+    clinician just read, so this stays in lockstep with the visible summary."""
+
+    pairs_by_key = {
+        (str(p.get("drug_name", "")).strip().lower(), str(p.get("gene_symbol", "")).strip().upper()): p
+        for p in (external.get("by_gene_drug_pair") or [])
+    }
+    rows = []
+    for finding in worst_findings:
+        drug = str(finding.get("drug") or "").strip()
+        gene = _gene_from_basis(finding.get("genetic_basis"))
+        pair = pairs_by_key.get((drug.lower(), gene))
+        if not pair:
+            continue
+        cpic, clinvar, pubmed = pair.get("cpic"), pair.get("clinvar"), pair.get("pubmed_combined_query")
+        rows.append(
+            f"<tr><td><b>{_t(gene)}</b> &rarr; {_t(_sentence_case(drug))}</td>"
+            f"<td>{_cpic_cell(cpic)}</td><td>{_clinvar_cell(clinvar)}</td><td>{_pubmed_cell(pubmed)}</td></tr>"
+        )
+        # The patient panel's own citation (top table) and this row's independent live
+        # PubMed search are two different sources that can legitimately land on two
+        # different papers for the same pair -- flag it explicitly rather than let a
+        # reader assume they were supposed to match.
+        live_records = pubmed.get("records") if isinstance(pubmed, dict) and pubmed.get("status") == "ok" else None
+        live_pmid = live_records[0].get("pmid") if live_records else None
+        patient_pmid = _citation_pmid(finding.get("citation"))
+        if live_pmid and patient_pmid and str(live_pmid) != patient_pmid:
+            rows.append(
+                '<tr><td colspan="4" class="small muted" style="border-top:0;padding-top:0">'
+                "Note: top table = citation from patient's own PGx report; table below = "
+                "independent live PubMed search, may differ.</td></tr>"
+            )
+    if not rows:
+        return ""
+    return f"""
+  <div class="card" style="margin-top:8px">
+    <div class="h2">External Database Evidence &mdash; PubMed / ClinVar / CPIC</div>
+    <p class="small muted" style="margin-bottom:6px"><b>Database evidence only, not patient-verified:</b> each row
+    below is a live public-database lookup for the same gene/drug pair as the patient-specific finding in the
+    table above -- it establishes general scientific plausibility for that pair, not a fact confirmed for this
+    individual patient. An UNRESOLVED result means this exact query returned nothing, or failed, at the time
+    checked -- it is not evidence that no relevant data exists, and must not be read as a clean or reassuring
+    negative.</p>
+    <table class="datatable"><thead><tr><th>Gene &rarr; Drug (patient-specific pair)</th><th>CPIC</th><th>ClinVar</th><th>PubMed</th></tr></thead>
+    <tbody>{''.join(rows)}</tbody></table>
+    {_evidence_scope_note()}
+    {_known_limitations_block(external)}
+  </div>
+"""
+
+
+def _ddi_live_evidence_card(external: dict[str, Any]) -> str:
+    """Live DailyMed/ClinicalTrials.gov/PubMed evidence for each current-regimen drug."""
+
+    by_drug = external.get("by_drug") or []
+    if not by_drug:
+        return ""
+    rows = []
+    for entry in by_drug:
+        dailymed, trials, pubmed = entry.get("dailymed"), entry.get("clinicaltrials_gov"), entry.get("pubmed")
+        rows.append(
+            f"<tr><td><b>{_t(_sentence_case(entry.get('drug_name')))}</b></td>"
+            f"<td>{_dailymed_cell(dailymed)}</td><td>{_trials_cell(trials)}</td><td>{_pubmed_cell(pubmed)}</td></tr>"
+        )
+    return f"""
+  <div class="card" style="margin-top:8px">
+    <div class="h2">External Database Evidence &mdash; DailyMed / ClinicalTrials.gov / PubMed</div>
+    <p class="small muted" style="margin-bottom:6px"><b>Database evidence only, not patient-verified:</b> each row
+    below is a live public-database lookup keyed on the drug name from the patient's own current-regimen
+    medication reconciliation above -- it establishes general plausibility for that drug, not a fact confirmed
+    for this individual patient's actual dose or response. An UNRESOLVED result means this exact query returned
+    nothing, or failed, at the time checked -- it is not evidence that no relevant data exists, and must not be
+    read as a clean or reassuring negative.</p>
+    <table class="datatable"><thead><tr><th>Drug (from patient's current regimen)</th><th>DailyMed Label</th><th>ClinicalTrials.gov</th><th>PubMed</th></tr></thead>
+    <tbody>{''.join(rows)}</tbody></table>
+    {_evidence_scope_note()}
+    {_known_limitations_block(external)}
+  </div>
+"""
+
+
+# ----------------------------------------------------------------------
 # 06. Pharmacogenomics
 # ----------------------------------------------------------------------
 def _pgx_worst_per_drug(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -773,6 +1167,7 @@ def _pgx_worst_per_drug(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
     genetics = sections.get(SEC_GENETICS) or {}
+    external = sections.get(SEC_EXTERNAL_EVIDENCE) or {}
 
     current_findings = []
     for entry in _get(genetics, "findings_by_therapeutic_class", "mood_stabilizers_antiepileptics", default=[]):
@@ -783,12 +1178,13 @@ def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
     # Citation = the real per-finding source reference from the PGx panel's own data
     # (a PMID/PMCID carried straight through from the source spreadsheet's "pmid" column
     # via genetics_summary.py) -- not a generic panel-level note, and never invented.
+    worst_findings = _pgx_worst_per_drug(current_findings)
     worst_rows = "".join(
         f'<tr><td>{_t(e.get("drug"))}</td><td>{_t(e.get("genetic_basis"))}</td>'
         f'<td><span class="badge {_PGX_EFFECT_CLASS.get(str(e.get("predicted_effect") or "").lower(), "sev-neutral")}">'
         f'{_sentence_case(e.get("predicted_effect"))}</span></td>'
         f'<td>{_t(e.get("citation"))}</td></tr>'
-        for e in _pgx_worst_per_drug(current_findings)
+        for e in worst_findings
     )
 
     return f"""
@@ -796,6 +1192,7 @@ def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
   {_section_head(6, "Pharmacogenomics", f"{genetics.get('patient', {}).get('variants_analyzed', '?')} variants across {genetics.get('patient', {}).get('drugs_covered', '?')} medications \u00b7 reported {_pretty_date(_get(genetics, 'patient', 'report_date'))}")}
   <div class="callout" style="margin-bottom:8px"><b>PGx summary for the current regimen:</b> the single most clinically significant finding per drug, with its genetic basis and source citation.</div>
   <table class="datatable"><thead><tr><th>Drug</th><th>Gene (Genotype)</th><th>Worst / Most Significant Outcome</th><th>Citation</th></tr></thead><tbody>{worst_rows or '<tr><td colspan="4">No marker in this panel names a current-regimen drug directly.</td></tr>'}</tbody></table>
+  {_pgx_live_evidence_card(external, worst_findings)}
 </section>
 """
 
@@ -807,6 +1204,7 @@ def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
 # ----------------------------------------------------------------------
 def _sec_drug_interactions(sections: dict[str, Any]) -> str:
     ddi = sections.get(SEC_DDI) or {}
+    external = sections.get(SEC_EXTERNAL_EVIDENCE) or {}
     if not ddi:
         return _sec_drug_interactions_gap(sections)
 
@@ -873,6 +1271,7 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
     <div class="h2">Essential Monitoring</div>
     <div class="pill-row">{monitoring_pills or '<span class="pill">None recorded.</span>'}</div>
   </div>
+  {_ddi_live_evidence_card(external)}
   <div class="callout gap" style="margin-top:6px"><b>Limitations of this screen:</b> {
     ' '.join(_t(item) for item in limitations)
   }</div>

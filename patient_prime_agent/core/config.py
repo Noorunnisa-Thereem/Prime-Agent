@@ -60,13 +60,15 @@ class ProjectPaths:
 
     @classmethod
     def discover(cls, root: Path | None = None) -> "ProjectPaths":
-        project_root = (root or Path(__file__).resolve().parents[1]).resolve()
+        # This file lives at patient_prime_agent/core/config.py, so the repo root is
+        # two levels up (core/ -> patient_prime_agent/ -> repo root), not one.
+        project_root = (root or Path(__file__).resolve().parents[2]).resolve()
         return cls(
             root=project_root,
             data_root=project_root / "patient_data",
             reports_root=project_root / "reports",
             memory_root=project_root / "memory",
-            skills_root=project_root / "patient_prime_agent" / "skills",
+            skills_root=project_root / "patient_prime_agent" / "path_a" / "skills",
             schemas_root=project_root / "schemas",
         )
 

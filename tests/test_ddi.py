@@ -15,8 +15,8 @@ from pathlib import Path
 import pytest
 
 from patient_prime_agent import ddi_summary
-from patient_prime_agent.ddi import aggregation, pairing
-from patient_prime_agent.ddi.normalizer import normalize_regimen
+from patient_prime_agent.path_d.ddi import aggregation, pairing
+from patient_prime_agent.path_d.ddi.normalizer import normalize_regimen
 
 REPORTS_ROOT = Path(__file__).resolve().parents[1] / "reports"
 

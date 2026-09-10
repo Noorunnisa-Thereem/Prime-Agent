@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .config import HARNESS_STATE_FILENAME, ISSUE_COUNTS_FILENAME, LESSONS_FILENAME, SESSION_LOG_FILENAME, DEFAULT_OBJECTIVE
-from .models import HarnessState, ValidationIssue
-from .utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
+from ..core.config import HARNESS_STATE_FILENAME, ISSUE_COUNTS_FILENAME, LESSONS_FILENAME, SESSION_LOG_FILENAME, DEFAULT_OBJECTIVE
+from ..core.models import HarnessState, ValidationIssue
+from ..core.utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
 
 
 @dataclass(slots=True)

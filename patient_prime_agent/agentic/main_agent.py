@@ -30,16 +30,16 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from ..config import CATEGORY_ORDER, DEFAULT_OBJECTIVE, ProjectPaths
-from ..file_tools import collect_files
-from ..memory_store import MemoryStore
-from ..models import CategoryResult, PlanStep, ValidationIssue
-from ..planner import TaskPlanner
-from ..report_builder import build_integrated_report
-from ..repair import repair_to_schema
-from ..schema_validator import SchemaValidator
-from ..skill_store import SkillRegistry
-from ..utils import atomic_write_json, ensure_dir, utc_now_iso
+from ..core.config import CATEGORY_ORDER, DEFAULT_OBJECTIVE, ProjectPaths
+from ..core.models import CategoryResult, PlanStep, ValidationIssue
+from ..core.utils import atomic_write_json, ensure_dir, utc_now_iso
+from ..path_a.file_tools import collect_files
+from ..path_a.memory_store import MemoryStore
+from ..path_a.planner import TaskPlanner
+from ..path_a.report_builder import build_integrated_report
+from ..path_a.skill_store import SkillRegistry
+from ..validation.repair import repair_to_schema
+from ..validation.schema_validator import SchemaValidator
 from .a2a import A2ABus
 from .harness import ContinualHarness
 from .llm import LanguageModel

@@ -14,12 +14,12 @@ from patient_prime_agent.agentic.subagents import (
     DeferredRefinementManager,
     build_category_subagents,
 )
-from patient_prime_agent.config import CATEGORY_ORDER, ProjectPaths
-from patient_prime_agent.extractors import CATEGORY_EXTRACTORS
-from patient_prime_agent.memory_store import MemoryStore
-from patient_prime_agent.models import CategoryResult
-from patient_prime_agent.schema_validator import SchemaValidator
-from patient_prime_agent.skill_store import SkillRegistry
+from patient_prime_agent.core.config import CATEGORY_ORDER, ProjectPaths
+from patient_prime_agent.core.models import CategoryResult
+from patient_prime_agent.path_a.extractors import CATEGORY_EXTRACTORS
+from patient_prime_agent.path_a.memory_store import MemoryStore
+from patient_prime_agent.path_a.skill_store import SkillRegistry
+from patient_prime_agent.validation.schema_validator import SchemaValidator
 
 
 @pytest.fixture
@@ -52,7 +52,7 @@ def make_agent(wiring: dict, category: str) -> CategorySubAgent:
 
 
 def files_for(project: ProjectPaths, category: str) -> list[str]:
-    from patient_prime_agent.file_tools import collect_files
+    from patient_prime_agent.path_a.file_tools import collect_files
 
     return [str(path) for path in collect_files(project.data_root).get(category, [])]
 

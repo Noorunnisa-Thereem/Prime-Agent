@@ -1,0 +1,1401 @@
+{
+  "report_type": "Digital_Twin_Integrated_Report",
+  "generated_at": "2026-09-10T10:45:58Z",
+  "patient_profile": {
+    "patient_id": null,
+    "name": null,
+    "date_of_birth": null,
+    "sex": null,
+    "age_years": null
+  },
+  "clinical_summary": {
+    "active_problems": [
+      "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "12-May-2021",
+      "Levetiracetam (Keppra) 1000mg BID,",
+      "Lamotrigine 150mg BID",
+      "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "Complete Blood Count (CBC) and LIVER Function Panels completed. Values stable inside Therapeutic Window.",
+      "Quality-of-Life Domain Summary (0-100, higher = better)",
+      "Domain",
+      "Score",
+      "Seizure Activity & Worry",
+      "9/100",
+      "Aura & Prodromal Symptoms",
+      "Medication Effects & Tolerability",
+      "6/100",
+      "Sleep Quality & Energy",
+      "Triggers Observed",
+      "7/100",
+      "Cognitive & Emotional Wellbeing",
+      "2/100",
+      "Labs, Vitals & Daily Functioning",
+      "5/100",
+      "Epilepsy Assessment Report — Date: 01-Jan-2026",
+      "Diagnosis Date: 12-May-2021",
+      "Assessment Parameter",
+      "No routine lab tests scheduled for this bi-weekly window.",
+      "8/100",
+      "Epilepsy Assessment Report — Date: 16-Jan-2026",
+      "CBC profile updated. Platelet counts normal",
+      "white cell parameters steady.",
+      "0/100",
+      "Epilepsy Assessment Report — Date: 03-Feb-2026",
+      "1/100",
+      "4/100",
+      "Epilepsy Assessment Report — Date: 15-Feb-2026",
+      "Epilepsy Assessment Report — Date: 02-Mar-2026",
+      "No acute hematological abnormality detected on this panel."
+    ],
+    "medications": [
+      "Current Meds: Levetiracetam (Keppra) 1000mg BID,",
+      "Medication Effects & Tolerability",
+      "Nausea after taking medication",
+      "Missed medication doses"
+    ],
+    "allergies": [],
+    "notable_abnormalities": [
+      "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "12-May-2021",
+      "Levetiracetam (Keppra) 1000mg BID,",
+      "Lamotrigine 150mg BID",
+      "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "Complete Blood Count (CBC) and LIVER Function Panels completed. Values stable inside Therapeutic Window.",
+      "Quality-of-Life Domain Summary (0-100, higher = better)",
+      "Domain",
+      "Score",
+      "Seizure Activity & Worry",
+      "9/100",
+      "Aura & Prodromal Symptoms",
+      "Medication Effects & Tolerability",
+      "6/100",
+      "Sleep Quality & Energy",
+      "Triggers Observed",
+      "7/100",
+      "Cognitive & Emotional Wellbeing",
+      "2/100",
+      "Labs, Vitals & Daily Functioning",
+      "5/100",
+      "Epilepsy Assessment Report — Date: 01-Jan-2026",
+      "Diagnosis Date: 12-May-2021",
+      "Assessment Parameter",
+      "No routine lab tests scheduled for this bi-weekly window.",
+      "8/100",
+      "Epilepsy Assessment Report — Date: 16-Jan-2026",
+      "CBC profile updated. Platelet counts normal",
+      "white cell parameters steady.",
+      "0/100",
+      "Epilepsy Assessment Report — Date: 03-Feb-2026",
+      "1/100",
+      "4/100",
+      "Epilepsy Assessment Report — Date: 15-Feb-2026",
+      "Epilepsy Assessment Report — Date: 02-Mar-2026",
+      "No acute hematological abnormality detected on this panel."
+    ]
+  },
+  "sections": {
+    "clinical_notes": {
+      "chief_complaint": "Since last visit, patient reports approximately 7",
+      "history_of_present_illness": "seizure episodes overall, average duration 3.4 mins, with seizure clustering: No.",
+      "diagnoses": [
+        "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+        "12-May-2021",
+        "Levetiracetam (Keppra) 1000mg BID,",
+        "Lamotrigine 150mg BID",
+        "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+        "Complete Blood Count (CBC) and LIVER Function Panels completed. Values stable inside Therapeutic Window.",
+        "Quality-of-Life Domain Summary (0-100, higher = better)",
+        "Domain",
+        "Score",
+        "Seizure Activity & Worry",
+        "9/100",
+        "Aura & Prodromal Symptoms",
+        "Medication Effects & Tolerability",
+        "6/100",
+        "Sleep Quality & Energy",
+        "Triggers Observed",
+        "7/100",
+        "Cognitive & Emotional Wellbeing",
+        "2/100",
+        "Labs, Vitals & Daily Functioning",
+        "5/100",
+        "Epilepsy Assessment Report — Date: 01-Jan-2026",
+        "Diagnosis Date: 12-May-2021",
+        "Assessment Parameter",
+        "No routine lab tests scheduled for this bi-weekly window.",
+        "8/100",
+        "Epilepsy Assessment Report — Date: 16-Jan-2026",
+        "CBC profile updated. Platelet counts normal",
+        "white cell parameters steady.",
+        "0/100",
+        "Epilepsy Assessment Report — Date: 03-Feb-2026",
+        "1/100",
+        "4/100",
+        "Epilepsy Assessment Report — Date: 15-Feb-2026",
+        "Epilepsy Assessment Report — Date: 02-Mar-2026"
+      ],
+      "medications": [
+        "Current Meds: Levetiracetam (Keppra) 1000mg BID,",
+        "Medication Effects & Tolerability",
+        "Nausea after taking medication",
+        "Missed medication doses"
+      ],
+      "allergies": [],
+      "plan": null,
+      "notable_findings": [
+        "seizure episodes overall, average duration 3.4 mins, with seizure clustering: No.",
+        "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+        "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+        "Seizure Activity & Worry",
+        "Tonic-Clonic seizure count",
+        "Absence seizure count",
+        "Focal aware seizure count",
+        "Focal impaired-awareness seizure count",
+        "Nocturnal (sleep) seizure episodes",
+        "Average seizure duration (mins)",
+        "seizure episodes overall, average duration 9.0 mins, with seizure clustering: Yes.",
+        "seizure episodes overall, average duration 6.7 mins, with seizure clustering: No.",
+        "seizure episodes overall, average duration 8.2 mins, with seizure clustering: No.",
+        "seizure episodes overall, average duration 4.5 mins, with seizure clustering: No."
+      ]
+    },
+    "cbc": {
+      "collection_date": null,
+      "hemoglobin_g_per_dL": null,
+      "hematocrit_pct": null,
+      "rbc_million_uL": null,
+      "wbc_10e3_uL": null,
+      "platelets_10e3_uL": null,
+      "mcv_fL": null,
+      "mch_pg": null,
+      "mchc_g_dL": null,
+      "rdw_pct": null,
+      "differential": {
+        "neutrophils_pct": null,
+        "lymphocytes_pct": null,
+        "monocytes_pct": null,
+        "eosinophils_pct": null,
+        "basophils_pct": null
+      },
+      "abnormal_flags": [
+        "No acute hematological abnormality detected on this panel."
+      ]
+    },
+    "ct": {
+      "study_date": null,
+      "body_region": null,
+      "indication": null,
+      "contrast": null,
+      "impression": null,
+      "key_findings": [],
+      "urgent_findings": []
+    },
+    "mri": {
+      "study_date": null,
+      "body_region": "brain",
+      "indication": null,
+      "contrast": null,
+      "impression": null,
+      "key_findings": [],
+      "urgent_findings": []
+    },
+    "ecg": {
+      "study_date": null,
+      "rate_bpm": null,
+      "rhythm": null,
+      "intervals": {
+        "pr_ms": null,
+        "qrs_ms": null,
+        "qt_ms": null,
+        "qtc_ms": null
+      },
+      "axis": null,
+      "impression": null,
+      "notable_abnormalities": []
+    },
+    "eeg": {
+      "study_date": null,
+      "background": null,
+      "epileptiform_activity": "ictal",
+      "events": [],
+      "impression": null,
+      "notable_abnormalities": []
+    },
+    "genetics": {
+      "test_name": null,
+      "variants": [],
+      "overall_interpretation": null,
+      "recommendations": []
+    },
+    "questionnaire": {
+      "reported_symptoms": [
+        "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic"
+      ],
+      "symptom_onset": null,
+      "duration": "What was the average duration of the longest convulsive episode?",
+      "severity": "Mild morning grogginess",
+      "relevant_history": [
+        "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+        "Medication Side Effects",
+        "Experience of dizziness, vertigo, or lightheadedness after taking medication:",
+        "Presence of chronic headaches or unusual cranial pressure post-medication dose:",
+        "Did you experience a delayed or completely missed dose of your anti-seizure medication?"
+      ],
+      "patient_concerns": [
+        "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:"
+      ]
+    }
+  },
+  "source_traceability": [
+    {
+      "section": "clinical_notes",
+      "field": "chief_complaint",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Since last visit, patient reports approximately 7",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 3.4 mins, with seizure clustering: No.",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 3.4 mins, with seizure clustering: No.; Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "12-May-2021; Levetiracetam (Keppra) 1000mg BID,; Lamotrigine 150mg BID; Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Complete Blood Count (CBC) and LIVER Function Panels completed. Values stable inside Therapeutic Window.; Quality-of-Life Domain Summary (0-100, higher = better); Domain; Score; Seizure Activity & Worry; 9/100; Aura & Prodromal Symptoms; Medication Effects & Tolerability; 6/100; Sleep Quality & Energy; Triggers Observed; 7/100; Cognitive & Emotional Wellbeing; 2/100; Labs, Vitals & Daily Functioning; 5/100; Epilepsy Assessment Report — Date: 01-Jan-2026; Diagnosis Date: 12-May-2021; Assessment Parameter",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "medications",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Current Meds: Levetiracetam (Keppra) 1000mg BID,; Medication Effects & Tolerability; Nausea after taking medication; Missed medication doses",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_01_20260101_162553_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Seizure Activity & Worry; Tonic-Clonic seizure count; Absence seizure count; Focal aware seizure count; Focal impaired-awareness seizure count; Nocturnal (sleep) seizure episodes; Average seizure duration (mins)",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "chief_complaint",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Since last visit, patient reports approximately 4",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 9.0 mins, with seizure clustering: Yes.",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 9.0 mins, with seizure clustering: Yes.; Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "12-May-2021; Levetiracetam (Keppra) 1000mg BID,; Lamotrigine 150mg BID; Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; No routine lab tests scheduled for this bi-weekly window.; Quality-of-Life Domain Summary (0-100, higher = better); Domain; Score; Seizure Activity & Worry; 2/100; Aura & Prodromal Symptoms; 6/100; Medication Effects & Tolerability; 8/100; Sleep Quality & Energy; 9/100; Triggers Observed; Cognitive & Emotional Wellbeing; Labs, Vitals & Daily Functioning; Epilepsy Assessment Report — Date: 16-Jan-2026; Diagnosis Date: 12-May-2021; Assessment Parameter",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "medications",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Current Meds: Levetiracetam (Keppra) 1000mg BID,; Medication Effects & Tolerability; Nausea after taking medication; Missed medication doses",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_02_20260116_173507_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Seizure Activity & Worry; Tonic-Clonic seizure count; Absence seizure count; Focal aware seizure count; Focal impaired-awareness seizure count; Nocturnal (sleep) seizure episodes; Average seizure duration (mins)",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "chief_complaint",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Since last visit, patient reports approximately 5",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 6.7 mins, with seizure clustering: No.",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 6.7 mins, with seizure clustering: No.; Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "12-May-2021; Levetiracetam (Keppra) 1000mg BID,; Lamotrigine 150mg BID; Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; CBC profile updated. Platelet counts normal; white cell parameters steady.; Quality-of-Life Domain Summary (0-100, higher = better); Domain; Score; Seizure Activity & Worry; 5/100; Aura & Prodromal Symptoms; 9/100; Medication Effects & Tolerability; Sleep Quality & Energy; 8/100; Triggers Observed; 6/100; Cognitive & Emotional Wellbeing; 0/100; Labs, Vitals & Daily Functioning; Epilepsy Assessment Report — Date: 03-Feb-2026; Diagnosis Date: 12-May-2021; Assessment Parameter",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "medications",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Current Meds: Levetiracetam (Keppra) 1000mg BID,; Medication Effects & Tolerability; Nausea after taking medication; Missed medication doses",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_03_20260203_142817_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Seizure Activity & Worry; Tonic-Clonic seizure count; Absence seizure count; Focal aware seizure count; Focal impaired-awareness seizure count; Nocturnal (sleep) seizure episodes; Average seizure duration (mins)",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "chief_complaint",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Since last visit, patient reports approximately 11",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 8.2 mins, with seizure clustering: No.",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 8.2 mins, with seizure clustering: No.; Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "12-May-2021; Levetiracetam (Keppra) 1000mg BID,; Lamotrigine 150mg BID; Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; No routine lab tests scheduled for this bi-weekly window.; Quality-of-Life Domain Summary (0-100, higher = better); Domain; Score; Seizure Activity & Worry; 9/100; Aura & Prodromal Symptoms; Medication Effects & Tolerability; 1/100; Sleep Quality & Energy; 0/100; Triggers Observed; Cognitive & Emotional Wellbeing; Labs, Vitals & Daily Functioning; 4/100; Epilepsy Assessment Report — Date: 15-Feb-2026; Diagnosis Date: 12-May-2021; Assessment Parameter",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "medications",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Current Meds: Levetiracetam (Keppra) 1000mg BID,; Medication Effects & Tolerability; Nausea after taking medication; Missed medication doses",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_04_20260215_143647_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Seizure Activity & Worry; Tonic-Clonic seizure count; Absence seizure count; Focal aware seizure count; Focal impaired-awareness seizure count; Nocturnal (sleep) seizure episodes; Average seizure duration (mins)",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "chief_complaint",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Since last visit, patient reports approximately 5",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 4.5 mins, with seizure clustering: No.",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_handwritten.pdf",
+      "source_lines": [],
+      "source_excerpt": "seizure episodes overall, average duration 4.5 mins, with seizure clustering: No.; Overall clinical impression: seizure control reasonably stable, quality-of-life trending",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "history_of_present_illness",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "diagnoses",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "12-May-2021; Levetiracetam (Keppra) 1000mg BID,; Lamotrigine 150mg BID; Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; No routine lab tests scheduled for this bi-weekly window.; Quality-of-Life Domain Summary (0-100, higher = better); Domain; Score; Seizure Activity & Worry; 8/100; Aura & Prodromal Symptoms; 4/100; Medication Effects & Tolerability; Sleep Quality & Energy; 0/100; Triggers Observed; 6/100; Cognitive & Emotional Wellbeing; Labs, Vitals & Daily Functioning; 2/100; Epilepsy Assessment Report — Date: 02-Mar-2026; Diagnosis Date: 12-May-2021; Assessment Parameter",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "medications",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Current Meds: Levetiracetam (Keppra) 1000mg BID,; Medication Effects & Tolerability; Nausea after taking medication; Missed medication doses",
+      "confidence": 0.8
+    },
+    {
+      "section": "clinical_notes",
+      "field": "notable_findings",
+      "source_file": "D:\\Prime Agent\\patient_data\\Clinical_Notes\\Report_05_20260302_103116_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Seizure Activity & Worry; Tonic-Clonic seizure count; Absence seizure count; Focal aware seizure count; Focal impaired-awareness seizure count; Nocturnal (sleep) seizure episodes; Average seizure duration (mins)",
+      "confidence": 0.8
+    },
+    {
+      "section": "cbc",
+      "field": "abnormal_flags",
+      "source_file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_01_20260101_090649.pdf",
+      "source_lines": [],
+      "source_excerpt": "No acute hematological abnormality detected on this panel.",
+      "confidence": 0.8
+    },
+    {
+      "section": "cbc",
+      "field": "abnormal_flags",
+      "source_file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_02_20260128_131501.pdf",
+      "source_lines": [],
+      "source_excerpt": "No acute hematological abnormality detected on this panel.",
+      "confidence": 0.8
+    },
+    {
+      "section": "cbc",
+      "field": "abnormal_flags",
+      "source_file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_03_20260203_085001.pdf",
+      "source_lines": [],
+      "source_excerpt": "No acute hematological abnormality detected on this panel.",
+      "confidence": 0.8
+    },
+    {
+      "section": "cbc",
+      "field": "abnormal_flags",
+      "source_file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_07_20260403_095400.pdf",
+      "source_lines": [],
+      "source_excerpt": "No acute hematological abnormality detected on this panel.",
+      "confidence": 0.8
+    },
+    {
+      "section": "cbc",
+      "field": "abnormal_flags",
+      "source_file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_09_20260511_110442.pdf",
+      "source_lines": [],
+      "source_excerpt": "No acute hematological abnormality detected on this panel.",
+      "confidence": 0.8
+    },
+    {
+      "section": "cbc",
+      "field": "abnormal_flags",
+      "source_file": "D:\\Prime Agent\\patient_data\\CBC\\CBC_10_20260516_165829.pdf",
+      "source_lines": [],
+      "source_excerpt": "No acute hematological abnormality detected on this panel.",
+      "confidence": 0.8
+    },
+    {
+      "section": "mri",
+      "field": "body_region",
+      "source_file": "D:\\Prime Agent\\patient_data\\MRI\\MRI_summary.json",
+      "source_lines": [],
+      "source_excerpt": "brain",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\EEG_summary.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal10_ictal_20260118_084512.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal11_ictal_20260209_185434.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal12_ictal_20260221_113837.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal13_ictal_20260308_201048.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal14_ictal_20260320_193721.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal15_ictal_20260406_102348.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal16_ictal_20260419_091524.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal17_ictal_20260511_133238.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal18_ictal_20260518_201246.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal19_ictal_20260605_161759.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal1_ictal_20260106_112432.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\ictal_preprocess_data\\ictal2_ictal_20260619_094518.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal10_interictal_20260123_080242.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal11_interictal_20260208_092417.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal12_interictal_20260208_150554.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal13_interictal_20260312_124217.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal14_interictal_20260315_171023.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal15_interictal_20260406_131029.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal16_interictal_20260423_083840.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal17_interictal_20260513_145940.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal18_interictal_20260523_134320.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal19_interictal_20260602_162517.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal1_interictal_20260120_173612.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\interictal_preprocess_data\\interictal2_interictal_20260627_071452.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal10_pre_ictal_20260118_083512.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal11_pre_ictal_20260209_184634.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal12_pre_ictal_20260221_113137.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal13_pre_ictal_20260308_200448.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal14_pre_ictal_20260320_193021.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal15_pre_ictal_20260406_101648.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal16_pre_ictal_20260419_091024.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal17_pre_ictal_20260511_132538.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal18_pre_ictal_20260518_200446.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal1_pre_ictal_20260106_111532.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "eeg",
+      "field": "epileptiform_activity",
+      "source_file": "D:\\Prime Agent\\patient_data\\EEG\\preictal_preprocess_data\\preictal2_pre_ictal_20260619_093518.json",
+      "source_lines": [],
+      "source_excerpt": "ictal",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_01_20260101_090649_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_01_20260101_090649_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_01_20260101_090649_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild morning grogginess",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_01_20260101_090649_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_01_20260101_090649_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_02_20260128_131501_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_02_20260128_131501_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_02_20260128_131501_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild/Rare",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_02_20260128_131501_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_02_20260128_131501_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_03_20260203_085001_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_03_20260203_085001_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_03_20260203_085001_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild (minor tongue bite)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_03_20260203_085001_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_03_20260203_085001_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_04_20260222_134139_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_04_20260222_134139_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_04_20260222_134139_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Moderate (bruising)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_04_20260222_134139_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_04_20260222_134139_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_05_20260303_153929_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_05_20260303_153929_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_05_20260303_153929_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild (minor tongue bite)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_05_20260303_153929_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_05_20260303_153929_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_06_20260316_100511_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_06_20260316_100511_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_06_20260316_100511_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild peripheral blurring",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_06_20260316_100511_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_06_20260316_100511_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_07_20260403_095400_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_07_20260403_095400_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_07_20260403_095400_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild (Manageable)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_07_20260403_095400_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_07_20260403_095400_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_08_20260428_163156_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_08_20260428_163156_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_08_20260428_163156_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild peripheral blurring",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_08_20260428_163156_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_08_20260428_163156_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_09_20260511_110442_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_09_20260511_110442_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_09_20260511_110442_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Moderate (bruising)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_09_20260511_110442_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_09_20260511_110442_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_10_20260516_165829_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_10_20260516_165829_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_10_20260516_165829_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Moderate (bruising)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_10_20260516_165829_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_10_20260516_165829_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_11_20260612_093843_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_11_20260612_093843_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_11_20260612_093843_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild (Manageable)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_11_20260612_093843_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_11_20260612_093843_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "reported_symptoms",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_12_20260630_093237_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Focal Impaired Awareness, Secondary Generalized Tonic-Clonic",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "duration",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_12_20260630_093237_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "What was the average duration of the longest convulsive episode?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "severity",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_12_20260630_093237_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Mild (Manageable)",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "relevant_history",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_12_20260630_093237_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Seizure History: Focal Impaired Awareness, Secondary Generalized Tonic-Clonic; Medication Side Effects; Experience of dizziness, vertigo, or lightheadedness after taking medication:; Presence of chronic headaches or unusual cranial pressure post-medication dose:; Did you experience a delayed or completely missed dose of your anti-seizure medication?",
+      "confidence": 0.8
+    },
+    {
+      "section": "questionnaire",
+      "field": "patient_concerns",
+      "source_file": "D:\\Prime Agent\\patient_data\\Questionnaire\\Questionnaire_12_20260630_093237_printed.pdf",
+      "source_lines": [],
+      "source_excerpt": "Difficulty planning, organizing daily schedules, or managing simple multi-step tasks:",
+      "confidence": 0.8
+    }
+  ],
+  "validation": {
+    "schema": "digital_twin_report.schema.json",
+    "status": "passed",
+    "checked_at": "2026-09-10T10:45:58Z",
+    "issues_found": []
+  }
+}

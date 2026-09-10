@@ -8,8 +8,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .models import ValidationIssue
-from .utils import coerce_integer, coerce_number, coerce_string, dedupe_preserve_order, read_json
+from ..core.models import ValidationIssue
+from ..core.utils import coerce_integer, coerce_number, coerce_string, dedupe_preserve_order, read_json
 
 
 @dataclass(slots=True)

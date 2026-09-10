@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .config import CATEGORY_ORDER
-from .models import PlanStep
+from ..core.config import CATEGORY_ORDER
+from ..core.models import PlanStep
 
 
 @dataclass(slots=True)

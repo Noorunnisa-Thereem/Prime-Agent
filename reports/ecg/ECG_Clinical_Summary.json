@@ -4,7 +4,7 @@
     "start_date": "2026-01-03",
     "end_date": "2026-06-29"
   },
-  "generated": "2026-08-18",
+  "generated": "2026-09-10",
   "overview": [
     "This report summarizes the signal-level statistical characteristics of the ECG digital twin dataset, comprising 12 recording sessions captured between January and June 2026. Each entry in the source dataset represents a single-channel ECG waveform recorded from the digital twin data stream, described only in terms of amplitude distribution (minimum, maximum, mean, median, standard deviation, and percentiles)."
   ],

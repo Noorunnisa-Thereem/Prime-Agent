@@ -20,10 +20,10 @@ from patient_prime_agent.agentic.refine import (
     RefinementEngine,
     classify_target,
 )
-from patient_prime_agent.config import ProjectPaths
-from patient_prime_agent.memory_store import MemoryStore
-from patient_prime_agent.models import ValidationIssue
-from patient_prime_agent.skill_store import SkillRegistry
+from patient_prime_agent.core.config import ProjectPaths
+from patient_prime_agent.core.models import ValidationIssue
+from patient_prime_agent.path_a.memory_store import MemoryStore
+from patient_prime_agent.path_a.skill_store import SkillRegistry
 
 
 @pytest.fixture

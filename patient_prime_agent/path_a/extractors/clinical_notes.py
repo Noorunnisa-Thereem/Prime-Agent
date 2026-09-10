@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..models import Evidence, ValidationIssue
+from ...core.models import Evidence, ValidationIssue
 from .base import CategoryExtractorBase
 from .common import capture_section, extract_sentences_with_keywords, split_list_items, textify
 

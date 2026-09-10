@@ -7,9 +7,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ..config import ProjectPaths
-from ..memory_store import MemoryStore
-from ..skill_store import SkillRegistry
+from ..core.config import ProjectPaths
+from ..path_a.memory_store import MemoryStore
+from ..path_a.skill_store import SkillRegistry
 from .harness import ContinualHarness
 from .main_agent import MainOrchestratorAgent, run_agentic_pipeline
 from .memory import AgentMemory

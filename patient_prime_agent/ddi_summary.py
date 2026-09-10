@@ -21,10 +21,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .ddi import aggregation, clinical_context, pairing, reference_data
-from .ddi.normalizer import normalize_regimen
-from .ddi.pgx_modifiers import collect_pgx_evidence
-from .utils import ensure_dir
+from .core.utils import ensure_dir
+from .path_d.ddi import aggregation, clinical_context, pairing, reference_data
+from .path_d.ddi.normalizer import normalize_regimen
+from .path_d.ddi.pgx_modifiers import collect_pgx_evidence
 
 REPORT_TYPE = "Drug-Drug Interaction & Therapy Evidence Assessment"
 

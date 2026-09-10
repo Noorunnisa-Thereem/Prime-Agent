@@ -9,8 +9,8 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-from .file_tools import load_document
-from .utils import ensure_dir
+from .core.utils import ensure_dir
+from .path_a.file_tools import load_document
 
 
 DEFAULT_INPUT_DIR = Path("patient_data") / "Clinical_Notes"

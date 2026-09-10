@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .utils import ensure_dir
+from .core.utils import ensure_dir
 
 DEFAULT_INPUT_PATH = Path("patient_data") / "ECG" / "ECG_summary.json"
 DEFAULT_OUTPUT_PATH = Path("reports") / "ecg" / "ECG_Clinical_Summary.json"

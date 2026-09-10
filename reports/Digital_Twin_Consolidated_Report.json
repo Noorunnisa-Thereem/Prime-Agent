@@ -1,7 +1,7 @@
 {
   "digital_twin_report": {
     "version": "1.0",
-    "generated_at": "2026-08-28T15:43:28",
+    "generated_at": "2026-09-10T16:15:47",
     "patient_id": "SYN-100482",
     "sections": {
       "clinical__notes_summary": {
@@ -6150,7 +6150,7 @@
           "start_date": "2026-01-03",
           "end_date": "2026-06-29"
         },
-        "generated": "2026-08-18",
+        "generated": "2026-09-10",
         "overview": [
           "This report summarizes the signal-level statistical characteristics of the ECG digital twin dataset, comprising 12 recording sessions captured between January and June 2026. Each entry in the source dataset represents a single-channel ECG waveform recorded from the digital twin data stream, described only in terms of amplitude distribution (minimum, maximum, mean, median, standard deviation, and percentiles)."
         ],
@@ -9213,7 +9213,7 @@
         "report_type": "Pharmacogenomic (PGx) Clinical Interpretation Report",
         "patient": {
           "patient_id": null,
-          "report_date": "2026-08-28",
+          "report_date": "2026-09-10",
           "specimen": null,
           "ordering_context": null,
           "variants_analyzed": 76,
@@ -10504,7 +10504,7 @@
       "DDI_Clinical_Assessment": {
         "report_type": "Drug-Drug Interaction & Therapy Evidence Assessment",
         "patient_id": "SYN-100482",
-        "generated_at": "2026-08-28T15:43:28",
+        "generated_at": "2026-09-10T16:15:47",
         "medication_reconciliation": {
           "normalized_medications": [
             {
@@ -10883,6 +10883,1469 @@
           "No proposed/candidate medication list is present in the source data, so only the current regimen's pairwise and therapy-level evidence is evaluated.",
           "Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug not listed there is reported as unresolved, not as free of interactions."
         ]
+      },
+      "External_Evidence_Report": {
+        "report_type": "External Biomedical Evidence Lookup (Live)",
+        "generated_at": "2026-09-10T10:45:47Z",
+        "inputs": {
+          "current_regimen_drugs": [
+            "lamotrigine",
+            "levetiracetam"
+          ],
+          "primary_diagnosis_used_for_trials": "Focal impaired-awareness seizures",
+          "gene_drug_pairs_from_patient_genetics": [
+            {
+              "gene_symbol": "SCN1A",
+              "drug_name": "lamotrigine",
+              "source_finding": "SCN1A (CT)",
+              "predicted_effect": "efficacy",
+              "citation": "PMID:28753467"
+            },
+            {
+              "gene_symbol": "SCN1A",
+              "drug_name": "levetiracetam",
+              "source_finding": "SCN1A (CT)",
+              "predicted_effect": "efficacy",
+              "citation": "PMID:28753467"
+            },
+            {
+              "gene_symbol": "ABCB1",
+              "drug_name": "lamotrigine",
+              "source_finding": "ABCB1 (GG)",
+              "predicted_effect": "reduced efficacy",
+              "citation": "PMID:32483200"
+            },
+            {
+              "gene_symbol": "CYP3A4",
+              "drug_name": "lamotrigine",
+              "source_finding": "CYP3A4 (TT)",
+              "predicted_effect": "reduced efficacy",
+              "citation": "PMID:28343093"
+            },
+            {
+              "gene_symbol": "CACNA1H",
+              "drug_name": "lamotrigine",
+              "source_finding": "CACNA1H (AG)",
+              "predicted_effect": "efficacy",
+              "citation": "PMCID:PMC6171340"
+            }
+          ]
+        },
+        "by_drug": [
+          {
+            "drug_name": "lamotrigine",
+            "pubmed": {
+              "resource": "PubMed (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=28862044,38750644,33573557,9429124,7624259&retmode=json",
+              "query": {
+                "term": "lamotrigine",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:44Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "pmid": "28862044",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/28862044/",
+                  "title": "Acute lamotrigine overdose: a systematic review of published adult and pediatric cases.",
+                  "source_journal": "Clin Toxicol (Phila)",
+                  "pubdate": "2018 Feb",
+                  "last_author": "Laliberté M"
+                },
+                {
+                  "pmid": "38750644",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/38750644/",
+                  "title": "The efficacy of lamotrigine in bipolar disorder: A systematic review and meta-analysis.",
+                  "source_journal": "Bipolar Disord",
+                  "pubdate": "2024 Aug",
+                  "last_author": "Wesseloo R"
+                },
+                {
+                  "pmid": "33573557",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/33573557/",
+                  "title": "Use of Phenytoin, Phenobarbital Carbamazepine, Levetiracetam Lamotrigine and Valproate in Pregnancy and Breastfeeding: Risk of Major Malformations, Dose-dependency, Monotherapy vs Polytherapy, Pharmacokinetics and Clinical Implications.",
+                  "source_journal": "Curr Neuropharmacol",
+                  "pubdate": "2021",
+                  "last_author": "Demir O"
+                },
+                {
+                  "pmid": "9429124",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/9429124/",
+                  "title": "Lamotrigine: pharmacokinetics.",
+                  "source_journal": "J Child Neurol",
+                  "pubdate": "1997 Nov",
+                  "last_author": "Garnett WR"
+                },
+                {
+                  "pmid": "7624259",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/7624259/",
+                  "title": "Lamotrigine.",
+                  "source_journal": "Pharmacotherapy",
+                  "pubdate": "1995 Mar-Apr",
+                  "last_author": "Burstein AH"
+                }
+              ],
+              "verification": "cached"
+            },
+            "dailymed": {
+              "resource": "DailyMed (NLM REST API v2)",
+              "endpoint": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json?drug_name=lamotrigine&pagesize=5",
+              "query": {
+                "drug_name": "lamotrigine",
+                "pagesize": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:45Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "setid": "0833d3df-2df1-4abd-abe0-7fb2c0253c80",
+                  "spl_version": 20,
+                  "published_date": "Aug 20, 2026",
+                  "title": "LAMOTRIGINE TABLET, FILM COATED, EXTENDED RELEASE [AMNEAL PHARMACEUTICALS LLC]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0833d3df-2df1-4abd-abe0-7fb2c0253c80"
+                },
+                {
+                  "setid": "3e2c9a35-6a39-41d7-ad84-3c0bb8894b09",
+                  "spl_version": 44,
+                  "published_date": "Aug 20, 2026",
+                  "title": "LAMICTAL XR (LAMOTRIGINE) TABLET, FILM COATED, EXTENDED RELEASE LAMICTAL XR (LAMOTRIGINE) KIT [GLAXOSMITHKLINE LLC]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3e2c9a35-6a39-41d7-ad84-3c0bb8894b09"
+                },
+                {
+                  "setid": "d7e3572d-56fe-4727-2bb4-013ccca22678",
+                  "spl_version": 45,
+                  "published_date": "Aug 20, 2026",
+                  "title": "LAMICTAL (LAMOTRIGINE) TABLET LAMICTAL (LAMOTRIGINE) TABLET, FOR SUSPENSION LAMICTAL ODT (LAMOTRIGINE) TABLET, ORALLY DISINTEGRATING LAMICTAL (LAMOTRIGINE) KIT [GLAXOSMITHKLINE LLC]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d7e3572d-56fe-4727-2bb4-013ccca22678"
+                },
+                {
+                  "setid": "54ea1ec3-876b-4d3a-a92b-1a6d70951de0",
+                  "spl_version": 9,
+                  "published_date": "Aug 07, 2026",
+                  "title": "LAMOTRIGINE TABLET, ORALLY DISINTEGRATING [DR. REDDY&RSQUO;S LABORATORIES INC.]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=54ea1ec3-876b-4d3a-a92b-1a6d70951de0"
+                },
+                {
+                  "setid": "6139a858-700c-4eb9-9f84-99d280bde326",
+                  "spl_version": 31,
+                  "published_date": "Aug 06, 2026",
+                  "title": "LAMOTRIGINE TABLET [A-S MEDICATION SOLUTIONS]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6139a858-700c-4eb9-9f84-99d280bde326"
+                }
+              ],
+              "verification": "cached"
+            },
+            "clinicaltrials_gov": {
+              "resource": "ClinicalTrials.gov (API v2)",
+              "endpoint": "https://clinicaltrials.gov/api/v2/studies?query.cond=Focal%20impaired-awareness%20seizures&pageSize=5&format=json&countTotal=true&query.intr=lamotrigine",
+              "query": {
+                "condition": "Focal impaired-awareness seizures",
+                "drug_name": "lamotrigine",
+                "page_size": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:46Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "no_results",
+              "error": null,
+              "count": 0,
+              "records": [],
+              "total_matches_on_clinicaltrials_gov": 0,
+              "verification": "cached"
+            }
+          },
+          {
+            "drug_name": "levetiracetam",
+            "pubmed": {
+              "resource": "PubMed (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=30036676,34286461,11449876,33573557,36344882&retmode=json",
+              "query": {
+                "term": "levetiracetam",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:47Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "pmid": "30036676",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/30036676/",
+                  "title": "Levetiracetam.",
+                  "source_journal": "J Pain Symptom Manage",
+                  "pubdate": "2018 Oct",
+                  "last_author": "Wilcock A"
+                },
+                {
+                  "pmid": "34286461",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/34286461/",
+                  "title": "Levetiracetam for Seizure Prophylaxis in Neurocritical Care: A Systematic Review and Meta-analysis.",
+                  "source_journal": "Neurocrit Care",
+                  "pubdate": "2022 Feb",
+                  "last_author": "Frontera JA"
+                },
+                {
+                  "pmid": "11449876",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/11449876/",
+                  "title": "Levetiracetam.",
+                  "source_journal": "Am J Health Syst Pharm",
+                  "pubdate": "2001 Jul 1",
+                  "last_author": "Sangha KS"
+                },
+                {
+                  "pmid": "33573557",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/33573557/",
+                  "title": "Use of Phenytoin, Phenobarbital Carbamazepine, Levetiracetam Lamotrigine and Valproate in Pregnancy and Breastfeeding: Risk of Major Malformations, Dose-dependency, Monotherapy vs Polytherapy, Pharmacokinetics and Clinical Implications.",
+                  "source_journal": "Curr Neuropharmacol",
+                  "pubdate": "2021",
+                  "last_author": "Demir O"
+                },
+                {
+                  "pmid": "36344882",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/36344882/",
+                  "title": "Levetiracetam-associated pancytopenia.",
+                  "source_journal": "Acta Neurol Belg",
+                  "pubdate": "2023 Aug",
+                  "last_author": "Ozkara C"
+                }
+              ],
+              "verification": "cached"
+            },
+            "dailymed": {
+              "resource": "DailyMed (NLM REST API v2)",
+              "endpoint": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json?drug_name=levetiracetam&pagesize=5",
+              "query": {
+                "drug_name": "levetiracetam",
+                "pagesize": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:49Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "setid": "2d307850-0ed5-4f32-ac62-0e1e2fe27a7a",
+                  "spl_version": 4,
+                  "published_date": "Sep 07, 2026",
+                  "title": "LEVETIRACETAM TABLET [REMEDYREPACK INC.]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2d307850-0ed5-4f32-ac62-0e1e2fe27a7a"
+                },
+                {
+                  "setid": "8bf7c1ce-dfc4-457f-8a8b-365f82aa8512",
+                  "spl_version": 17,
+                  "published_date": "Sep 02, 2026",
+                  "title": "LEVETIRACETAM INJECTION, SOLUTION, CONCENTRATE [XGEN PHARMACEUTICALS DJB, INC.]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8bf7c1ce-dfc4-457f-8a8b-365f82aa8512"
+                },
+                {
+                  "setid": "2d57f22f-fecc-466e-a444-87708c7c2f80",
+                  "spl_version": 4,
+                  "published_date": "Aug 31, 2026",
+                  "title": "LEVETIRACETAM ER (LEVETIRACETAM) TABLET, FILM COATED, EXTENDED RELEASE [REMEDYREPACK INC.]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2d57f22f-fecc-466e-a444-87708c7c2f80"
+                },
+                {
+                  "setid": "5517b148-1eff-6421-e063-6394a90a9498",
+                  "spl_version": 2,
+                  "published_date": "Aug 31, 2026",
+                  "title": "LEVETIRACETAM TABLET [DIRECT_RX]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5517b148-1eff-6421-e063-6394a90a9498"
+                },
+                {
+                  "setid": "9bdef24b-c50e-4e6a-8650-59d78009f472",
+                  "spl_version": 7,
+                  "published_date": "Aug 28, 2026",
+                  "title": "LEVETIRACETAM TABLET, FILM COATED, EXTENDED RELEASE [REMEDYREPACK INC.]",
+                  "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9bdef24b-c50e-4e6a-8650-59d78009f472"
+                }
+              ],
+              "verification": "cached"
+            },
+            "clinicaltrials_gov": {
+              "resource": "ClinicalTrials.gov (API v2)",
+              "endpoint": "https://clinicaltrials.gov/api/v2/studies?query.cond=Focal%20impaired-awareness%20seizures&pageSize=5&format=json&countTotal=true&query.intr=levetiracetam",
+              "query": {
+                "condition": "Focal impaired-awareness seizures",
+                "drug_name": "levetiracetam",
+                "page_size": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:49Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 2,
+              "records": [
+                {
+                  "nct_id": "NCT07130786",
+                  "url": "https://clinicaltrials.gov/study/NCT07130786",
+                  "brief_title": "Prophylactic Anti-Seizure Medication vs No Anti-Seizure Medication for Patients With Primary Motor Cortex Brain Metastases",
+                  "overall_status": "RECRUITING",
+                  "phases": [
+                    "PHASE2"
+                  ]
+                },
+                {
+                  "nct_id": "NCT00537238",
+                  "url": "https://clinicaltrials.gov/study/NCT00537238",
+                  "brief_title": "Pregabalin Versus Levetiracetam In Partial Seizures",
+                  "overall_status": "COMPLETED",
+                  "phases": [
+                    "PHASE3"
+                  ]
+                }
+              ],
+              "total_matches_on_clinicaltrials_gov": 2,
+              "verification": "cached"
+            }
+          }
+        ],
+        "by_gene": {
+          "SCN1A": {
+            "resource": "ClinVar (NCBI E-utils)",
+            "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4887952,4887908,4887819,4887359,4887037&retmode=json",
+            "query": {
+              "gene_symbol": "SCN1A",
+              "retmax": 5
+            },
+            "retrieved_at": "2026-09-10T09:40:51Z",
+            "from_cache": true,
+            "http_status": 200,
+            "status": "ok",
+            "error": null,
+            "count": 5,
+            "records": [
+              {
+                "uid": "4887952",
+                "accession": "VCV004887952",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887952/",
+                "title": "NM_001165963.4(SCN1A):c.383+4T>C",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/09/02 00:00",
+                "linked_traits": [
+                  "Severe myoclonic epilepsy in infancy"
+                ]
+              },
+              {
+                "uid": "4887908",
+                "accession": "VCV004887908",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887908/",
+                "title": "NM_001165963.4(SCN1A):c.5590T>C (p.Cys1864Arg)",
+                "clinical_significance": "Pathogenic",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/02/11 00:00",
+                "linked_traits": [
+                  "not provided"
+                ]
+              },
+              {
+                "uid": "4887819",
+                "accession": "VCV004887819",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887819/",
+                "title": "NM_001165963.4(SCN1A):c.2686G>C (p.Val896Leu)",
+                "clinical_significance": "Pathogenic",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/02/14 00:00",
+                "linked_traits": [
+                  "not provided"
+                ]
+              },
+              {
+                "uid": "4887359",
+                "accession": "VCV004887359",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887359/",
+                "title": "NM_001165963.4(SCN1A):c.2415+18T>C",
+                "clinical_significance": "Likely benign",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/06/10 00:00",
+                "linked_traits": [
+                  "not specified"
+                ]
+              },
+              {
+                "uid": "4887037",
+                "accession": "VCV004887037",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887037/",
+                "title": "NM_001165963.4(SCN1A):c.2834T>C (p.Phe945Ser)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/07/29 00:00",
+                "linked_traits": [
+                  "Severe myoclonic epilepsy in infancy"
+                ]
+              }
+            ],
+            "total_matches_in_clinvar": "5406",
+            "verification": "cached"
+          },
+          "ABCB1": {
+            "resource": "ClinVar (NCBI E-utils)",
+            "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4858346,4835998,4835997,4636048,4636047&retmode=json",
+            "query": {
+              "gene_symbol": "ABCB1",
+              "retmax": 5
+            },
+            "retrieved_at": "2026-09-10T09:40:52Z",
+            "from_cache": true,
+            "http_status": 200,
+            "status": "ok",
+            "error": null,
+            "count": 5,
+            "records": [
+              {
+                "uid": "4858346",
+                "accession": "VCV004858346",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4858346/",
+                "title": "NM_001348946.2(ABCB1):c.3256T>G (p.Phe1086Val)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/04/15 00:00",
+                "linked_traits": [
+                  "not specified"
+                ]
+              },
+              {
+                "uid": "4835998",
+                "accession": "VCV004835998",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4835998/",
+                "title": "NM_001348946.2(ABCB1):c.1007T>C (p.Phe336Ser)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2025/12/15 00:00",
+                "linked_traits": [
+                  "not specified"
+                ]
+              },
+              {
+                "uid": "4835997",
+                "accession": "VCV004835997",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4835997/",
+                "title": "NM_001348946.2(ABCB1):c.2155A>G (p.Ile719Val)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2025/12/15 00:00",
+                "linked_traits": [
+                  "not specified"
+                ]
+              },
+              {
+                "uid": "4636048",
+                "accession": "VCV004636048",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4636048/",
+                "title": "NM_001348946.2(ABCB1):c.3517G>A (p.Gly1173Arg)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2025/11/05 00:00",
+                "linked_traits": [
+                  "not specified"
+                ]
+              },
+              {
+                "uid": "4636047",
+                "accession": "VCV004636047",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4636047/",
+                "title": "NM_001348946.2(ABCB1):c.3578A>G (p.Gln1193Arg)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2025/10/29 00:00",
+                "linked_traits": [
+                  "not specified"
+                ]
+              }
+            ],
+            "total_matches_in_clinvar": "797",
+            "verification": "cached"
+          },
+          "CYP3A4": {
+            "resource": "ClinVar (NCBI E-utils)",
+            "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4885026,4884743,4820055,4819223,4686561&retmode=json",
+            "query": {
+              "gene_symbol": "CYP3A4",
+              "retmax": 5
+            },
+            "retrieved_at": "2026-09-10T09:40:55Z",
+            "from_cache": true,
+            "http_status": 200,
+            "status": "ok",
+            "error": null,
+            "count": 5,
+            "records": [
+              {
+                "uid": "4885026",
+                "accession": "VCV004885026",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4885026/",
+                "title": "NM_017460.6(CYP3A4):c.71+5G>C",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "no assertion criteria provided",
+                "last_evaluated": "2025/05/28 00:00",
+                "linked_traits": [
+                  "not provided"
+                ]
+              },
+              {
+                "uid": "4884743",
+                "accession": "VCV004884743",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4884743/",
+                "title": "GRCh37/hg19 7q21.12-36.3(chr7:88192865-159128556)x3",
+                "clinical_significance": "Pathogenic",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/08/03 00:00",
+                "linked_traits": [
+                  "Partial duplication of the long arm of chromosome 7"
+                ]
+              },
+              {
+                "uid": "4820055",
+                "accession": "VCV004820055",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4820055/",
+                "title": "NC_000007.14:g.99487704_102394107del",
+                "clinical_significance": "Pathogenic",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2024/04/29 00:00",
+                "linked_traits": [
+                  "7q22 microdeletion"
+                ]
+              },
+              {
+                "uid": "4819223",
+                "accession": "VCV004819223",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4819223/",
+                "title": "Single allele",
+                "clinical_significance": "Pathogenic",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2023/05/01 00:00",
+                "linked_traits": [
+                  "Partial deletion of the long arm of chromosome 7"
+                ]
+              },
+              {
+                "uid": "4686561",
+                "accession": "VCV004686561",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4686561/",
+                "title": "NM_017460.6(CYP3A4):c.565T>C (p.Phe189Leu)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/01/12 00:00",
+                "linked_traits": [
+                  "Vitamin D-dependent rickets, type 3"
+                ]
+              }
+            ],
+            "total_matches_in_clinvar": "70",
+            "verification": "cached"
+          },
+          "CACNA1H": {
+            "resource": "ClinVar (NCBI E-utils)",
+            "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4886626,4886623,4884480,4880900,4880898&retmode=json",
+            "query": {
+              "gene_symbol": "CACNA1H",
+              "retmax": 5
+            },
+            "retrieved_at": "2026-09-10T09:40:57Z",
+            "from_cache": true,
+            "http_status": 200,
+            "status": "ok",
+            "error": null,
+            "count": 5,
+            "records": [
+              {
+                "uid": "4886626",
+                "accession": "VCV004886626",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4886626/",
+                "title": "NM_021098.3(CACNA1H):c.2762T>C (p.Leu921Pro)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "no assertion criteria provided",
+                "last_evaluated": "2025/01/13 00:00",
+                "linked_traits": [
+                  "not provided"
+                ]
+              },
+              {
+                "uid": "4886623",
+                "accession": "VCV004886623",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4886623/",
+                "title": "NM_021098.3(CACNA1H):c.2473C>G (p.Leu825Val)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "no assertion criteria provided",
+                "last_evaluated": "2025/05/06 00:00",
+                "linked_traits": [
+                  "not provided"
+                ]
+              },
+              {
+                "uid": "4884480",
+                "accession": "VCV004884480",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4884480/",
+                "title": "NM_021098.3(CACNA1H):c.4027A>T (p.Met1343Leu)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "criteria provided, single submitter",
+                "last_evaluated": "2026/05/05 00:00",
+                "linked_traits": [
+                  "Epilepsy, childhood absence, susceptibility to, 6"
+                ]
+              },
+              {
+                "uid": "4880900",
+                "accession": "VCV004880900",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4880900/",
+                "title": "NM_021098.3(CACNA1H):c.43C>G (p.Leu15Val)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "no assertion criteria provided",
+                "last_evaluated": "2026/03/29 00:00",
+                "linked_traits": [
+                  "not provided"
+                ]
+              },
+              {
+                "uid": "4880898",
+                "accession": "VCV004880898",
+                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4880898/",
+                "title": "NM_021098.3(CACNA1H):c.4775C>A (p.Pro1592Gln)",
+                "clinical_significance": "Uncertain significance",
+                "review_status": "no assertion criteria provided",
+                "last_evaluated": "2024/11/21 00:00",
+                "linked_traits": [
+                  "not provided"
+                ]
+              }
+            ],
+            "total_matches_in_clinvar": "4289",
+            "verification": "cached"
+          }
+        },
+        "by_gene_drug_pair": [
+          {
+            "gene_symbol": "SCN1A",
+            "drug_name": "lamotrigine",
+            "patient_source_finding": "SCN1A (CT)",
+            "patient_predicted_effect": "efficacy",
+            "patient_citation": "PMID:28753467",
+            "cpic": {
+              "resource": "CPIC (api.cpicpgx.org)",
+              "endpoint": "https://api.cpicpgx.org/v1/pair?select=genesymbol,drugid,guidelineid,cpiclevel&genesymbol=eq.SCN1A&drugid=eq.RxNorm%3A28439",
+              "query": {
+                "gene_symbol": "SCN1A",
+                "drug_name": "lamotrigine"
+              },
+              "retrieved_at": "2026-09-10T09:40:59Z",
+              "from_cache": true,
+              "http_status": 200,
+              "error": null,
+              "status": "no_results",
+              "records": [],
+              "note": "CPIC lists 'lamotrigine' (RxNorm:28439) but has no SCN1A-lamotrigine pair on record.",
+              "verification": "cached"
+            },
+            "clinvar": {
+              "resource": "ClinVar (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4887952,4887908,4887819,4887359,4887037&retmode=json",
+              "query": {
+                "gene_symbol": "SCN1A",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:51Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "uid": "4887952",
+                  "accession": "VCV004887952",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887952/",
+                  "title": "NM_001165963.4(SCN1A):c.383+4T>C",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/09/02 00:00",
+                  "linked_traits": [
+                    "Severe myoclonic epilepsy in infancy"
+                  ]
+                },
+                {
+                  "uid": "4887908",
+                  "accession": "VCV004887908",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887908/",
+                  "title": "NM_001165963.4(SCN1A):c.5590T>C (p.Cys1864Arg)",
+                  "clinical_significance": "Pathogenic",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/02/11 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4887819",
+                  "accession": "VCV004887819",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887819/",
+                  "title": "NM_001165963.4(SCN1A):c.2686G>C (p.Val896Leu)",
+                  "clinical_significance": "Pathogenic",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/02/14 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4887359",
+                  "accession": "VCV004887359",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887359/",
+                  "title": "NM_001165963.4(SCN1A):c.2415+18T>C",
+                  "clinical_significance": "Likely benign",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/06/10 00:00",
+                  "linked_traits": [
+                    "not specified"
+                  ]
+                },
+                {
+                  "uid": "4887037",
+                  "accession": "VCV004887037",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887037/",
+                  "title": "NM_001165963.4(SCN1A):c.2834T>C (p.Phe945Ser)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/07/29 00:00",
+                  "linked_traits": [
+                    "Severe myoclonic epilepsy in infancy"
+                  ]
+                }
+              ],
+              "total_matches_in_clinvar": "5406",
+              "verification": "cached"
+            },
+            "pubmed_combined_query": {
+              "resource": "PubMed (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=35696452,39174245,20301494,40808385,41137852&retmode=json",
+              "query": {
+                "term": "SCN1A AND lamotrigine",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:41:01Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "pmid": "35696452",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/35696452/",
+                  "title": "The gain of function SCN1A disorder spectrum: novel epilepsy phenotypes and therapeutic implications.",
+                  "source_journal": "Brain",
+                  "pubdate": "2022 Nov 21",
+                  "last_author": "Cestèle S"
+                },
+                {
+                  "pmid": "39174245",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/39174245/",
+                  "title": "Familial hemiplegic migraine.",
+                  "source_journal": "Handb Clin Neurol",
+                  "pubdate": "2024",
+                  "last_author": "Goadsby PJ"
+                },
+                {
+                  "pmid": "20301494",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/20301494/",
+                  "title": "SCN1A Seizure Disorders.",
+                  "source_journal": null,
+                  "pubdate": "1993",
+                  "last_author": "Sotero de Menezes MA"
+                },
+                {
+                  "pmid": "40808385",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/40808385/",
+                  "title": "Voltage-gated sodium channels in the nervous system: Molecular physiology to therapeutic interventions.",
+                  "source_journal": "Neural Regen Res",
+                  "pubdate": "2026 Jun 1",
+                  "last_author": "Yao K"
+                },
+                {
+                  "pmid": "41137852",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41137852/",
+                  "title": "Clinical and genetic landscape of epilepsies with absence seizures and single-gene etiology.",
+                  "source_journal": "Epilepsia",
+                  "pubdate": "2026 Jan",
+                  "last_author": "Guerrini R"
+                }
+              ],
+              "verification": "cached"
+            }
+          },
+          {
+            "gene_symbol": "SCN1A",
+            "drug_name": "levetiracetam",
+            "patient_source_finding": "SCN1A (CT)",
+            "patient_predicted_effect": "efficacy",
+            "patient_citation": "PMID:28753467",
+            "cpic": {
+              "resource": "CPIC (api.cpicpgx.org)",
+              "endpoint": "https://api.cpicpgx.org/v1/drug?name=ilike.*levetiracetam*&select=drugid,name",
+              "query": {
+                "gene_symbol": "SCN1A",
+                "drug_name": "levetiracetam"
+              },
+              "retrieved_at": "2026-09-10T09:41:02Z",
+              "from_cache": true,
+              "http_status": 200,
+              "error": null,
+              "status": "no_results",
+              "records": [],
+              "note": "CPIC has no drug entry matching 'levetiracetam'; no gene-drug pair can exist for it.",
+              "verification": "cached"
+            },
+            "clinvar": {
+              "resource": "ClinVar (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4887952,4887908,4887819,4887359,4887037&retmode=json",
+              "query": {
+                "gene_symbol": "SCN1A",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:51Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "uid": "4887952",
+                  "accession": "VCV004887952",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887952/",
+                  "title": "NM_001165963.4(SCN1A):c.383+4T>C",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/09/02 00:00",
+                  "linked_traits": [
+                    "Severe myoclonic epilepsy in infancy"
+                  ]
+                },
+                {
+                  "uid": "4887908",
+                  "accession": "VCV004887908",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887908/",
+                  "title": "NM_001165963.4(SCN1A):c.5590T>C (p.Cys1864Arg)",
+                  "clinical_significance": "Pathogenic",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/02/11 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4887819",
+                  "accession": "VCV004887819",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887819/",
+                  "title": "NM_001165963.4(SCN1A):c.2686G>C (p.Val896Leu)",
+                  "clinical_significance": "Pathogenic",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/02/14 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4887359",
+                  "accession": "VCV004887359",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887359/",
+                  "title": "NM_001165963.4(SCN1A):c.2415+18T>C",
+                  "clinical_significance": "Likely benign",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/06/10 00:00",
+                  "linked_traits": [
+                    "not specified"
+                  ]
+                },
+                {
+                  "uid": "4887037",
+                  "accession": "VCV004887037",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887037/",
+                  "title": "NM_001165963.4(SCN1A):c.2834T>C (p.Phe945Ser)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/07/29 00:00",
+                  "linked_traits": [
+                    "Severe myoclonic epilepsy in infancy"
+                  ]
+                }
+              ],
+              "total_matches_in_clinvar": "5406",
+              "verification": "cached"
+            },
+            "pubmed_combined_query": {
+              "resource": "PubMed (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=20301494,39200163,26966048,39181834,32079034&retmode=json",
+              "query": {
+                "term": "SCN1A AND levetiracetam",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:41:03Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "pmid": "39200163",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/39200163/",
+                  "title": "The Biallelic Inheritance of Two Novel SCN1A Variants Results in Developmental and Epileptic Encephalopathy Responsive to Levetiracetam.",
+                  "source_journal": "Biomedicines",
+                  "pubdate": "2024 Jul 31",
+                  "last_author": "Imbrici P"
+                },
+                {
+                  "pmid": "20301494",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/20301494/",
+                  "title": "SCN1A Seizure Disorders.",
+                  "source_journal": null,
+                  "pubdate": "1993",
+                  "last_author": "Sotero de Menezes MA"
+                },
+                {
+                  "pmid": "26966048",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/26966048/",
+                  "title": "Pharmacotherapy for Dravet Syndrome.",
+                  "source_journal": "Paediatr Drugs",
+                  "pubdate": "2016 Jun",
+                  "last_author": "Kenney-Jung DL"
+                },
+                {
+                  "pmid": "39181834",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/39181834/",
+                  "title": "Insights into clinical phenotypes and treatment responses in a Small cohort of Taiwanese patients with SCN1A variants: A Preliminary study.",
+                  "source_journal": "Pediatr Neonatol",
+                  "pubdate": "2025 May",
+                  "last_author": "Liang JS"
+                },
+                {
+                  "pmid": "32079034",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/32079034/",
+                  "title": "Changing Landscape of Dravet Syndrome Management: An Overview.",
+                  "source_journal": "Neuropediatrics",
+                  "pubdate": "2020 Apr",
+                  "last_author": "Samanta D"
+                }
+              ],
+              "verification": "cached"
+            }
+          },
+          {
+            "gene_symbol": "ABCB1",
+            "drug_name": "lamotrigine",
+            "patient_source_finding": "ABCB1 (GG)",
+            "patient_predicted_effect": "reduced efficacy",
+            "patient_citation": "PMID:32483200",
+            "cpic": {
+              "resource": "CPIC (api.cpicpgx.org)",
+              "endpoint": "https://api.cpicpgx.org/v1/pair?select=genesymbol,drugid,guidelineid,cpiclevel&genesymbol=eq.ABCB1&drugid=eq.RxNorm%3A28439",
+              "query": {
+                "gene_symbol": "ABCB1",
+                "drug_name": "lamotrigine"
+              },
+              "retrieved_at": "2026-09-10T09:41:05Z",
+              "from_cache": true,
+              "http_status": 200,
+              "error": null,
+              "status": "no_results",
+              "records": [],
+              "note": "CPIC lists 'lamotrigine' (RxNorm:28439) but has no ABCB1-lamotrigine pair on record.",
+              "verification": "cached"
+            },
+            "clinvar": {
+              "resource": "ClinVar (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4858346,4835998,4835997,4636048,4636047&retmode=json",
+              "query": {
+                "gene_symbol": "ABCB1",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:52Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "uid": "4858346",
+                  "accession": "VCV004858346",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4858346/",
+                  "title": "NM_001348946.2(ABCB1):c.3256T>G (p.Phe1086Val)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/04/15 00:00",
+                  "linked_traits": [
+                    "not specified"
+                  ]
+                },
+                {
+                  "uid": "4835998",
+                  "accession": "VCV004835998",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4835998/",
+                  "title": "NM_001348946.2(ABCB1):c.1007T>C (p.Phe336Ser)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2025/12/15 00:00",
+                  "linked_traits": [
+                    "not specified"
+                  ]
+                },
+                {
+                  "uid": "4835997",
+                  "accession": "VCV004835997",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4835997/",
+                  "title": "NM_001348946.2(ABCB1):c.2155A>G (p.Ile719Val)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2025/12/15 00:00",
+                  "linked_traits": [
+                    "not specified"
+                  ]
+                },
+                {
+                  "uid": "4636048",
+                  "accession": "VCV004636048",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4636048/",
+                  "title": "NM_001348946.2(ABCB1):c.3517G>A (p.Gly1173Arg)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2025/11/05 00:00",
+                  "linked_traits": [
+                    "not specified"
+                  ]
+                },
+                {
+                  "uid": "4636047",
+                  "accession": "VCV004636047",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4636047/",
+                  "title": "NM_001348946.2(ABCB1):c.3578A>G (p.Gln1193Arg)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2025/10/29 00:00",
+                  "linked_traits": [
+                    "not specified"
+                  ]
+                }
+              ],
+              "total_matches_in_clinvar": "797",
+              "verification": "cached"
+            },
+            "pubmed_combined_query": {
+              "resource": "PubMed (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=22972536,39171842,26213157,33857625,35303539&retmode=json",
+              "query": {
+                "term": "ABCB1 AND lamotrigine",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:41:06Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "pmid": "22972536",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/22972536/",
+                  "title": "Association between lamotrigine concentrations and ABCB1 polymorphisms in patients with epilepsy.",
+                  "source_journal": "Ther Drug Monit",
+                  "pubdate": "2012 Oct",
+                  "last_author": "Granić P"
+                },
+                {
+                  "pmid": "39171842",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/39171842/",
+                  "title": "Effect of Genetic Polymorphisms of ABCB1, ABCG2, and SLC22A1 on the Steady-State Plasma Concentrations of Lamotrigine in Treatment-Resistant Depressed Patients Treated With Lamotrigine Augmentation Therapy.",
+                  "source_journal": "Clin Neuropharmacol",
+                  "pubdate": "2024 Sep-Oct 01",
+                  "last_author": "Kondo T"
+                },
+                {
+                  "pmid": "26213157",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/26213157/",
+                  "title": "Polymorphisms of ABCG2, ABCB1 and HNF4α are associated with Lamotrigine trough concentrations in epilepsy patients.",
+                  "source_journal": "Drug Metab Pharmacokinet",
+                  "pubdate": "2015 Aug",
+                  "last_author": "Huang M"
+                },
+                {
+                  "pmid": "33857625",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/33857625/",
+                  "title": "Estrogen profile- and pharmacogenetics-based lamotrigine dosing regimen optimization: Recommendations for pregnant women with epilepsy.",
+                  "source_journal": "Pharmacol Res",
+                  "pubdate": "2021 Jul",
+                  "last_author": "Zhao L"
+                },
+                {
+                  "pmid": "35303539",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/35303539/",
+                  "title": "Effect of UGT1A4, UGT2B7, UGT2B15, UGT2B17 and ABC1B polymorphisms on lamotrigine metabolism in Danish patients.",
+                  "source_journal": "Epilepsy Res",
+                  "pubdate": "2022 May",
+                  "last_author": "Ekström L"
+                }
+              ],
+              "verification": "cached"
+            }
+          },
+          {
+            "gene_symbol": "CYP3A4",
+            "drug_name": "lamotrigine",
+            "patient_source_finding": "CYP3A4 (TT)",
+            "patient_predicted_effect": "reduced efficacy",
+            "patient_citation": "PMID:28343093",
+            "cpic": {
+              "resource": "CPIC (api.cpicpgx.org)",
+              "endpoint": "https://api.cpicpgx.org/v1/pair?select=genesymbol,drugid,guidelineid,cpiclevel&genesymbol=eq.CYP3A4&drugid=eq.RxNorm%3A28439",
+              "query": {
+                "gene_symbol": "CYP3A4",
+                "drug_name": "lamotrigine"
+              },
+              "retrieved_at": "2026-09-10T09:41:08Z",
+              "from_cache": true,
+              "http_status": 200,
+              "error": null,
+              "status": "no_results",
+              "records": [],
+              "note": "CPIC lists 'lamotrigine' (RxNorm:28439) but has no CYP3A4-lamotrigine pair on record.",
+              "verification": "cached"
+            },
+            "clinvar": {
+              "resource": "ClinVar (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4885026,4884743,4820055,4819223,4686561&retmode=json",
+              "query": {
+                "gene_symbol": "CYP3A4",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:55Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "uid": "4885026",
+                  "accession": "VCV004885026",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4885026/",
+                  "title": "NM_017460.6(CYP3A4):c.71+5G>C",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "no assertion criteria provided",
+                  "last_evaluated": "2025/05/28 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4884743",
+                  "accession": "VCV004884743",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4884743/",
+                  "title": "GRCh37/hg19 7q21.12-36.3(chr7:88192865-159128556)x3",
+                  "clinical_significance": "Pathogenic",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/08/03 00:00",
+                  "linked_traits": [
+                    "Partial duplication of the long arm of chromosome 7"
+                  ]
+                },
+                {
+                  "uid": "4820055",
+                  "accession": "VCV004820055",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4820055/",
+                  "title": "NC_000007.14:g.99487704_102394107del",
+                  "clinical_significance": "Pathogenic",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2024/04/29 00:00",
+                  "linked_traits": [
+                    "7q22 microdeletion"
+                  ]
+                },
+                {
+                  "uid": "4819223",
+                  "accession": "VCV004819223",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4819223/",
+                  "title": "Single allele",
+                  "clinical_significance": "Pathogenic",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2023/05/01 00:00",
+                  "linked_traits": [
+                    "Partial deletion of the long arm of chromosome 7"
+                  ]
+                },
+                {
+                  "uid": "4686561",
+                  "accession": "VCV004686561",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4686561/",
+                  "title": "NM_017460.6(CYP3A4):c.565T>C (p.Phe189Leu)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/01/12 00:00",
+                  "linked_traits": [
+                    "Vitamin D-dependent rickets, type 3"
+                  ]
+                }
+              ],
+              "total_matches_in_clinvar": "70",
+              "verification": "cached"
+            },
+            "pubmed_combined_query": {
+              "resource": "PubMed (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=33993416,21635243,38932723,28858450,26517132&retmode=json",
+              "query": {
+                "term": "CYP3A4 AND lamotrigine",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:41:09Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "pmid": "21635243",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/21635243/",
+                  "title": "Effects of lamotrigine and phenytoin on the pharmacokinetics of atorvastatin in healthy volunteers.",
+                  "source_journal": "Epilepsia",
+                  "pubdate": "2011 Jul",
+                  "last_author": "Messenheimer J"
+                },
+                {
+                  "pmid": "33993416",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/33993416/",
+                  "title": "Pharmacology of Cenobamate: Mechanism of Action, Pharmacokinetics, Drug-Drug Interactions and Tolerability.",
+                  "source_journal": "CNS Drugs",
+                  "pubdate": "2021 Jun",
+                  "last_author": "Russo E"
+                },
+                {
+                  "pmid": "38932723",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/38932723/",
+                  "title": "Overview of preclinical and clinical studies investigating pharmacokinetics and drug-drug interactions of padsevonil.",
+                  "source_journal": "Expert Opin Drug Metab Toxicol",
+                  "pubdate": "2024 Aug",
+                  "last_author": "Sciberras D"
+                },
+                {
+                  "pmid": "28858450",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/28858450/",
+                  "title": "Ketamine for Depression, 5: Potential Pharmacokinetic and Pharmacodynamic Drug Interactions.",
+                  "source_journal": "J Clin Psychiatry",
+                  "pubdate": "2017 Jul",
+                  "last_author": "Andrade C"
+                },
+                {
+                  "pmid": "26517132",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/26517132/",
+                  "title": "First Analysis of the Association Between CYP3A4/5, ABCB1 Genetic Polymorphisms and Oxcarbazepine Metabolism and Transport in Chinese Epileptic Patients with Oxcarbazepine Monotherapy and Bitherapy.",
+                  "source_journal": "J Pharm Pharm Sci",
+                  "pubdate": "2015",
+                  "last_author": "Zhou BT"
+                }
+              ],
+              "verification": "cached"
+            }
+          },
+          {
+            "gene_symbol": "CACNA1H",
+            "drug_name": "lamotrigine",
+            "patient_source_finding": "CACNA1H (AG)",
+            "patient_predicted_effect": "efficacy",
+            "patient_citation": "PMCID:PMC6171340",
+            "cpic": {
+              "resource": "CPIC (api.cpicpgx.org)",
+              "endpoint": "https://api.cpicpgx.org/v1/pair?select=genesymbol,drugid,guidelineid,cpiclevel&genesymbol=eq.CACNA1H&drugid=eq.RxNorm%3A28439",
+              "query": {
+                "gene_symbol": "CACNA1H",
+                "drug_name": "lamotrigine"
+              },
+              "retrieved_at": "2026-09-10T09:41:11Z",
+              "from_cache": true,
+              "http_status": 200,
+              "error": null,
+              "status": "no_results",
+              "records": [],
+              "note": "CPIC lists 'lamotrigine' (RxNorm:28439) but has no CACNA1H-lamotrigine pair on record.",
+              "verification": "cached"
+            },
+            "clinvar": {
+              "resource": "ClinVar (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=4886626,4886623,4884480,4880900,4880898&retmode=json",
+              "query": {
+                "gene_symbol": "CACNA1H",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:40:57Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 5,
+              "records": [
+                {
+                  "uid": "4886626",
+                  "accession": "VCV004886626",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4886626/",
+                  "title": "NM_021098.3(CACNA1H):c.2762T>C (p.Leu921Pro)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "no assertion criteria provided",
+                  "last_evaluated": "2025/01/13 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4886623",
+                  "accession": "VCV004886623",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4886623/",
+                  "title": "NM_021098.3(CACNA1H):c.2473C>G (p.Leu825Val)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "no assertion criteria provided",
+                  "last_evaluated": "2025/05/06 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4884480",
+                  "accession": "VCV004884480",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4884480/",
+                  "title": "NM_021098.3(CACNA1H):c.4027A>T (p.Met1343Leu)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "criteria provided, single submitter",
+                  "last_evaluated": "2026/05/05 00:00",
+                  "linked_traits": [
+                    "Epilepsy, childhood absence, susceptibility to, 6"
+                  ]
+                },
+                {
+                  "uid": "4880900",
+                  "accession": "VCV004880900",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4880900/",
+                  "title": "NM_021098.3(CACNA1H):c.43C>G (p.Leu15Val)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "no assertion criteria provided",
+                  "last_evaluated": "2026/03/29 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                },
+                {
+                  "uid": "4880898",
+                  "accession": "VCV004880898",
+                  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4880898/",
+                  "title": "NM_021098.3(CACNA1H):c.4775C>A (p.Pro1592Gln)",
+                  "clinical_significance": "Uncertain significance",
+                  "review_status": "no assertion criteria provided",
+                  "last_evaluated": "2024/11/21 00:00",
+                  "linked_traits": [
+                    "not provided"
+                  ]
+                }
+              ],
+              "total_matches_in_clinvar": "4289",
+              "verification": "cached"
+            },
+            "pubmed_combined_query": {
+              "resource": "PubMed (NCBI E-utils)",
+              "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=28165634,19632158&retmode=json",
+              "query": {
+                "term": "CACNA1H AND lamotrigine",
+                "retmax": 5
+              },
+              "retrieved_at": "2026-09-10T09:41:12Z",
+              "from_cache": true,
+              "http_status": 200,
+              "status": "ok",
+              "error": null,
+              "count": 2,
+              "records": [
+                {
+                  "pmid": "28165634",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/28165634/",
+                  "title": "Pharmacogenetics of antiepileptic drug efficacy in childhood absence epilepsy.",
+                  "source_journal": "Ann Neurol",
+                  "pubdate": "2017 Mar",
+                  "last_author": "Grabowski G"
+                },
+                {
+                  "pmid": "19632158",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/19632158/",
+                  "title": "Absence seizures: a review of recent reports with new concepts.",
+                  "source_journal": "Epilepsy Behav",
+                  "pubdate": "2009 Aug",
+                  "last_author": "Hughes JR"
+                }
+              ],
+              "verification": "cached"
+            }
+          }
+        ],
+        "coverage": {
+          "resources_queried": [
+            "PubMed (NCBI E-utils)",
+            "DailyMed (NLM REST API v2)",
+            "ClinVar (NCBI E-utils)",
+            "CPIC (api.cpicpgx.org)",
+            "ClinicalTrials.gov (API v2)"
+          ],
+          "resources_not_in_scope": [
+            "ChEMBL",
+            "IUPHAR/BPS Guide to Pharmacology",
+            "Open Targets",
+            "BindingDB",
+            "DrugBank",
+            "Reactome",
+            "STRING",
+            "BioGRID",
+            "Comparative Toxicogenomics Database",
+            "Genomics England PanelApp",
+            "PharmGKB",
+            "NHGRI-EBI GWAS Catalog",
+            "Flockhart Table (used internally, not queried live)",
+            "SuperCYPsPred",
+            "Human Protein Atlas Brain Atlas",
+            "GTEx Portal",
+            "Allen Brain Atlas",
+            "LINCS/Connectivity Map",
+            "NCBI GEO",
+            "RCSB PDB",
+            "AlphaFold DB",
+            "Drugs@FDA",
+            "Tox21",
+            "EPA CompTox",
+            "OHDSI/OMOP",
+            "RxNorm",
+            "LOINC/UCUM",
+            "SNOMED CT/HPO"
+          ],
+          "error_count": 0,
+          "error_counts_by_category": {
+            "http_error": 0,
+            "invalid_response": 0,
+            "network_error": 0,
+            "rate_limited": 0
+          },
+          "no_results_count": 5
+        },
+        "limitations": [
+          "This module queries exactly five public APIs (PubMed, ClinVar, DailyMed, CPIC, ClinicalTrials.gov); it does not cover the rest of the NeuroTwin resource catalog (Reactome, STRING, GTEx, RCSB PDB, etc.) -- those remain out of scope for this module and must not be inferred from it.",
+          "A 'no_results' status means the API returned zero matching records for the exact query issued; it is not evidence of absence, and must not be reported as a negative finding.",
+          "Responses may be served from the on-disk cache in reports/external_evidence/.cache/ rather than a fresh call; each record's 'from_cache' and 'retrieved_at' fields state which. Pass --refresh to force live calls."
+        ]
       }
     }
   },
@@ -10896,7 +12359,8 @@
       "eeg",
       "questionnaire",
       "genetics",
-      "ddi"
+      "ddi",
+      "external_evidence"
     ],
     "sections_missing": [],
     "sources": {
@@ -10908,7 +12372,8 @@
       "EEG_clinical_summary": "reports\\eeg\\EEG_clinical_summary.json",
       "Questionnaire_consolidated_summary": "reports\\questionnaire\\Questionnaire_consolidated_summary.json",
       "genetics_clinical_summary": "reports\\genetics\\genetics_clinical_summary.json",
-      "DDI_Clinical_Assessment": "reports\\ddi\\DDI_Clinical_Assessment.json"
+      "DDI_Clinical_Assessment": "reports\\ddi\\DDI_Clinical_Assessment.json",
+      "External_Evidence_Report": "reports\\external_evidence\\External_Evidence_Report.json"
     }
   }
 }

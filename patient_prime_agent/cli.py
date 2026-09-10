@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .config import ProjectPaths
-from .orchestrator import PrimeAgentHarness
+from .core.config import ProjectPaths
+from .path_a.orchestrator import PrimeAgentHarness
 
 
 def build_parser() -> argparse.ArgumentParser:

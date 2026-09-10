@@ -9,7 +9,7 @@ from typing import Any
 
 from PIL import Image
 
-from .utils import ensure_dir
+from .core.utils import ensure_dir
 
 
 DEFAULT_INPUT_DIR = Path("patient_data") / "CT"

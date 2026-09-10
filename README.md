@@ -1,398 +1,123 @@
 # Prime Agent — Patient Digital Twin Report Generator
 
-A Python system that turns a patient's raw medical files (PDFs, imaging, signal exports, a genomics spreadsheet) into validated, schema-checked JSON summaries, then merges them into a Digital Twin report — with a persistent, Prime Agent-style agent runtime driving the process and never inventing a value that isn't in the source data.
+> Synthetic-data research/engineering project — every source file is labelled `SYNTHETIC TEST DATA - NOT A REAL MEDICAL RECORD`. This is not a medical device and does not provide medical advice.
 
-This is a synthetic-data research/engineering project (every source file is labelled `SYNTHETIC TEST DATA - NOT A REAL MEDICAL RECORD`), not a medical device. See [Clinical Safety Notes](#clinical-safety-notes).
+## 1. Overview
 
-## Table of Contents
+Prime Agent turns a patient's raw medical files — clinical notes, CBC labs, CT/MRI, ECG, EEG, a genetics spreadsheet, a questionnaire — into a validated, machine-readable **Digital Twin JSON** and a polished, doctor-facing **PDF report**. The system also makes real, live calls to five public biomedical APIs (PubMed, ClinVar, DailyMed, CPIC, ClinicalTrials.gov) to attach independent, external evidence for the patient's actual current drugs and genes.
 
-- [What This Project Does](#what-this-project-does)
-- [The Four Ways a Report Gets Built](#the-four-ways-a-report-gets-built)
-- [Drug-Drug Interaction (DDI) Screen](#drug-drug-interaction-ddi-screen)
-- [PDF Report Rendering](#pdf-report-rendering)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Category Processing (Clinical Notes, CBC, CT, MRI, ECG, EEG, Genetics, Questionnaire)](#category-processing)
-- [SKILL.md Files](#skillmd-files)
-- [Extractors](#extractors)
-- [Schemas and Validation](#schemas-and-validation)
-- [LLM Usage vs. Deterministic Extraction](#llm-usage-vs-deterministic-extraction)
-- [Configuration](#configuration)
-- [Installation](#installation)
-- [Run Commands](#run-commands)
-- [Inputs and Outputs](#inputs-and-outputs)
-- [Testing](#testing)
-- [Error Handling](#error-handling)
-- [Source Traceability](#source-traceability)
-- [Security](#security)
-- [Limitations](#limitations)
-- [How to Add a New Category](#how-to-add-a-new-category)
-- [Clinical Safety Notes](#clinical-safety-notes)
+Every part of this codebase is built around one non-negotiable rule: **never invent a value.** If a fact isn't explicitly present in the source data (or, for the external evidence layer, isn't something a live API actually returned), the output says so explicitly — `null`, `"Not available"`, `"UNRESOLVED"`, or a "not retrieved in this session" note — rather than guessing, estimating, or presenting a plausible-looking placeholder as if it were real.
 
-## What This Project Does
+## 2. Architecture
 
-Given a `patient_data/` folder with one subfolder per data category, the project:
-
-1. Scans and loads the files (PDF, JSON, `.xlsx`, text).
-2. Extracts only values that are explicitly present in the source — everything else stays `null` (scalars) or `[]` (lists).
-3. Validates every extracted value against a JSON Schema.
-4. Repairs/normalizes what it safely can (type coercion, dropping unknown fields) and re-validates.
-5. Records every run, failure, retry, and repeated issue to disk.
-6. Writes one or more Digital Twin report JSON files.
-
-Nothing here calls a network API to interpret patient data. The only network access anywhere in the codebase is an *optional* one-time Hugging Face model download for the agent runtime's advisory narration, which never sees or produces a patient value (see [LLM Usage vs. Deterministic Extraction](#llm-usage-vs-deterministic-extraction)).
-
-## The Four Ways a Report Gets Built
-
-This repository grew from a single schema-validated pipeline into four complementary paths. They read the same `patient_data/` folders but write different, non-overlapping output files, so none of them can silently clobber another.
-
-| Path | What it is | Entry point | Output |
-| --- | --- | --- | --- |
-| **A. Schema-validated pipeline** | Generic extractors pull a fixed 6–12 field set per category, validated against `schemas/*.schema.json` | `python -m patient_prime_agent` (legacy) or `prime-agent run` (agent runtime) | `reports/Digital_Twin_Integrated_Report.json` |
-| **B. Standalone category generators** | One purpose-built script per category that parses that category's real file format in depth and produces a rich, category-native report | `python -m patient_prime_agent.<category>_summary` | `reports/<category>/<Name>.json` |
-| **C. Consolidated report** | Merges the 8 standalone reports from path B, plus path D's DDI screen, verbatim (byte-for-byte) into one file | `python -m patient_prime_agent.digital_twin_report` | `reports/Digital_Twin_Consolidated_Report.json` |
-| **D. DDI screen** | Additive drug-drug-interaction and therapy-evidence layer over path B's clinical/genetics/EEG/ECG/CBC outputs — see [Drug-Drug Interaction (DDI) Screen](#drug-drug-interaction-ddi-screen) | `python -m patient_prime_agent.ddi_summary` | `reports/ddi/DDI_Clinical_Assessment.json` |
-
-Path A is what the agent runtime (Plan → Delegate → Execute → Validate → Fix/Retry → Verify → Integrate) drives and is schema-validated end to end. Path B is deeper per-category extraction — e.g. the CBC generator captures the exact reference range and page number for every lab parameter across 12 visits, which the generic schema (path A) doesn't have fields for. Path D is an additive layer on top of path B's outputs; it never modifies them. Path C exists purely to combine B and D's outputs; it performs no extraction of its own. Paths A and D have automated test coverage (see [Testing](#testing)); B and C are verified manually.
-
-Path C's consolidated JSON can then be rendered as a print-ready PDF — see [PDF Report Rendering](#pdf-report-rendering).
-
-## Drug-Drug Interaction (DDI) Screen
-
-`patient_prime_agent/ddi_summary.py` and the `patient_prime_agent/ddi/` package are an additive layer that never invents a drug the patient isn't actually on, a dose the source doesn't state, or a pharmacokinetic mechanism no reference source supports. It reads the current medication regimen out of `clinical_notes`'s own output (not a hard-coded drug list) and cross-references it against genetics, EEG, ECG, and CBC — all already-generated path B outputs — plus one small bundled reference table of real, published, cited drug-metabolism facts.
-
-| Module | Responsibility |
-| --- | --- |
-| `normalizer.py` | Parses `current_regimen` into normalized `Medication` records; detects same-drug dose conflicts across sources |
-| `pairing.py` | Generates current×current, current×proposed, and proposed×proposed medication pairs, tagging each with its `pair_context` so a proposed drug can never be reported as an active interaction |
-| `reference_data.py` | A small, versioned, source-cited table of real CYP450 substrate/inhibitor/inducer relationships (`FLOCKHART_SOURCE`/`FLOCKHART_VERSION`) for the drugs actually in scope — pharmacology reference facts, not per-patient data |
-| `pharmacodynamic_rules.py` | Class-level rules (CNS depression, serotonergic burden, seizure threshold) that fire only when the regimen actually contains the relevant drug classes |
-| `pgx_modifiers.py` | Reads this patient's own `metabolizer_profile`/`findings_by_therapeutic_class`/`priority_safety_flags` from the genetics report and surfaces only the findings that name a current-regimen drug directly |
-| `clinical_context.py` | Pulls seizure burden, EEG risk, and CBC safety status into evidence items; explicitly marks kidney function, therapeutic drug levels, and liver enzymes as unavailable rather than inventing them, since this dataset has none |
-| `aggregation.py` | Classifies every evidence item as supporting/counter/unresolved, and applies the plan's conflict-resolution rules — a genotype finding never manufactures pair-level severity without an actual pharmacokinetic/pharmacodynamic mechanism behind it; "unresolved" is never collapsed into "no interaction" |
-| `severity.py` | Deterministic multi-factor scoring (minor/moderate/major/critical); the score is kept for traceability, only the category and rationale are ever shown |
-
-A **SuperCYPsPred** predicted-interaction adapter is stubbed but always returns "not evaluated locally" — no local snapshot of that model's output exists in this project, and rather than fabricate a plausible-looking probability, the module reports the gap honestly (see the module docstrings in `patient_prime_agent/ddi/reference_data.py`).
-
-Output feeds `report_builder`-style into path C (`digital_twin_report.py`'s `SOURCE_REPORTS` includes `("ddi", "reports/ddi/DDI_Clinical_Assessment.json", "DDI_Clinical_Assessment")`) and, from there, into the PDF's Drug Interactions and Pharmacogenomics sections. If `ddi_summary.py` was never run, path C and the PDF both degrade gracefully — the merge just omits that section and the PDF shows an explicit data-gap notice instead of silently disappearing.
-
-Covered by `tests/test_ddi.py` (6 tests): real-data regimen normalization, dose-conflict detection against a synthetic conflicting-dose fixture, proposed-drug pairs never reported as active, no invented drugs beyond what `clinical_notes` actually states, and pair severity never escalating without an established mechanism.
-
-## PDF Report Rendering
-
-`patient_prime_agent/report_html.py` renders path C's consolidated JSON as a polished, doctor-facing PDF — no ReportLab drawing code, no matplotlib. The pipeline:
-
-1. Build a styled HTML document (inline SVG bar/line charts, card-based layout, navy/teal clinical-dashboard CSS) purely from data already in the consolidated JSON.
-2. Print that HTML to PDF via headless **Microsoft Edge** (`msedge.exe --headless --disable-gpu --print-to-pdf=...`) — Edge ships with Windows already, so this adds no new dependency for layout/typography.
-3. Overlay a repeating header (title + patient label), footer, and "Page X of Y" onto every page using `reportlab` + `pypdf` — both already project dependencies — since Chromium's plain `--print-to-pdf` CLI mode can't template a running header/footer itself.
-
-```powershell
-python -m patient_prime_agent.report_html                 # reads reports/Digital_Twin_Consolidated_Report.json
-python -m patient_prime_agent.report_html --input path/to/report.json --output path/to/out.pdf
+```
+patient_data/
+(Clinical_Notes, CBC, CT, MRI, ECG, EEG, Genetics, Questionnaire)
+   |
+   |---------------------------------------------------------------+
+   |                                                                |
+   v                                                                v
+PATH A -- schema-validated pipeline                    PATH B -- standalone category generators
+(parallel, independent output)                          (deep, category-native parsing)
+cli.py / prime-agent run                                 cbc_summary.py, clinical_notes_summary.py,
+  -> path_a/orchestrator.py  or  agentic/main_agent.py    ct_scan_summary.py, mri_summary.py,
+  -> path_a/extractors/*.py                               ecg_summary.py, eeg_summary.py,
+  -> validation/schema_validator.py + repair.py            genetics_summary.py, questionnaire_summary.py
+  -> reports/Digital_Twin_Integrated_Report.json
+                                                              |
+                                                              v
+                                                    reports/<category>/*.json
+                                                              |
+                                    +-------------------------+-------------------------+
+                                    |                                                   |
+                                    v                                                   v
+                        PATH D -- DDI screen (additive)                EXTERNAL EVIDENCE LAYER
+                        ddi_summary.py + path_d/ddi/                    external_evidence_summary.py
+                        reads current regimen (from clinical_notes)     queries PubMed / ClinVar / DailyMed /
+                        + genetics/EEG/ECG/CBC outputs, plus a          CPIC / ClinicalTrials.gov for the
+                        bundled CYP450 reference table                 patient's actual current-regimen
+                                    |                                   drugs + gene-drug pairs
+                                    v                                              |
+                        reports/ddi/DDI_Clinical_Assessment.json                  v
+                                    |                          reports/external_evidence/External_Evidence_Report.json
+                                    |                                              |
+                                    +-------------------------+-------------------+
+                                                              |
+                                                              v
+                                              PATH C -- consolidation
+                                              digital_twin_report.py (SOURCE_REPORTS)
+                                              merges all Path B outputs + Path D + the
+                                              external evidence report, verbatim
+                                                              |
+                                                              v
+                                    reports/Digital_Twin_Consolidated_Report.json
+                                                              |
+                                                              v
+                                              RENDERING -- report_html.py
+                                              HTML (navy/teal CSS, inline SVG charts)
+                                                -> headless Microsoft Edge --print-to-pdf
+                                                -> reportlab/pypdf header/footer/page overlay
+                                                              |
+                                                              v
+                                    reports/Digital_Twin_Integrated_Report.pdf
 ```
 
-Output: `reports/Digital_Twin_Integrated_Report.pdf` (14 sections: Patient Snapshot, Executive Summary, 6-Month Timeline, Seizure Trends, Aura & Triggers, Medication Response, Pharmacogenomics, Drug Interactions, EEG, MRI/CT, ECG, CBC/Labs, Sleep/Cognition/QoL, Digital Twin Risk Dashboard, Clinical Action Plan), plus an intermediate `reports/Digital_Twin_Integrated_Report.html` (the exact HTML that was printed — useful for debugging, regenerated on every run, safe to delete).
+The **external evidence layer** (`patient_prime_agent/external_lookup/`) is itself a small pipeline — every one of the five live lookups goes through the same four stages before a result ever reaches a report:
 
-Every value in the PDF is read directly out of the consolidated JSON via `_get`/`_t` helpers with a single HTML-escape point; nothing is derived, estimated, or invented at render time. The Pharmacogenomics section shows, per current-regimen drug, only its single most clinically significant finding (worst predicted effect, tie-broken by the source panel's own significance flag) with its gene/genotype and a real per-finding citation (a PMID/PMCID carried through from the raw genetics spreadsheet, not a generic panel-level note) — the full panel data is unchanged in the JSON, only what's displayed is reduced. Requires Microsoft Edge at a standard Windows install path (or on `PATH` as `msedge`) — this pipeline does not run headless-PDF rendering on non-Windows platforms.
-
-## Architecture
-
-```mermaid
-flowchart TD
-    subgraph SourceData["patient_data/"]
-        F1[Clinical_Notes/*.pdf]
-        F2[CBC/*.pdf]
-        F3[CT/*.png]
-        F4[MRI/*.nii + MRI_summary.json]
-        F5[ECG/*.edf + ECG_summary.json]
-        F6[EEG/ictal,interictal,pre_ictal + *_preprocess_data/*.json]
-        F7[Genetics/genetics_data.xlsx]
-        F8[Questionnaire/*.pdf]
-    end
-
-    subgraph PathA["Path A: schema-validated pipeline"]
-        Scan[file_tools.collect_files]
-        Plan[planner.TaskPlanner]
-        Ext[extractors/*.py]
-        Val[schema_validator.py]
-        Rep[repair.py]
-        RB[report_builder.py]
-    end
-
-    subgraph Agentic["Agent runtime driving Path A"]
-        Main[MainOrchestratorAgent]
-        Sub[8 persistent CategorySubAgents]
-        A2A[A2A message bus]
-        Harness[Continual Harness]
-        Refine[RefinementEngine]
-    end
-
-    subgraph PathB["Path B: standalone generators"]
-        G1[clinical_notes_summary.py]
-        G2[cbc_summary.py]
-        G3[ct_scan_summary.py]
-        G4[mri_summary.py]
-        G5[ecg_summary.py]
-        G6[eeg_summary.py]
-        G7[genetics_summary.py]
-        G8[questionnaire_summary.py]
-    end
-
-    subgraph PathD["Path D: DDI screen (additive)"]
-        DDI[ddi_summary.py + ddi/*.py]
-    end
-
-    SourceData --> Scan --> Plan --> Ext
-    Main --> A2A --> Sub --> Ext
-    Harness --> Main
-    Ext --> Val --> Rep --> RB
-    RB --> OutA[reports/Digital_Twin_Integrated_Report.json]
-    Main --> ManA[reports/agent_run_manifest.json]
-    Val -. repeated issue .-> Refine --> Harness
-
-    SourceData --> G1 & G2 & G3 & G4 & G5 & G6 & G7 & G8
-    G1 --> OutB1[reports/clinical_notes/*.json]
-    G2 --> OutB2[reports/cbc/*.json]
-    G3 --> OutB3[reports/ct_scan/*.json]
-    G4 --> OutB4[reports/mri/*.json]
-    G5 --> OutB5[reports/ecg/*.json]
-    G6 --> OutB6[reports/eeg/*.json]
-    G7 --> OutB7[reports/genetics/*.json]
-    G8 --> OutB8[reports/questionnaire/*.json]
-
-    OutB1 & OutB7 & OutB6 & OutB5 & OutB2 --> DDI
-    DDI --> OutD[reports/ddi/DDI_Clinical_Assessment.json]
-
-    OutB1 & OutB2 & OutB3 & OutB4 & OutB5 & OutB6 & OutB7 & OutB8 & OutD --> Merge[digital_twin_report.py]
-    Merge --> OutC[reports/Digital_Twin_Consolidated_Report.json]
-    OutC --> Render[report_html.py<br/>HTML/CSS + headless Edge + reportlab/pypdf overlay]
-    Render --> OutPDF[reports/Digital_Twin_Integrated_Report.pdf]
+```
+TOOLS                  GUARDRAILS               OBSERVABILITY              MEMORY
+pubmed_lookup.py        guardrails.py             http_client.py's           memory_store.py
+clinvar_lookup.py       validate_query_term()      classify_error() /        recall_or_compute():
+dailymed_lookup.py      -- input allowlist,        ERROR_STATUSES --         30-day TTL, keyed by
+cpic_lookup.py          drug/gene names only,      rate_limited /            (source, normalized
+trials_lookup.py        never notes/patient text   network_error /           term); a fresh recall
+   |                        |                       http_error /              replays the ORIGINAL
+   v                        v                       invalid_response          finding + date, never
+real HTTP GET  ------>  sanitize_response_field() + build_envelope()          a new live call
+via http_client.py      validate_source_url()      every result carries         |
+(rate-limited,          -- strips HTML/scripts,    status / retrieved_at /       v
+on-disk cached,         truncates, confirms each    from_cache / verification  reports/external_lookup/
+retried once)           URL matches its real source  -- never a bare "error"   memory/memory_store.json
 ```
 
-### The Seven-Phase Agent Loop (Path A, agent runtime)
+## 3. Data flow (real files, in order)
 
-| Phase | Owner | What happens |
+1. **`patient_data/`** — one folder per category, raw source files (PDFs, `.xlsx`, `.edf`/`.mat`/`.nii` + accompanying pre-computed `*_summary.json`, `.png`).
+2. **Path B generators** run first, one per category: `clinical_notes_summary.py`, `cbc_summary.py`, `ct_scan_summary.py`, `mri_summary.py`, `ecg_summary.py`, `eeg_summary.py`, `genetics_summary.py`, `questionnaire_summary.py`. Each parses its category's real file format in depth and writes to `reports/<category>/*.json`.
+3. **Path D** (`ddi_summary.py`) reads the current medication regimen out of `clinical_notes`'s own output and cross-references it against `genetics`, `eeg`, `ecg`, and `cbc` — all already-generated Path B outputs — writing `reports/ddi/DDI_Clinical_Assessment.json`.
+4. **The external evidence layer** (`external_evidence_summary.py`) reads the same current-regimen drug names (via `path_d.ddi.normalizer.normalize_regimen`) and the gene-drug pairs from `genetics`'s findings, makes five live API calls per drug/pair, and writes `reports/external_evidence/External_Evidence_Report.json`.
+5. **Path C** (`digital_twin_report.py`) merges the 8 Path B reports, Path D's DDI screen, and the external evidence report — verbatim, byte-for-byte, via its `SOURCE_REPORTS` tuple — into `reports/Digital_Twin_Consolidated_Report.json`. A source that hasn't been generated yet is simply omitted (listed in `source_manifest.sections_missing`), never faked.
+6. **`report_html.py`** reads that consolidated JSON and renders `reports/Digital_Twin_Integrated_Report.pdf` — cover + 14 numbered sections (currently ~8 pages for this dataset), including the Pharmacogenomics (06) and Drug Interactions (07) sections' live-evidence cards.
+
+**Path A** (`cli.py` / `prime-agent run` → `path_a/orchestrator.py` or `agentic/main_agent.py` → `path_a/extractors/*.py` → `validation/schema_validator.py`) runs independently of B/C/D — same source files, a different generic 6–12-field-per-category extraction, written to a separate file (`reports/Digital_Twin_Integrated_Report.json`), so it can never clobber the Path B/C/D outputs.
+
+## 4. External evidence layer
+
+`patient_prime_agent/external_lookup/` makes real, live HTTP calls — never reused static data presented as if it were live-verified — to exactly five public biomedical APIs, for exactly the patient's own current-regimen drugs and the gene-drug pairs their own genetics panel links to those drugs:
+
+| Module | Source | What it looks up |
 | --- | --- | --- |
-| **Plan** | `MainOrchestratorAgent` | `file_tools.collect_files` scans `patient_data/`, `planner.TaskPlanner` builds one step per registered category |
-| **Delegate** | `RLMRuntime` | One A2A `extract` request per category, sent to that category's persistent sub-agent |
-| **Execute** | `CategorySubAgent` | Runs the existing extractor (`extractors/*.py`) over the assigned files |
-| **Validate** | `CategorySubAgent` | Validates the section against `schemas/<category>.schema.json` |
-| **Fix/Retry** | Sub-agent + runtime | Repairs the section against the schema and re-validates; unresolved failures retry within the agent's retry budget |
-| **Verify** | `MainOrchestratorAgent` | Independent re-validation, plus traceability, no-unsourced-value, and category-coverage checks |
-| **Integrate** | `MainOrchestratorAgent` | `report_builder.build_integrated_report` merges verified sections; the merged report is validated again before being written |
+| `pubmed_lookup.py` | PubMed (NCBI E-utils, `esearch`+`esummary`) | Citations by drug, gene, or a combined `"GENE AND DRUG"` query |
+| `clinvar_lookup.py` | ClinVar (NCBI E-utils, `db=clinvar`) | Variant records by gene symbol — classification, review status, linked traits |
+| `dailymed_lookup.py` | DailyMed (NLM REST API v2) | Structured Product Labels by drug name |
+| `cpic_lookup.py` | CPIC (`api.cpicpgx.org`, PostgREST) | Whether CPIC has assessed a specific gene-drug pair, its evidence level, and any active dosing guideline |
+| `trials_lookup.py` | ClinicalTrials.gov (API v2) | Studies matching the patient's condition, optionally filtered by drug |
 
-A category that never produces a valid section falls back to its schema default (`null`/`[]` everywhere) rather than a partial or invented value.
+**In scope**: only these five APIs. **Out of scope**, per the NeuroTwin resource guide this layer was built against (recorded verbatim in `external_evidence_summary.py`'s own `_OUT_OF_SCOPE_RESOURCES` and re-stated in every PDF evidence card's "Known Limitations" block): ChEMBL, IUPHAR/BPS Guide to Pharmacology, Open Targets, BindingDB, DrugBank, Reactome, STRING, BioGRID, PharmGKB, GTEx Portal, RCSB PDB, AlphaFold DB, RxNorm, SNOMED CT/HPO, and ~15 others. A missing resource is never inferred from what this layer *does* return.
 
-### Prime Agent Components (`patient_prime_agent/agentic/`)
+**Guardrails** (`guardrails.py`), enforced on every one of the five modules:
+- **Input**: `validate_query_term()` — an allowlist regex (letters/digits/hyphens/spaces, ≤60 chars) run before any URL is built, so notes text, a patient name, or an ID can never reach a public API as a query term. Fails closed (raises `QueryValidationError`).
+- **Output**: `sanitize_response_field()` strips HTML/script content and truncates; `validate_source_url()` confirms every returned URL actually belongs to the domain it claims to (rejecting, e.g., a spoofed `pubmed.ncbi.nlm.nih.gov.evil.com`). A field that fails degrades to empty/`None`, never breaking the whole lookup.
 
-| Concept | Implemented as |
-| --- | --- |
-| Persistent agent runtime | `runtime.py` — `PersistentAgent` (on-disk `state.json`: boot/task/success/failure/retry counters), `RLMRuntime` (registry + delegation + retry policy) |
-| Main orchestrator | `main_agent.py` — `MainOrchestratorAgent`, the seven-phase loop |
-| Persistent sub-agents | `subagents.py` — one `CategorySubAgent` per category, wrapping the existing extractor |
-| A2A messaging | `a2a.py` — `A2AMessage` (sender/recipient/session/conversation/correlation ids), `A2ABus`, one JSONL log per session |
-| Continual harness | `harness.py` — Prompt + Skills + Memory policy + Sub-agent config, CRUD, versioned revisions, rollback |
-| Agent memory | `memory.py` — versioned semantic/episodic/procedural records per scope |
-| Sessions & trajectories | `session.py` — `SessionStore`, `Trajectory` (one line per Plan/Delegate/Execute/.../Integrate step) |
-| Refinement & rollback | `refine.py` — reusable-issue detection, one targeted fix per issue class, before/after history |
-| Model loading | `model_loader.py` + `settings.py` — hardware detection, `transformers`-based loading |
-| Advisory LLM | `llm.py` — `LanguageModel` facade (`TransformersBackend` / `EchoBackend`) |
+**Observability**: `http_client.py`'s `classify_error()` sorts every failure into `ERROR_STATUSES` — `rate_limited`, `network_error`, `http_error`, `invalid_response` — instead of one generic `"error"`, so a 429 is always distinguishable from a genuine outage. Every result envelope carries `status`, `retrieved_at`, `from_cache`, and (once memory is involved) `verification` (`"live"`/`"cached"`). `report_html.py` surfaces all of this directly: an `UNRESOLVED` badge for missing/failed coverage (never presented as a clean negative), a `LIVE`/`CACHED` badge, and a provenance line (resource, record ID, version, retrieval date) on every finding.
 
-## Project Structure
+**Caching / memory** — two independent layers:
+1. `http_client.py`'s on-disk response cache (`reports/external_evidence/.cache/`, keyed by the exact request URL's SHA-256, no expiry) — avoids re-issuing an identical HTTP call.
+2. `memory_store.py`'s long-term memory (`reports/external_lookup/memory/memory_store.json`, keyed by `(source, normalized term)`, **30-day TTL**) — the higher-level "have we already looked this up recently" layer. A fresh recall replays the original finding with its original retrieval date; an expired or corrupted store degrades cleanly to a live call, never a crash.
 
-```text
-Prime Agent
-|-- README.md
-|-- pyproject.toml
-|-- .env                          # local config (gitignored); PRIME_AGENT_ENABLE_LLM=1 by default
-|-- .env.example                  # documented template
-|-- patient_prime_agent
-|   |-- __main__.py
-|   |-- cli.py                    # legacy CLI: python -m patient_prime_agent [--agentic]
-|   |-- config.py                 # CATEGORY_ORDER, aliases, ProjectPaths
-|   |-- models.py                 # Evidence, ValidationIssue, PlanStep, CategoryResult, HarnessState
-|   |-- file_tools.py             # file discovery + PDF/JSON/CSV/XML/DOCX/HTML loading
-|   |-- orchestrator.py           # legacy PrimeAgentHarness (Path A without the agent runtime)
-|   |-- planner.py                # TaskPlanner
-|   |-- schema_validator.py       # dependency-free JSON Schema validator + repair/normalize
-|   |-- repair.py                 # thin wrapper around normalize_to_schema
-|   |-- report_builder.py         # merges category sections into the integrated report
-|   |-- memory_store.py           # legacy session log, issue counts, lessons
-|   |-- refinement.py             # legacy issue-repeat -> skill refinement
-|   |-- skill_store.py            # loads/updates SKILL.md files
-|   |-- extractors/               # one schema-validated extractor per category (Path A)
-|   |   |-- base.py               # CategoryExtractorBase.run(): load -> extract -> merge -> repair -> validate
-|   |   |-- common.py             # shared parsing helpers (dates, sections, keyword sentences)
-|   |   |-- clinical_notes.py, cbc.py, imaging.py (CT+MRI), electrophysiology.py (ECG+EEG),
-|   |   |-- genetics.py, questionnaire.py
-|   |-- clinical_notes_summary.py # Path B: clinical notes standalone generator
-|   |-- cbc_summary.py            # Path B: CBC standalone generator
-|   |-- ct_scan_summary.py        # Path B: CT standalone generator
-|   |-- mri_summary.py            # Path B: MRI standalone generator
-|   |-- ecg_summary.py            # Path B: ECG standalone generator
-|   |-- eeg_summary.py            # Path B: EEG standalone generator
-|   |-- genetics_summary.py       # Path B: genetics standalone generator
-|   |-- questionnaire_summary.py  # Path B: questionnaire standalone generator
-|   |-- digital_twin_report.py    # Path C: merges Path B + Path D outputs verbatim
-|   |-- ddi_summary.py            # Path D: DDI screen entry point -- see DDI section
-|   |-- ddi/                      # Path D: additive DDI engine modules
-|   |   |-- normalizer.py, pairing.py, reference_data.py
-|   |   |-- pharmacodynamic_rules.py, pgx_modifiers.py
-|   |   `-- clinical_context.py, aggregation.py, severity.py
-|   |-- report_html.py            # renders Path C's JSON as a styled PDF -- see PDF Report Rendering
-|   |-- skills/                   # SKILL.md per category (see below)
-|   `-- agentic/                  # the Prime Agent runtime (Path A driver)
-|       |-- settings.py, model_loader.py, llm.py
-|       |-- a2a.py, session.py, memory.py, harness.py, refine.py
-|       |-- runtime.py, subagents.py, main_agent.py
-|       `-- cli.py                # prime-agent command line
-|-- tests/                        # 165 tests across 9 files -- see Testing
-|-- schemas/                      # one *.schema.json per category + digital_twin_report.schema.json
-|-- memory/                       # legacy + agentic persistent state (see below)
-|-- reports/                      # every generated output (see Inputs and Outputs)
-`-- patient_data/                 # source files, one folder per category
-```
+## 5. How to run it
 
-### Persisted State (`memory/`)
-
-```text
-memory/
-|-- harness_state.json, issue_counts.json, lessons.jsonl, session_log.jsonl   # legacy pipeline
-|-- agents/<category>/session_log.jsonl                                       # legacy per-category log
-`-- agentic/
-    |-- sessions/<session_id>/session.json, trajectory.jsonl                  # one Plan/.../Integrate log per run
-    |-- a2a/<session_id>.jsonl                                                # every A2A request/response
-    |-- agent_memory/<scope>.json                                            # semantic/episodic/procedural records
-    |-- harness/harness.json, revisions/rev-NNNN.json                        # continual harness + rollback snapshots
-    |-- refinements/history.jsonl                                            # every applied fix, before/after
-    `-- runtime/agents/<agent-id>/state.json                                  # persistent counters per agent
-```
-
-## Category Processing
-
-Each category has a folder in `patient_data/`, a schema-validated extractor (Path A), a `SKILL.md`, and — for all 8 categories — a standalone generator (Path B) that goes deeper than the generic extractor. Every generator's exact parsing rules, output shape, and rules against inventing values are documented in that category's `SKILL.md`; this table is the map.
-
-| Category | Source files | Extractor (Path A) | Standalone generator (Path B) | Standalone output |
-| --- | --- | --- | --- | --- |
-| Clinical Notes | `Clinical_Notes/Report_<NN>_<ts>_{printed,handwritten}.pdf` | `extractors/clinical_notes.py` | `clinical_notes_summary.py` — parses the printed QoL-domain form and the handwritten progress note per visit | `reports/clinical_notes/clinical__notes_summary.json` |
-| CBC | `CBC/CBC_<NN>_<ts>.pdf` | `extractors/cbc.py` | `cbc_summary.py` — reads all 14 parameters + reference range + page number per visit, computes longitudinal trends and clinical flags | `reports/cbc/CBC_consolidated_summary.json` |
-| CT | `CT/CT_Scan_<NN>_<ts>.png` | `extractors/imaging.py` (`CTExtractor`) | `ct_scan_summary.py` — per-study findings from a curated filename→findings lookup, plus real image resolution | `reports/ct_scan/CT_scan_clinical_summary.json` |
-| MRI | `MRI/sub-*.nii` + `MRI/MRI_summary.json` | `extractors/imaging.py` (`MRIExtractor`) | `mri_summary.py` — aggregates preprocessed T1w/FLAIR series metadata (volume, spacing, consistency) | `reports/mri/MRI_clinical_summary.json` |
-| ECG | `ECG/ecg_<NN>_<ts>.edf` + `ECG/ECG_summary.json` | `extractors/electrophysiology.py` (`ECGExtractor`) | `ecg_summary.py` — per-recording amplitude/percentile statistics, computed cross-visit observations | `reports/ecg/ECG_Clinical_Summary.json` |
-| EEG | `EEG/{ictal,interictal,pre_ictal}/*.mat` + `EEG/*_preprocess_data/*.json` | `extractors/electrophysiology.py` (`EEGExtractor`) | `eeg_summary.py` — merges the three seizure-phase categories into one signal-statistics report | `reports/eeg/EEG_clinical_summary.json` |
-| Genetics | `Genetics/genetics_data.xlsx` | `extractors/genetics.py` | `genetics_summary.py` — pharmacogenomic metabolizer profile, therapeutic-class findings, keyword-derived safety flags | `reports/genetics/genetics_clinical_summary.json` |
-| Questionnaire | `Questionnaire/Questionnaire_<NN>_<ts>_printed.pdf` | `extractors/questionnaire.py` | `questionnaire_summary.py` — per-domain score trends plus every recurring patient-reported answer | `reports/questionnaire/Questionnaire_consolidated_summary.json` |
-
-None of the raw binary formats (`.edf`, `.mat`, `.nii`) are parsed directly anywhere in this codebase — ECG, EEG, and MRI standalone generators all read pre-computed statistics from an accompanying `*_summary.json`/`*_preprocess_data/*.json` file instead. This is documented explicitly in each of those categories' `SKILL.md`.
-
-## SKILL.md Files
-
-Every category has a `SKILL.md` at `patient_prime_agent/skills/<category>/SKILL.md`, plus one root `patient_prime_agent/skills/SKILL.md`. Each follows the same pattern:
-
-```yaml
----
-name: <category>
-description: Use when asked to generate/regenerate/update/validate the <category> report — <trigger phrases>.
----
-```
-
-The frontmatter `description` is the trigger — it is what a skill-aware agent (or a person) reads to decide *when* this document applies, before reading any of the instructions inside it. The body then covers, in order: Purpose, Inputs (exact file paths and formats), Workflow (numbered extraction/computation steps), Canonical Output Shape (a table of every top-level key), Rules (explicit "never invent X" statements, fixed-vocabulary mappings, what stays `null` and why), Output location, and Verification steps. Several also end with a trimmed **Reference Example** showing the target shape and any deliberate, documented departure from it.
-
-`SkillRegistry` (`skill_store.py`) loads these at the start of a run and can append a timestamped note under a `## Learned Refinements` heading when the refinement engine decides a skill file (not the harness instruction or memory) is the right place to fix a repeated issue.
-
-## Extractors
-
-Every extractor in `extractors/` subclasses `CategoryExtractorBase` (`extractors/base.py`) and implements one method:
-
-```python
-def extract_document(self, document) -> tuple[dict, list[Evidence], list[ValidationIssue]]
-```
-
-`CategoryExtractorBase.run(files)` does the rest, identically for every category:
-
-1. Log `category_started` to both the shared and per-category memory log.
-2. For each file: `load_document` it, log `file_loaded` (with any parse-failure note turned into a `ValidationIssue`), call `extract_document`, and merge the returned partial section into the running section with `deep_merge_dict` (a value already present is kept; a new non-empty value fills a gap).
-3. `repair_to_schema` the merged section, validate it, and — if issues remain — hand them to the `RefinementManager` (legacy path) or leave them for the agent runtime's `RefinementEngine` (agent path; see `subagents.py`'s `DeferredRefinementManager`, which is a no-op so issues aren't double-counted).
-4. Return a `CategoryResult` (section, evidence list, source files, validation issues).
-
-Shared parsing helpers live in `extractors/common.py`: `find_date_string`, `capture_section` (labelled-section text between two headers), `extract_sentences_with_keywords`, `split_list_items`, `find_metric_in_document` (numeric lab-style values). CT and MRI share `ImagingExtractorBase` in `extractors/imaging.py`; ECG and EEG share logic in `extractors/electrophysiology.py`.
-
-## Schemas and Validation
-
-Each category has `schemas/<category>.schema.json`; the merged report has `schemas/digital_twin_report.schema.json`. `schema_validator.py` is a small, dependency-free JSON Schema engine (draft 2020-12 subset) supporting `type` (including nullable unions), `const`, `enum`, `format` (`date`, `date-time`), object `required`/`properties`/`additionalProperties`, array `items`/`minItems`/`maxItems`, and `$ref` (internal `#/...` and external file references).
-
-Three operations matter:
-
-- **`validate(instance, schema_name)`** → list of `ValidationIssue` (each with a stable `issue_key` used for refinement counting).
-- **`default(schema_name)`** → the all-`null`/`[]` skeleton for that schema — what every category starts from and what an unrecoverable failure falls back to.
-- **`normalize_to_schema(instance, schema_name)`** (called via `repair_to_schema`) → merges `instance` onto the schema default field by field, coercing types where safe (e.g. `"13.4"` → `13.4`) and dropping anything that doesn't fit the schema, rather than raising.
-
-Current required fields per schema (every one of these is present with `null`/`[]` as a safe default, never omitted):
-
-| Schema | Required fields |
-| --- | --- |
-| `clinical_notes` | `chief_complaint`, `history_of_present_illness`, `diagnoses`, `medications`, `allergies`, `plan`, `notable_findings` |
-| `cbc` | `collection_date`, `hemoglobin_g_per_dL`, `hematocrit_pct`, `rbc_million_uL`, `wbc_10e3_uL`, `platelets_10e3_uL`, `mcv_fL`, `mch_pg`, `mchc_g_dL`, `rdw_pct`, `differential`, `abnormal_flags` |
-| `ct` / `mri` | `study_date`, `body_region`, `indication`, `contrast`, `impression`, `key_findings`, `urgent_findings` |
-| `ecg` | `study_date`, `rate_bpm`, `rhythm`, `intervals`, `axis`, `impression`, `notable_abnormalities` |
-| `eeg` | `study_date`, `background`, `epileptiform_activity`, `events`, `impression`, `notable_abnormalities` |
-| `genetics` | `test_name`, `variants`, `overall_interpretation`, `recommendations` |
-| `questionnaire` | `reported_symptoms`, `symptom_onset`, `duration`, `severity`, `relevant_history`, `patient_concerns` |
-| `digital_twin_report` | `report_type`, `generated_at`, `patient_profile`, `clinical_summary`, `sections`, `source_traceability`, `validation` (`additionalProperties: false` — this is why run metadata is written to a separate `agent_run_manifest.json` instead of into this file) |
-
-In the agent runtime, the **Verify** phase adds checks the schema itself cannot express: every section still validates independently after merging, every `Evidence.source_file` is one of the files actually scanned, no category with zero source files has a non-default section, and every registered category produced a result.
-
-## LLM Usage vs. Deterministic Extraction
-
-**No category value is ever produced by a model.** Every field in every schema-validated section and every standalone-generator report is either a literal value read from a source file (a regex match, a table cell, a JSON field) or an arithmetic/derived value computed from those literal values (min/max, a trend direction, a status threshold). This is enforced structurally, not just by convention:
-
-```powershell
-# Confirms nothing outside agentic/llm.py and agentic/main_agent.py references the LLM:
-grep -rln "self\.llm\b\|LanguageModel\|\.advise(" patient_prime_agent --include="*.py"
-```
-
-The **only** place a model is invoked is one advisory narration call in `MainOrchestratorAgent._phase_plan` (`main_agent.py`), which asks the model to summarize the *plan* ("N files across M categories") in two sentences, explicitly instructed not to mention any patient value. Its output is written to agent memory and to the session trajectory as an `llm_narration` step — never merged into a report, never validated against a category schema, never allowed to reach `report_builder.py`.
-
-- **`PRIME_AGENT_ENABLE_LLM`** (`.env`) — `1` by default in this repo's `.env`, `0` in `.env.example`. When `0`, `LanguageModel.build()` returns an `EchoBackend` that deterministically echoes the prompt's first line back — no download, no inference, fully offline.
-- **When enabled**, the model is loaded **directly with `transformers`** (no Ollama, no hosted API) via `ModelLoader` in `model_loader.py`. Model choice, device, dtype, and 4-bit quantization are all auto-detected from hardware (see [Configuration](#configuration)) and are fully overridable from `.env` without touching source.
-- **Never blocking**: `LanguageModel.advise()` catches every exception from the backend and falls back to the deterministic `EchoBackend` — a model failure can never break a report.
-- **Memory note**: the default 3B-parameter model needs roughly 12 GB resident memory in `float32` on a CPU-only machine (no 4-bit available without CUDA + `bitsandbytes`). Confirm free memory before enabling this on a small machine; `prime-agent model` shows the resolved plan without loading anything.
-
-## Configuration
-
-Resolution order (first match wins): explicit keyword argument → process environment variable → `.env` at the project root → `agent_config.json` (or the file named by `PRIME_AGENT_CONFIG`) → built-in default.
-
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `PRIME_AGENT_MODEL_ID` | auto | Hugging Face repo id; unset means auto-select by hardware |
-| `PRIME_AGENT_DEVICE` | auto | `auto` \| `cpu` \| `cuda` \| `mps` |
-| `PRIME_AGENT_DTYPE` | auto | `auto` \| `float16` \| `bfloat16` \| `float32` |
-| `PRIME_AGENT_LOAD_IN_4BIT` | auto | `auto` (only when CUDA + `bitsandbytes` are present) \| `1` \| `0` |
-| `PRIME_AGENT_ENABLE_LLM` | `1` in `.env`, `0` by default otherwise | Whether to load a real model at all |
-| `PRIME_AGENT_MAX_NEW_TOKENS` | `320` (`160` in this repo's `.env`) | Advisory-generation length |
-| `PRIME_AGENT_TEMPERATURE` / `PRIME_AGENT_TOP_P` | `0.2` / `0.9` | Sampling params; `temperature<=0` disables sampling |
-| `PRIME_AGENT_HF_CACHE_DIR` | unset | Where weights are cached |
-| `PRIME_AGENT_LOCAL_FILES_ONLY` | `0` | Never hit the network |
-| `PRIME_AGENT_TRUST_REMOTE_CODE` | `0` | Allow custom modelling code |
-| `PRIME_AGENT_MAX_RETRIES` | `2` | Retries per delegated task |
-| `PRIME_AGENT_REFINEMENT_THRESHOLD` | `2` | Observations before an issue is treated as reusable |
-| `PRIME_AGENT_MAX_WORKERS` | `8` | Parallel category agents |
-| `PRIME_AGENT_SESSION_ID` | unset | Resume a specific session |
-| `PRIME_AGENT_CONFIG` | `agent_config.json` | Path to the JSON config file |
-
-### Automatic Model Selection
-
-| Effective memory (VRAM, or system RAM ×2 if 4-bit is active) | Model |
-| --- | --- |
-| ≥ 24 GB | `mistralai/Mistral-7B-Instruct-v0.3` |
-| ≥ 16 GB | `Qwen/Qwen2.5-7B-Instruct` |
-| below that | `Qwen/Qwen2.5-3B-Instruct` |
-
-Device: CUDA if available, else Apple `mps`, else CPU (an unavailable requested device falls back rather than erroring). dtype: `bfloat16` on GPUs that report bf16 support, `float16` on GPUs that don't, `float16` on `mps`, `float32` on CPU (never `float16` on CPU — unsafe/slow). 4-bit: only when CUDA *and* `bitsandbytes` are both present.
-
-## Installation
-
-Requirements: Python ≥ 3.11.
+### Setup
 
 ```powershell
 python -m venv .venv
@@ -401,34 +126,9 @@ python -m pip install --upgrade pip
 python -m pip install -e .
 ```
 
-Core install (`pypdf`, `openpyxl`) is enough to run every Path A/B/C generator with the LLM disabled. Optional extras:
+Core install (`pypdf`, `openpyxl`, `reportlab`) runs every Path A/B/C/D generator and the external evidence layer with the LLM disabled. Optional extras: `.[llm]` (Hugging Face `transformers`, for the agent runtime's advisory narration), `.[quant]` (4-bit, CUDA only), `.[test]` (pytest). PDF rendering (`report_html.py`) additionally requires **Microsoft Edge** installed (Windows).
 
-```powershell
-# local open-source model support (Hugging Face transformers, no Ollama)
-python -m pip install -e ".[llm]"
-
-# 4-bit quantization (CUDA machines only)
-python -m pip install -e ".[quant]"
-
-# test suite
-python -m pip install -e ".[test]"
-```
-
-Copy `.env.example` to `.env` (or edit the `.env` already in this repo) to configure the model without touching source; regenerate the template with `prime-agent init-env`.
-
-## Run Commands
-
-### Path A — schema-validated pipeline
-
-```powershell
-python -m patient_prime_agent                 # legacy harness, no agent runtime
-python -m patient_prime_agent --agentic        # same output, driven by the agent runtime
-prime-agent run                                # equivalent to the line above
-prime-agent run --session-id session-xxxxxxxx  # resume a session
-prime-agent run --enable-llm --model-id Qwen/Qwen2.5-3B-Instruct
-```
-
-### Path B — standalone category generators
+### Manual path (B → D → external evidence → C → render)
 
 ```powershell
 python -m patient_prime_agent.clinical_notes_summary
@@ -439,177 +139,103 @@ python -m patient_prime_agent.ecg_summary
 python -m patient_prime_agent.eeg_summary
 python -m patient_prime_agent.genetics_summary
 python -m patient_prime_agent.questionnaire_summary
-```
 
-Each accepts `--input-dir`/`--input` and `--output` to override its defaults (see each script's `DEFAULT_INPUT_DIR`/`DEFAULT_OUTPUT_PATH`).
-
-### Path D — DDI screen
-
-```powershell
 python -m patient_prime_agent.ddi_summary
-```
+python -m patient_prime_agent.external_evidence_summary   # add --refresh to bypass caches/memory
 
-Run Path B's `clinical_notes_summary.py` and `genetics_summary.py` first — the DDI screen reads the current regimen and PGx findings from their output. `--clinical-notes`, `--genetics`, `--eeg`, `--ecg`, `--cbc`, and `--output` override the defaults.
-
-### Path C — consolidated report
-
-```powershell
 python -m patient_prime_agent.digital_twin_report
-```
-
-Run Path B (or at least the categories you care about) first — Path C only merges files that already exist and silently omits any category whose standalone report hasn't been generated yet (see `source_manifest.sections_missing` in its output). Path D is optional; if `reports/ddi/DDI_Clinical_Assessment.json` doesn't exist yet, Path C just omits that section too.
-
-### PDF rendering
-
-```powershell
 python -m patient_prime_agent.report_html
 ```
 
-Run Path C first — this reads `reports/Digital_Twin_Consolidated_Report.json` and writes `reports/Digital_Twin_Integrated_Report.pdf`. Requires Microsoft Edge (see [PDF Report Rendering](#pdf-report-rendering)).
+Run clinical notes and genetics before Path D (it reads their output); run at least one Path B category before Path C (it only merges what already exists, and omits the rest). Each step's `--input`/`--output` flags override its defaults.
 
-### Agent runtime inspection (`prime-agent`)
-
-```powershell
-prime-agent model                              # hardware detection + resolved model plan (no download)
-prime-agent model --load                       # actually load the model
-prime-agent status                             # runtime, harness, model, refinement status
-prime-agent harness show|prompt|skills|subagents|revisions
-prime-agent harness subagents --category eeg --set-enabled false
-prime-agent harness rollback --revision-id rev-0002
-prime-agent sessions [--session-id ...]
-prime-agent memory --scope agent-cbc
-prime-agent refinements [--rollback ref-0001]
-prime-agent init-env
-```
-
-Every `prime-agent` subcommand also accepts `--data-root`, `--reports-root`, `--memory-root`, `--skills-root`, `--schemas-root`, `--project-root` to redirect I/O.
-
-### Other
+### Automated path (Path A)
 
 ```powershell
-python -m compileall patient_prime_agent       # syntax check
-python -m pytest                               # run the test suite
-python -m json.tool <path>                     # validate any generated JSON file
+python -m patient_prime_agent                 # legacy harness, no agent runtime
+python -m patient_prime_agent --agentic        # same output, driven by the agent runtime
+prime-agent run                                # equivalent to the line above
+prime-agent status                             # runtime / harness / model / refinement status
 ```
 
-## Inputs and Outputs
-
-### Source Layout
-
-```text
-patient_data/
-|-- Clinical_Notes/Report_<NN>_<YYYYMMDD_HHMMSS>_{printed,handwritten}.pdf
-|-- CBC/CBC_<NN>_<YYYYMMDD_HHMMSS>.pdf
-|-- CT/CT_Scan_<NN>_<YYYYMMDD_HHMMSS>.png
-|-- MRI/sub-<NNNNN>_acq-<...>.nii, MRI_summary.json
-|-- ECG/ecg_<NN>_<YYYYMMDD_HHMMSS>.edf, ECG_summary.json
-|-- EEG/ictal/, interictal/, pre_ictal/ (*.mat)
-|       ictal_preprocess_data/, interictal_preprocess_data/, preictal_preprocess_data/ (*.json)
-|-- Genetics/genetics_data.xlsx
-`-- Questionnaire/Questionnaire_<NN>_<YYYYMMDD_HHMMSS>_printed.pdf
-```
-
-Folder names are matched to a category via `config.CATEGORY_ALIASES` (case/punctuation-insensitive), so `file_tools.collect_files` finds every category's files by scanning `patient_data/` recursively — it does not require this exact top-level layout, only that each category's files live somewhere under a folder whose name matches its alias.
-
-### Generated Outputs
-
-```text
-reports/Digital_Twin_Integrated_Report.json          # Path A: schema-validated, additionalProperties:false
-reports/agent_run_manifest.json                      # Path A (agent runtime only): session id, A2A stats, model plan, verification results
-reports/Digital_Twin_Consolidated_Report.json         # Path C: the 8 Path B reports merged verbatim + source_manifest
-reports/clinical_notes/clinical__notes_summary.json   # Path B
-reports/cbc/CBC_consolidated_summary.json             # Path B
-reports/ct_scan/CT_scan_clinical_summary.json         # Path B
-reports/mri/MRI_clinical_summary.json                 # Path B
-reports/ecg/ECG_Clinical_Summary.json                 # Path B
-reports/eeg/EEG_clinical_summary.json                 # Path B
-reports/genetics/genetics_clinical_summary.json       # Path B
-reports/questionnaire/Questionnaire_consolidated_summary.json  # Path B
-reports/ddi/DDI_Clinical_Assessment.json              # Path D: DDI screen (additive, folded into Path C)
-reports/Digital_Twin_Integrated_Report.pdf            # rendered PDF (from Path C's JSON, see PDF Report Rendering)
-reports/Digital_Twin_Integrated_Report.html           # intermediate HTML behind the PDF; regenerated every run, safe to delete
-```
-
-No generator writes anywhere under `patient_data/`; every SKILL.md's Verification section states this explicitly.
-
-## Testing
+## 6. Testing
 
 ```powershell
-python -m pytest
+python -m pytest                 # fast suite (default) -- excludes the one live-network test
+python -m pytest -m slow         # the one excluded test: fires a real concurrent burst at NCBI
 ```
 
-**165 tests, all passing**, across 9 files:
+**223 tests, all passing**, across 15 files:
 
-| File | Covers |
-| --- | --- |
-| `test_model_loader.py` (27) | `.env`/env-var/JSON config resolution, hardware detection, device/dtype selection, 4-bit only where supported, automatic model tiering, lazy loading |
-| `test_memory_refinement.py` (27) | Memory CRUD/versioning, scope isolation, target classification, one targeted update per issue class, history, rollback per target |
-| `test_harness_crud.py` (22) | Component CRUD, prompt policies, skill entries, sub-agent CRUD, enable/disable, revisions, rollback and rollback-of-rollback |
-| `test_integration.py` (20) | Full seven-phase run, report validity, traceability, verification gates, session resume, persistence layout, CLI |
-| `test_persistent_subagents.py` (18) | One agent per category, extractor reuse, schema-valid sections, null-only output with no source files, evidence traceability, episodic memory, persisted counters |
-| `test_schema_validation.py` (18) | Schema presence, defaults, type/required/extra/date rejection, repair behaviour, integrated report contract |
-| `test_rlm_delegation.py` (16) | Agent registration, delegation, retry budget, recovery, exception capture, trajectory recording, state persistence across instances |
-| `test_a2a.py` (11) | Message ids, request/response correlation, broadcast, inboxes, history filters, error messages, disk persistence and reload |
-| `test_ddi.py` (6) | Path D: real-data regimen normalization, dose-conflict detection, proposed drugs never reported as an active interaction, no drug invented beyond what `clinical_notes` states, pair severity never escalating without an established mechanism, unresolved DDI coverage always flagged per therapy |
+| File | Count | Covers |
+| --- | --- | --- |
+| `test_model_loader.py` | 27 | Config resolution, hardware detection, device/dtype/4-bit selection, model tiering |
+| `test_memory_refinement.py` | 27 | Agent memory CRUD/versioning, refinement target classification, rollback |
+| `test_harness_crud.py` | 22 | Continual harness component CRUD, revisions, rollback |
+| `test_integration.py` | 20 | Full seven-phase Path A run, report validity, traceability, CLI |
+| `test_persistent_subagents.py` | 18 | One agent per category, extractor reuse, evidence traceability |
+| `test_schema_validation.py` | 18 | Schema defaults, type/required/date rejection, repair behaviour |
+| `test_rlm_delegation.py` | 16 | Agent registration, delegation, retry budget, state persistence |
+| `test_external_lookup_sanitization.py` | 15 | Output guardrails: HTML/script stripping, truncation, URL domain validation |
+| `test_external_lookup.py` | 14 | Per-API response parsing against real captured response shapes, on-disk cache |
+| `test_external_lookup_memory.py` | 12 | Long-term memory: store/recall, TTL expiry, corrupted-store fallback, badge propagation |
+| `test_a2a.py` | 11 | A2A message bus, correlation, persistence |
+| `test_external_lookup_guardrails.py` | 8 | Input guardrail: valid term passes, notes-like text rejected before any HTTP call |
+| `test_report_html_external_evidence.py` | 8 | Evidence-card rendering: no double-escaping, no mid-word truncation, gene-wide ClinVar labeling |
+| `test_ddi.py` | 6 | Regimen normalization, dose-conflict detection, no invented drugs/severity |
+| `test_external_lookup_ratelimit.py` | 1 fast + 1 `slow` | Fast: error-vocabulary sanity check. Slow (excluded by default): a real concurrent burst against NCBI, confirming a genuine 429 degrades cleanly with a distinguishable reason |
 
-The first 8 files exercise **Path A** (the schema-validated pipeline and agent runtime) against a temp-directory copy of the schemas and skill files (`tests/conftest.py`), so nothing mutates the real repository and no test downloads model weights. `test_ddi.py` exercises **Path D** directly against this repository's own generated `reports/*` fixtures (skipped automatically if those fixtures aren't present).
+**Automated**: Path A (agent runtime + legacy harness), Path D (`ddi_summary.py`), and the entire external evidence layer (`external_lookup/`, including guardrails, caching, memory, and `report_html.py`'s evidence-card rendering).
 
-**Not currently covered by automated tests**: the 8 Path B standalone generators (`clinical_notes_summary.py`, `cbc_summary.py`, `ct_scan_summary.py`, `mri_summary.py`, `ecg_summary.py`, `eeg_summary.py`, `genetics_summary.py`, `questionnaire_summary.py`), Path C (`digital_twin_report.py`), and the PDF renderer (`report_html.py`). These were verified manually against reference reports (Path B/C) or by rendering and visually reviewing every page (`report_html.py`) during development, but have no `tests/` entries — this is a real gap, not an oversight to gloss over.
+**Manually verified, not covered by automated tests**: the 8 Path B standalone generators, Path C (`digital_twin_report.py`), and the rest of `report_html.py`'s 14 sections beyond the evidence cards — verified by rendering and visually reviewing every page during development, but with no `tests/` entries for that logic. This is a real, acknowledged gap.
 
-## Error Handling
+## 7. Known limitations
 
-- Unsupported file extensions and PDF/JSON/CSV/XML/DOCX parse failures are captured as `notes` on the loaded document and turned into `ValidationIssue`s rather than raising.
-- A category sub-agent that raises is caught by the runtime and reported as a failed `TaskResult`; the orchestrator retries it (`PRIME_AGENT_MAX_RETRIES`) and, if still failing, replaces the section with the schema default — never a partial or invented value.
-- An exception inside an A2A handler becomes an `ERROR` message on the bus, not an unhandled crash.
-- Model loading/generation failures fall back to the deterministic `EchoBackend`; a model problem can never break a report (see [LLM Usage vs. Deterministic Extraction](#llm-usage-vs-deterministic-extraction)).
-- Repeated validation issues are counted (`memory/issue_counts.json` legacy, or the agent runtime's `RefinementEngine`) and, once a threshold is crossed, trigger exactly one targeted fix — the category's `SKILL.md`, the sub-agent's harness instruction, or a memory record, chosen by `refine.classify_target` based on the kind of issue. Every fix is journalled with its before/after content and can be rolled back (`prime-agent refinements --rollback <id>`).
-- Every failure, retry, validation error, and fix is written to the session trajectory and to `reports/agent_run_manifest.json`.
+- **Path B and Path C have no full automated test coverage.** Only `report_html.py`'s external-evidence cells are covered; the other 8 generators and the consolidation step are manually verified.
+- **The external evidence layer covers exactly five APIs.** The rest of the NeuroTwin resource catalog (~25 more resources — PharmGKB, DrugBank, Reactome, STRING, GTEx, RCSB PDB, etc.) is out of scope and must not be inferred from what these five return (see section 4).
+- **A `no_results` or error status is not evidence of absence.** It means this exact query returned nothing (or failed) at the time checked — the report says so explicitly (`UNRESOLVED`) rather than presenting it as a clean negative.
+- **CPIC's guideline content now lives on `clinpgx.org`**, not `cpicpgx.org` (the API host) — CPIC's knowledge base was rebranded to "ClinPGx" mid-project; both domains are accepted (`CPIC_GUIDELINE_DOMAINS` in `guardrails.py`), confirmed against a live call during development.
+- **NCBI rate-limiting is concurrency-sensitive, not just rapidity-sensitive** — a sequential burst of 60 rapid calls did not reliably trigger a 429 in testing, but a concurrent burst of 20 reliably did. The `slow`-marked rate-limit test is excluded from the default suite because live third-party throttling isn't deterministic run to run.
+- **`priority_safety_flags`** in the genetics report is a keyword- and significance-driven candidate list, not a clinically validated ranking.
+- **The CT generator's findings text comes from a curated filename→findings lookup table**, not real image analysis — there is no radiology model in this codebase.
+- **`.mat`, `.edf`, and `.nii` files are never parsed directly** — every EEG/ECG/MRI generator relies on an accompanying pre-computed `*_summary.json`/`*_preprocess_data/*.json` file.
+- **The DDI screen's CYP450 reference table covers only the drugs seen in this dataset's regimen**, not a general drug database; a drug outside it is reported `unresolved`, never confirmed-safe. Its SuperCYPsPred adapter is stubbed and always reports "not evaluated locally."
+- **`report_html.py` requires Microsoft Edge** at a standard Windows path (or on `PATH` as `msedge`); it does not run headless PDF rendering on non-Windows platforms as written.
+- **4-bit quantization requires CUDA + `bitsandbytes`**; on CPU-only machines the agent runtime's advisory LLM (if enabled) always runs in `float32`.
 
-## Source Traceability
+## 8. Project structure
 
-Every `Evidence` record (`models.py`) carries `section`, `field`, `source_file`, `source_lines`, `source_excerpt`, and `confidence`, and is collected into `report["source_traceability"]` by `report_builder.py`. The agent runtime's Verify phase independently confirms every `source_file` is one of the files actually scanned in that run — evidence pointing at a file outside the scanned set fails verification rather than being silently accepted.
+```
+patient_prime_agent/
+|-- agentic/                      # Prime Agent runtime (drives Path A): a2a.py, cli.py, harness.py,
+|   |                              #   llm.py, main_agent.py, memory.py, model_loader.py, refine.py,
+|   |                              #   runtime.py, session.py, settings.py, subagents.py
+|-- core/                         # config.py (ProjectPaths, CATEGORY_ORDER), models.py, utils.py
+|-- external_lookup/               # live external-evidence layer -- see section 4
+|   |-- clinvar_lookup.py, cpic_lookup.py, dailymed_lookup.py, pubmed_lookup.py, trials_lookup.py
+|   |-- guardrails.py, http_client.py, memory_store.py
+|-- path_a/                       # Path A engine: planner.py, orchestrator.py, file_tools.py,
+|   |                              #   memory_store.py, refinement.py, report_builder.py, skill_store.py
+|   |-- extractors/               #   one schema-validated extractor per category
+|   +-- skills/                   #   SKILL.md per category
+|-- path_d/
+|   +-- ddi/                      # Path D engine: normalizer.py, pairing.py, reference_data.py,
+|                                  #   pharmacodynamic_rules.py, pgx_modifiers.py, clinical_context.py,
+|                                  #   aggregation.py, severity.py
+|-- validation/                   # schema_validator.py, repair.py
+|-- __init__.py, __main__.py, cli.py
+|-- cbc_summary.py, clinical_notes_summary.py, ct_scan_summary.py, mri_summary.py,   # Path B
+|   ecg_summary.py, eeg_summary.py, genetics_summary.py, questionnaire_summary.py    # (8 generators)
+|-- ddi_summary.py                # Path D entry point
+|-- external_evidence_summary.py  # external evidence layer entry point
+|-- digital_twin_report.py        # Path C entry point
++-- report_html.py                # PDF rendering entry point
 
-The Path B generators use the same principle but express it differently per category — e.g. the CBC generator records the exact PDF page a value came from (`source_page`), the CT generator appends the source image's real pixel resolution, and the EEG/ECG generators trace every statistic back to a specific recording's `global_statistics`/`statistics` object. See each category's `SKILL.md` → Verification section for the exact traceability check to run.
+tests/          # 15 files, 223 tests -- see section 6
+schemas/        # one *.schema.json per category + digital_twin_report.schema.json
+patient_data/   # source files, one folder per category
+reports/        # every generated output (per-category JSON, DDI, external evidence, consolidated JSON, PDF)
+memory/         # legacy + agentic persistent state (harness state, sessions, A2A logs, agent memory)
+```
 
-## Security
-
-- **No network calls process patient data.** The only network access in the codebase is the optional, one-time Hugging Face weight download when `PRIME_AGENT_ENABLE_LLM=1`, and that path never receives or returns a patient value (see [LLM Usage](#llm-usage-vs-deterministic-extraction)).
-- **All source data in this repository is synthetic**, explicitly labelled `SYNTHETIC TEST DATA - NOT A REAL MEDICAL RECORD` in the PDFs themselves.
-- **`.env` is gitignored** (see `.gitignore`) so local model/cache configuration doesn't leak into version control.
-- **Schema validation with `additionalProperties: false`** on the integrated report acts as an allow-list — a field an extractor didn't intend to emit is rejected, not silently merged.
-- **No secrets are read or required** anywhere in Path A/B/C; there is no API key, credential, or external service dependency for report generation.
-
-## Limitations
-
-- Path B (standalone generators) and Path C (consolidated report) have no automated test coverage yet — see [Testing](#testing).
-- `priority_safety_flags` in the genetics report is a keyword- and significance-driven candidate list (see `skills/genetics/SKILL.md`), not a clinically validated ranking.
-- The CT generator's per-study findings text comes from a curated filename→findings lookup table (`VISUAL_FINDINGS` in `ct_scan_summary.py`), not real image analysis — there is no radiology model in this codebase.
-- `.mat`, `.edf`, and `.nii` files are never parsed directly; every generator that touches EEG/ECG/MRI relies on an accompanying pre-computed `*_summary.json`/`*_preprocess_data/*.json` file for its numbers.
-- 4-bit quantization requires CUDA + `bitsandbytes`; on CPU-only machines it is always disabled, and the default 3B model needs ~12 GB resident memory in `float32` to run.
-- The questionnaire generator deliberately includes every patient-reported answer (including "No"/"Never"/"None") in `recurring_patient_reported_findings`, which is more complete than some hand-authored reference reports for this dataset that silently excluded negative findings — documented as an intentional choice in `skills/questionnaire/SKILL.md`, not a bug.
-- `prime-agent run` and `python -m patient_prime_agent --agentic` both write to `reports/Digital_Twin_Integrated_Report.json`; running Path B/C alongside them is safe (different files), but two *concurrent* Path A runs against the same `reports/` directory are not coordinated against each other.
-- The DDI screen's curated CYP450 reference table (`ddi/reference_data.py`) covers only the drugs actually seen in this dataset's regimen, not a general drug database; a drug outside that table is reported as `unresolved`, never as confirmed-safe. SuperCYPsPred predicted-interaction coverage is stubbed and always reports "not evaluated locally" — no local snapshot of that model exists in this project.
-- `report_html.py`'s PDF rendering depends on Microsoft Edge being installed at a standard Windows path (or reachable as `msedge` on `PATH`); it does not run on non-Windows platforms as written.
-
-## How to Add a New Category
-
-Follow the pattern every existing category uses:
-
-1. **Schema** — add `schemas/<category>.schema.json` (draft 2020-12 subset; see [Schemas and Validation](#schemas-and-validation) for supported keywords). Give every field a `null`-inclusive `type` unless it's genuinely always present.
-2. **Register the category** in `config.py`: add it to `CATEGORY_ORDER`, `CATEGORY_LABELS`, and `CATEGORY_ALIASES` (map every folder-name spelling you expect to see under `patient_data/` to the canonical category key).
-3. **Extractor** — add `extractors/<category>.py` with a class subclassing `CategoryExtractorBase` that implements `extract_document(document) -> (section, evidence, issues)`. Register it in `extractors/__init__.py`'s `CATEGORY_EXTRACTORS` dict. Reuse helpers from `extractors/common.py` where the source format allows it.
-4. **`SKILL.md`** — add `patient_prime_agent/skills/<category>/SKILL.md` following the frontmatter + Purpose/Inputs/Workflow/Canonical Output Shape/Rules/Output/Verification structure described in [SKILL.md Files](#skillmd-files).
-5. **The agent runtime picks it up automatically** — `ContinualHarness._build_defaults()` iterates `CATEGORY_ORDER` to register one `SubAgentConfig` per category, so no code change is needed there once step 2 is done.
-6. **(Optional) standalone generator** — if the category's real file format has more structure than the generic extractor can capture (as CBC, ECG, EEG, MRI, CT, genetics, questionnaire, and clinical notes all do), add `<category>_summary.py` following the pattern in an existing one: parse the real format in depth, compute everything derivable, never invent a value the source doesn't support, and write to `reports/<category>/`. Add it to `SOURCE_REPORTS` in `digital_twin_report.py` if it should be included in the consolidated report.
-7. **Tests** — add coverage under `tests/`; `tests/conftest.py`'s `build_project` fixture already creates a synthetic sample file per category, so adding a new category there (`CATEGORY_FOLDERS`, `SAMPLE_DOCUMENTS`) makes it participate in the existing integration tests with no further wiring.
-
-## Clinical Safety Notes
-
-This project is an extraction and summarization tool, not a medical device or diagnostic system.
-
-- It does not provide medical advice and does not replace a clinician, radiologist, or geneticist.
-- It must not invent missing patient values — this is enforced throughout the codebase (see [What This Project Does](#what-this-project-does) and every category's `SKILL.md` Rules section) and independently checked by the agent runtime's Verify phase.
-- MRI/CT summaries are metadata- and lookup-based, not a radiologist's interpretation of image content.
-- The genetics report's classification-style labels (e.g. metabolizer status framing) describe what the source dataset's own gene/drug annotations say, not a clinician-verified diagnosis — see `skills/genetics/SKILL.md` Rules.
-- The DDI screen (path D) never makes or implies a prescribing decision — no dose, start, or stop recommendation is generated anywhere in `patient_prime_agent/ddi/`; it only classifies existing evidence as supporting/counter/unresolved for a clinician to review. See [Drug-Drug Interaction (DDI) Screen](#drug-drug-interaction-ddi-screen).
-- PDF extraction depends on extractable text; scanned image-only PDFs are not OCR'd.
+Every module invoked as `python -m patient_prime_agent.<name>` (all of Path B, `ddi_summary.py`, `external_evidence_summary.py`, `digital_twin_report.py`, `report_html.py`) stays at the package root by design — these are the project's documented, script-referenced entry points, and moving them into a subpackage would break that exact invocation. `cli.py` and `agentic/` also stay at the root: both are registered `[project.scripts]` console-script targets (`prime-patient-agent`, `prime-agent`) and `cli.py` is `__main__.py`'s direct import target.

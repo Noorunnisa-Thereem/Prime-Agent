@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from patient_prime_agent.config import CATEGORY_ORDER, ProjectPaths
-from patient_prime_agent.repair import repair_to_schema
-from patient_prime_agent.schema_validator import SchemaValidator
+from patient_prime_agent.core.config import CATEGORY_ORDER, ProjectPaths
+from patient_prime_agent.validation.repair import repair_to_schema
+from patient_prime_agent.validation.schema_validator import SchemaValidator
 
 
 @pytest.fixture
@@ -141,7 +141,7 @@ def test_the_integrated_default_only_lacks_its_timestamps(validator: SchemaValid
 
 
 def test_the_integrated_skeleton_validates_once_timestamps_are_filled(validator: SchemaValidator):
-    from patient_prime_agent.utils import utc_now_iso
+    from patient_prime_agent.core.utils import utc_now_iso
 
     report = validator.default("digital_twin_report")
     report["generated_at"] = utc_now_iso()

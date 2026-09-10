@@ -20,15 +20,15 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from ..config import ProjectPaths
-from ..extractors import CATEGORY_EXTRACTORS
-from ..memory_store import MemoryStore
-from ..models import CategoryResult, ValidationIssue
-from ..refinement import RefinementManager
-from ..repair import repair_to_schema
-from ..schema_validator import SchemaValidator
-from ..skill_store import SkillRegistry
-from ..utils import utc_now_iso
+from ..core.config import ProjectPaths
+from ..core.models import CategoryResult, ValidationIssue
+from ..core.utils import utc_now_iso
+from ..path_a.extractors import CATEGORY_EXTRACTORS
+from ..path_a.memory_store import MemoryStore
+from ..path_a.refinement import RefinementManager
+from ..path_a.skill_store import SkillRegistry
+from ..validation.repair import repair_to_schema
+from ..validation.schema_validator import SchemaValidator
 from .harness import SubAgentConfig
 from .memory import KIND_EPISODIC, AgentMemory
 from .runtime import PersistentAgent, TaskEnvelope, TaskResult

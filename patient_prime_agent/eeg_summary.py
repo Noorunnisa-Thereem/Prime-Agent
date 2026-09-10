@@ -8,7 +8,7 @@ from pathlib import Path
 from statistics import mean, pstdev
 from typing import Any
 
-from .utils import ensure_dir
+from .core.utils import ensure_dir
 
 DEFAULT_INPUT_DIR = Path("patient_data") / "EEG"
 DEFAULT_OUTPUT_PATH = Path("reports") / "eeg" / "EEG_clinical_summary.json"

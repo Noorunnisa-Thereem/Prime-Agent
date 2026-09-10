@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .config import CATEGORY_ORDER
-from .utils import atomic_write_text, ensure_dir, read_text, utc_now_iso
+from ..core.config import CATEGORY_ORDER
+from ..core.utils import atomic_write_text, ensure_dir, read_text, utc_now_iso
 
 
 @dataclass(slots=True)

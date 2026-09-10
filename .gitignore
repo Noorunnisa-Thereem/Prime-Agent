@@ -4,3 +4,11 @@ __pycache__/
 .pytest_cache/
 .venv/
 .env
+
+# Raw cached responses from live external-API lookups (patient_prime_agent.external_lookup) --
+# real data, but a re-fetchable cache, not a deliverable.
+reports/external_evidence/.cache/
+
+# Long-term memory store for external_lookup (memory_store.py, 30-day TTL) --
+# real findings, but re-fetchable from the live APIs, not a deliverable.
+reports/external_lookup/memory/

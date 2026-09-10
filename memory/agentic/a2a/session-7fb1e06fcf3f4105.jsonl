@@ -1,0 +1,1 @@
+{"sender": "agent-main", "recipient": "*", "message_type": "event", "payload": {"event": "run_started", "session_id": "session-7fb1e06fcf3f4105"}, "session_id": "session-7fb1e06fcf3f4105", "conversation_id": "conv-7277e8237737", "correlation_id": null, "message_id": "msg-04e55c9e5bd4", "timestamp": "2026-09-10T10:46:10Z"}

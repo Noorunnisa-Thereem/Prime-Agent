@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .utils import ensure_dir
+from .core.utils import ensure_dir
 
 DEFAULT_INPUT_PATH = Path("patient_data") / "Genetics" / "genetics_data.xlsx"
 DEFAULT_OUTPUT_PATH = Path("reports") / "genetics" / "genetics_clinical_summary.json"

@@ -21,7 +21,7 @@ from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any
 
-from ..utils import read_json
+from ..core.utils import read_json
 
 ENV_PREFIX = "PRIME_AGENT_"
 DEFAULT_ENV_FILENAME = ".env"

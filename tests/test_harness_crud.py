@@ -15,7 +15,7 @@ from patient_prime_agent.agentic.harness import (
     ContinualHarness,
     SubAgentConfig,
 )
-from patient_prime_agent.config import CATEGORY_ORDER, ProjectPaths
+from patient_prime_agent.core.config import CATEGORY_ORDER, ProjectPaths
 
 
 @pytest.fixture

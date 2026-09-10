@@ -16,8 +16,8 @@ from patient_prime_agent.agentic.main_agent import (
     run_agentic_pipeline,
 )
 from patient_prime_agent.agentic.settings import AgentSettings
-from patient_prime_agent.config import CATEGORY_ORDER, ProjectPaths
-from patient_prime_agent.schema_validator import SchemaValidator
+from patient_prime_agent.core.config import CATEGORY_ORDER, ProjectPaths
+from patient_prime_agent.validation.schema_validator import SchemaValidator
 
 
 @pytest.fixture
@@ -55,7 +55,7 @@ def test_extracted_values_match_the_source_documents(outcome: OrchestrationOutco
 
 
 def test_source_traceability_is_preserved_for_every_evidence_item(project: ProjectPaths, outcome: OrchestrationOutcome):
-    from patient_prime_agent.file_tools import collect_files
+    from patient_prime_agent.path_a.file_tools import collect_files
 
     known = {str(path) for paths in collect_files(project.data_root).values() for path in paths}
     traceability = outcome.report["source_traceability"]

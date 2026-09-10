@@ -38,15 +38,28 @@ prime-agent = "patient_prime_agent.agentic.cli:main"
 [tool.setuptools]
 packages = [
     "patient_prime_agent",
-    "patient_prime_agent.extractors",
+    "patient_prime_agent.core",
+    "patient_prime_agent.path_a",
+    "patient_prime_agent.path_a.extractors",
+    "patient_prime_agent.path_d",
+    "patient_prime_agent.path_d.ddi",
+    "patient_prime_agent.validation",
     "patient_prime_agent.agentic",
+    "patient_prime_agent.external_lookup",
 ]
 
 [tool.setuptools.package-data]
-patient_prime_agent = ["skills/**/SKILL.md"]
+patient_prime_agent = ["path_a/skills/**/SKILL.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 # Keep temp projects inside the repo: the system temp dir is not always writable
 # on locked-down Windows profiles.
-addopts = "-q -p no:cacheprovider --basetemp=.pytest-tmp"
+# -m "not slow": excludes real-network/live-API tests (see the "slow" marker below)
+# from the default run -- they depend on live third-party conditions (e.g. whether
+# NCBI actually rate-limits a given burst today) and are not deterministic enough
+# for every commit. Run them explicitly with `pytest -m slow ...`.
+addopts = "-q -p no:cacheprovider --basetemp=.pytest-tmp -m \"not slow\""
+markers = [
+    "slow: real network calls to a live third-party API; excluded by default (see addopts), run manually or nightly with `pytest -m slow`",
+]

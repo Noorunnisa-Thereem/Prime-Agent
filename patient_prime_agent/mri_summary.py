@@ -7,7 +7,7 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-from .utils import ensure_dir
+from .core.utils import ensure_dir
 
 
 DEFAULT_INPUT_DIR = Path("patient_data") / "MRI"

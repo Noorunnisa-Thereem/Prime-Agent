@@ -5,10 +5,10 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from .config import CATEGORY_ORDER
-from .models import CategoryResult, Evidence
-from .schema_validator import SchemaValidator
-from .utils import dedupe_preserve_order, utc_now_iso
+from ..core.config import CATEGORY_ORDER
+from ..core.models import CategoryResult, Evidence
+from ..core.utils import dedupe_preserve_order, utc_now_iso
+from ..validation.schema_validator import SchemaValidator
 
 
 def build_integrated_report(

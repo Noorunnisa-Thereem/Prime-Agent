@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from patient_prime_agent.config import ProjectPaths  # noqa: E402
+from patient_prime_agent.core.config import ProjectPaths  # noqa: E402
 from patient_prime_agent.agentic.settings import AgentSettings  # noqa: E402
 
 CATEGORY_FOLDERS = {
@@ -114,7 +114,7 @@ def build_project(root: Path, categories: list[str] | None = None) -> ProjectPat
     skills_root = root / "skills"
 
     _copy_tree(REPO_ROOT / "schemas", schemas_root)
-    _copy_tree(REPO_ROOT / "patient_prime_agent" / "skills", skills_root)
+    _copy_tree(REPO_ROOT / "patient_prime_agent" / "path_a" / "skills", skills_root)
 
     for category in categories:
         folder = data_root / CATEGORY_FOLDERS[category]
