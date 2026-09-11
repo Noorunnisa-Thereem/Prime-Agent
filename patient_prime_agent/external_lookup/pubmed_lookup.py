@@ -56,6 +56,7 @@ def search_pubmed(
     # referenced in, not the query itself.)
     _term_parts = [p.strip() for p in term.split(" AND ") if p.strip()]
     _drug_anchor = _term_parts[-1] if _term_parts else None
+    _other_terms = _term_parts[:-1]
 
     def _live_lookup() -> dict[str, Any]:
         esearch_endpoint = f"{_ESEARCH_URL}?db=pubmed&term={_quote(term)}&retmode=json&retmax={int(retmax)}&sort=relevance"
@@ -101,7 +102,7 @@ def search_pubmed(
 
         summary_by_uid: dict[str, Any] = (esummary_result.get("body") or {}).get("result", {})
         records = [_pubmed_record(pmid, summary_by_uid.get(pmid)) for pmid in pmids]
-        records = _reorder_by_drug_relevance(records, _drug_anchor)
+        records = _reorder_by_drug_relevance(records, _drug_anchor, _other_terms)
 
         return build_envelope(
             resource=RESOURCE_NAME,
@@ -121,7 +122,9 @@ def search_pubmed(
     )
 
 
-def _reorder_by_drug_relevance(records: list[dict[str, Any]], drug_term: str | None) -> list[dict[str, Any]]:
+def _reorder_by_drug_relevance(
+    records: list[dict[str, Any]], drug_term: str | None, other_terms: list[str] | None = None
+) -> list[dict[str, Any]]:
     """Promote the first already-fetched record whose title actually names
     the drug this query was for, ahead of NCBI's own relevance-sorted
     order. PubMed's ``sort=relevance`` (even scoped to ``[tiab]``) can
@@ -130,20 +133,34 @@ def _reorder_by_drug_relevance(records: list[dict[str, Any]], drug_term: str | N
     is directly about it (confirmed live: a "CYP3A4 AND lamotrigine" query
     ranked a Cenobamate pharmacology paper above one titled "Effects of
     lamotrigine and phenytoin on the pharmacokinetics of atorvastatin").
+
+    For a drug-drug pair query (``other_terms`` non-empty -- e.g. a DDI
+    literature search built as "Lamotrigine AND Levetiracetam"), a record
+    naming BOTH drugs in its title is promoted ahead of one naming only the
+    anchor drug, since that is verifiably the more specific, on-topic
+    citation for the pair; a gene-drug query (where the gene essentially
+    never appears in a paper's title) is unaffected by this refinement --
+    it still falls back to "names the anchor drug" exactly as before.
+
     This never adds, drops, or invents a record -- it only changes which of
     the real, already-retrieved candidates is shown first, and leaves the
     order untouched when none of them name the drug in the title at all."""
     if not drug_term:
         return records
     needle = drug_term.lower()
+    other_needles = [t.lower() for t in (other_terms or []) if t]
 
-    def _title_matches(record: dict[str, Any]) -> bool:
-        return needle in str(record.get("title") or "").lower()
+    def _rank(record: dict[str, Any]) -> int:
+        title = str(record.get("title") or "").lower()
+        if needle not in title:
+            return 2
+        if other_needles and all(other in title for other in other_needles):
+            return 0
+        return 1
 
-    matched_ids = {id(r) for r in records if _title_matches(r)}
-    if not matched_ids:
+    if all(_rank(r) == 2 for r in records):
         return records
-    return [r for r in records if id(r) in matched_ids] + [r for r in records if id(r) not in matched_ids]
+    return sorted(records, key=_rank)
 
 
 def _pubmed_record(pmid: str, summary: dict[str, Any] | None) -> dict[str, Any]:

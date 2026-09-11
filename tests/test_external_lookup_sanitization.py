@@ -157,6 +157,7 @@ def test_clinvar_lookup_sanitizes_trait_names(monkeypatch, tmp_path):
             "9": {
                 "accession": "VCV000000009",
                 "title": "Some variant",
+                "genes": [{"symbol": "SCN1A", "geneid": "6323"}],
                 "germline_classification": {
                     "description": "<b>Pathogenic</b>",
                     "review_status": "reviewed",
@@ -189,7 +190,7 @@ def test_dailymed_lookup_rejects_spoofed_domain_url(monkeypatch, tmp_path):
                 "setid": "abc-123",
                 "spl_version": 1,
                 "published_date": "Jan 1, 2026",
-                "title": "A Label" + ("x" * 600),
+                "title": "SOMEDRUG Label " + ("x" * 600),
             }
         ]
     }

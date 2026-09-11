@@ -19,6 +19,18 @@ state -- and never silently dropped or replaced with an invented result.
 See ``external_lookup/`` for the five API-specific modules and
 ``external_lookup/http_client.py`` for the shared fetch/cache/rate-limit
 contract.
+
+Three distinct query shapes are produced, each matching a different
+downstream question -- never conflated with one another:
+``by_drug`` (one drug, e.g. "Lamotrigine") feeds each drug's own
+therapy-level effectiveness/safety assessment; ``by_gene_drug_pair`` (one
+gene + one drug, e.g. "SCN1A AND Lamotrigine") feeds the pharmacogenomics
+section; ``by_drug_pair`` (two drugs combined in a single query, e.g.
+"Lamotrigine AND Levetiracetam", one per real current-current pair from
+``path_d.ddi.pairing.generate_pairs``) is the only one that answers a
+drug-drug interaction question, and is what ``ddi_summary.py`` folds into
+``current_pair_assessments``. A pair's interaction evidence is never
+assembled by merging two single-drug (``by_drug``) results after the fact.
 """
 
 from __future__ import annotations
@@ -26,6 +38,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from itertools import combinations
 from pathlib import Path
 from typing import Any
 
@@ -85,6 +98,16 @@ def _extract_gene_symbol(genetic_basis: str | None) -> str | None:
 def _current_drug_names(clinical_notes: dict[str, Any]) -> list[str]:
     medications, _conflicts = normalize_regimen(clinical_notes)
     return dedupe_preserve_order([m.normalized_name for m in medications])
+
+
+def _current_drug_pairs(drug_names: list[str]) -> list[tuple[str, str]]:
+    """Every unique current-current drug pair -- sorted combinations of two, exactly
+    matching patient_prime_agent.path_d.ddi.pairing.generate_pairs' own current-current
+    pairing -- so this module's pair-level DDI literature query lines up one-to-one with
+    ddi_summary.py's current_pair_assessments. This is what makes a query like "Lamotrigine
+    AND Levetiracetam" a genuine per-pair lookup rather than two single-drug lookups for
+    "Lamotrigine" and "Levetiracetam" merged together after the fact."""
+    return list(combinations(sorted(drug_names), 2))
 
 
 def _relevant_gene_drug_pairs(genetics: dict[str, Any], drug_names: list[str]) -> list[dict[str, str]]:
@@ -154,6 +177,7 @@ def build_report(
             "note": "No current-regimen medication was found in clinical__notes_summary.json; no live lookups were issued.",
             "by_drug": [],
             "by_gene_drug_pair": [],
+            "by_drug_pair": [],
             "coverage": {"resources_queried": [], "resources_not_in_scope": _OUT_OF_SCOPE_RESOURCES},
         }
 
@@ -174,6 +198,17 @@ def build_report(
                 "clinicaltrials_gov": trials_result,
             }
         )
+
+    # Genuine drug-drug interaction evidence: ONE combined "Drug A AND Drug B" PubMed query
+    # per real current-current pair (see _current_drug_pairs), not two single-drug queries
+    # merged together after the fact. This is separate from by_drug's per-drug PubMed
+    # lookup above, which feeds each drug's own therapy-level effectiveness/safety
+    # assessment, not pair-level interaction evidence.
+    by_drug_pair = []
+    for drug_a, drug_b in _current_drug_pairs(drug_names):
+        combined_term = f"{drug_a} AND {drug_b}"
+        pubmed_pair_result = pubmed_lookup.search_pubmed(combined_term, retmax=retmax, cache_dir=cache_dir, refresh=refresh)
+        by_drug_pair.append({"drug_a": drug_a, "drug_b": drug_b, "pubmed_combined_query": pubmed_pair_result})
 
     clinvar_by_gene: dict[str, Any] = {}
     for gene_symbol in gene_symbols:
@@ -202,6 +237,7 @@ def build_report(
     all_statuses = [entry["pubmed"]["status"] for entry in by_drug] + [entry["dailymed"]["status"] for entry in by_drug]
     all_statuses += [entry["cpic"]["status"] for entry in by_gene_drug_pair]
     all_statuses += [v["status"] for v in clinvar_by_gene.values()]
+    all_statuses += [entry["pubmed_combined_query"]["status"] for entry in by_drug_pair]
 
     return {
         "report_type": REPORT_TYPE,
@@ -214,6 +250,7 @@ def build_report(
         "by_drug": by_drug,
         "by_gene": clinvar_by_gene,
         "by_gene_drug_pair": by_gene_drug_pair,
+        "by_drug_pair": by_drug_pair,
         "coverage": {
             "resources_queried": [
                 pubmed_lookup.RESOURCE_NAME,

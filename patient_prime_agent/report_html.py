@@ -69,6 +69,21 @@ _PGX_EFFECT_CLASS: dict[str, str] = {
     "efficacy": "sev-low",
 }
 
+# Severity color class per DDI therapy_assessment "position" value (patient_prime_agent.path_d.ddi.
+# aggregation.build_therapy_assessment) -- a display-only recolor of an already-real, deterministically
+# computed classification, not a new judgment made here. A dedicated map rather than _status_class's
+# keyword heuristic, since these are a fixed enum where the keyword match would misfire (e.g.
+# "reconciliation_required" and "effectiveness_incomplete" contain no high/moderate/low keyword at all).
+_DDI_POSITION_CLASS: dict[str, str] = {
+    "continuation_supported": "sev-low",
+    "continuation_with_monitoring": "sev-mod",
+    "effectiveness_incomplete": "sev-mod",
+    "indication_supported_response_inadequate": "sev-mod",
+    "evidence_insufficient": "sev-neutral",
+    "high_caution": "sev-high",
+    "reconciliation_required": "sev-high",
+}
+
 EDGE_CANDIDATES = (
     r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -866,20 +881,19 @@ def _error_message_cell(envelope: dict[str, Any]) -> str:
 
 
 def _provenance_line(envelope: dict[str, Any], *, id_label: str, record_id: Any, version: Any = None) -> str:
-    """Provenance-minimum footer required on every rendered finding: the
-    resource name, the record's own ID, its version when the source
-    actually returns one (DailyMed's spl_version; every other source here
-    has no such field, shown as "Version &mdash;" -- never invented), the
-    retrieval date, and whether it was LIVE-verified this run or CACHED
-    from the long-term memory store."""
-    resource = _t(envelope.get("resource")) or "Unknown source"
+    """Compact provenance footer for a rendered finding: the record's own ID
+    and retrieval date, plus a version only when the source actually
+    returns one (DailyMed's spl_version -- every other source here has no
+    such field, so it's simply omitted rather than shown as a placeholder).
+    The resource name is deliberately not repeated here -- the surrounding
+    table's own column header (PubMed / ClinVar / CPIC / DailyMed /
+    ClinicalTrials.gov) already identifies it. The LIVE/CACHED badge is
+    deliberately omitted too, per user feedback that it added clutter
+    without changing what a reader does with the finding; the retrieval
+    date itself is kept as the one freshness signal."""
     retrieved = _pretty_date(envelope["retrieved_at"]) if envelope.get("retrieved_at") else NOT_AVAILABLE
-    version_part = f"v{_t(version)}" if version not in (None, "") else "Version &mdash;"
-    badge = _live_badge(_is_cached(envelope))
-    return (
-        f'<div class="small muted" style="margin-top:3px">{resource} &middot; {id_label} {_t(record_id)} '
-        f"&middot; {version_part} &middot; Retrieved {retrieved} {badge}</div>"
-    )
+    version_part = f" &middot; v{_t(version)}" if version not in (None, "") else ""
+    return f'<div class="small muted" style="margin-top:3px">{id_label} {_t(record_id)}{version_part} &middot; Retrieved {retrieved}</div>'
 
 
 def _evidence_scope_note() -> str:
@@ -1165,6 +1179,22 @@ def _pgx_worst_per_drug(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [entry for _, entry in best.values()]
 
 
+def _pgx_summary_chips(genetics: dict[str, Any]) -> str:
+    """Real per-gene chips from the patient's own metabolizer_profile (genetics_summary.py)
+    -- the panel-wide genotype/phenotype overview, shown before narrowing to the findings
+    that actually name a current-regimen drug. Every gene the panel tested is shown; none
+    is picked or omitted based on what would look tidier."""
+    profile = _get(genetics, "metabolizer_profile", default=[])
+    if not isinstance(profile, list) or not profile:
+        return ""
+    chips = "".join(
+        f'<div class="chip"><b>{_t(g.get("gene"))}</b><span>{_t(g.get("status"))}</span></div>'
+        for g in profile
+        if isinstance(g, dict)
+    )
+    return f'<div class="grid5" style="margin-bottom:8px">{chips}</div>'
+
+
 def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
     genetics = sections.get(SEC_GENETICS) or {}
     external = sections.get(SEC_EXTERNAL_EVIDENCE) or {}
@@ -1190,10 +1220,380 @@ def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
     return f"""
 <section class="section">
   {_section_head(6, "Pharmacogenomics", f"{genetics.get('patient', {}).get('variants_analyzed', '?')} variants across {genetics.get('patient', {}).get('drugs_covered', '?')} medications \u00b7 reported {_pretty_date(_get(genetics, 'patient', 'report_date'))}")}
-  <div class="callout" style="margin-bottom:8px"><b>PGx summary for the current regimen:</b> the single most clinically significant finding per drug, with its genetic basis and source citation.</div>
+  <div class="h2">Pharmacogenomic Panel Summary</div>
+  {_pgx_summary_chips(genetics)}
+  <div class="callout" style="margin-bottom:8px"><b>Interpretive method:</b> a pharmacogenomic association is weighed against this patient's own observed clinical response, laboratory, and EEG evidence -- it is never used as an isolated prescribing instruction, and a favorable genotype cannot override documented toxicity or persistent symptoms. The table below shows the single most clinically significant finding per current-regimen drug; the full therapy-level assessment -- this finding combined with clinical, EEG, laboratory, and external-database evidence -- is presented in Section 07, Drug Interactions.</div>
   <table class="datatable"><thead><tr><th>Drug</th><th>Gene (Genotype)</th><th>Worst / Most Significant Outcome</th><th>Citation</th></tr></thead><tbody>{worst_rows or '<tr><td colspan="4">No marker in this panel names a current-regimen drug directly.</td></tr>'}</tbody></table>
   {_pgx_live_evidence_card(external, worst_findings)}
 </section>
+"""
+
+
+def _short_source(ref: Any) -> str:
+    """Compact, human-readable provenance label for an evidence item's
+    ``source_reference`` -- a URL is shown as host + trailing path, a JSON
+    field path is shown as its trailing dotted segment, anything else is
+    shown as-is (truncated only if very long). Never a fabricated label."""
+    text = _raw_text(ref)
+    if text in (NOT_AVAILABLE, NONE_REPORTED):
+        return text
+    match = re.match(r"https?://([^/]+)(/.*)?", text)
+    if match:
+        host, path = match.group(1), match.group(2) or ""
+        return host + (path if len(path) <= 42 else "…" + path[-38:])
+    if ".json:" in text:
+        return text.split(".json:", 1)[1]
+    return text if len(text) <= 90 else text[:60] + "…" + text[-25:]
+
+
+def _ddi_evidence_list(items: list[dict[str, Any]] | None) -> str:
+    """One <li> per real evidence item (patient_prime_agent.path_d.ddi.aggregation's
+    EvidenceItem shape: modality/direction/statement/source_reference/evidence_level).
+    An empty list is stated as such -- per DDI_Integration_Plan_v02 section 15, "unresolved"
+    is never collapsed into "no evidence," so a genuinely empty bucket says so explicitly
+    rather than rendering a blank list. Each item's real source_reference is shown inline
+    (per DDI_Integration_Plan_v02 section 14, every displayed finding must carry its
+    provenance) rather than only in the live-evidence tables further down the section."""
+    items = items or []
+    if not items:
+        return '<li class="muted">None identified in the available sources.</li>'
+    return "".join(
+        f'<li>{_t(item.get("statement"))} <span class="muted small">&mdash; {_t(_short_source(item.get("source_reference")))}</span></li>'
+        for item in items
+    )
+
+
+def _therapy_assessment_card(therapy: dict[str, Any]) -> str:
+    """Renders one patient_prime_agent.path_d.ddi.aggregation.build_therapy_assessment()
+    record per DDI_Integration_Plan_v02 section 13's required presentation: therapy name,
+    current clinical position, supporting/counter/unresolved evidence, clinical impression,
+    and recommended monitoring -- the therapy-specific evidence assessment the plan requires
+    instead of a pass/fail interaction list. Dose is deliberately not repeated here -- the
+    Medication Reconciliation table directly above is this section's single source for it."""
+    medication = therapy.get("medication") or {}
+    position = therapy.get("position")
+    position_badge = f'<span class="badge {_DDI_POSITION_CLASS.get(str(position or "").lower(), "sev-neutral")}">{_humanize(position)}</span>'
+    # Plain-clinical-language statement for the same computed position, per
+    # DDI_Integration_Plan_v02 section 13 ("never display the raw enum") --
+    # _POSITION_KEY_FINDING already exists below for the section-level summary
+    # table; shown here too so the individual therapy card carries it directly
+    # rather than only the enum badge.
+    position_statement = _POSITION_KEY_FINDING.get(position, _humanize(position))
+
+    monitoring = therapy.get("recommended_monitoring") or []
+    monitoring_pills = "".join(f'<span class="pill">{_t(m)}</span>' for m in monitoring) or '<span class="pill">None recorded.</span>'
+
+    return f"""
+  <div class="card" style="margin-top:8px">
+    <div class="h2">{_t(medication.get('source_name'))} &nbsp; {position_badge}</div>
+    <p class="small" style="margin-top:-4px;margin-bottom:6px">{_t(position_statement)}</p>
+    <div class="grid2">
+      <div>
+        <div class="h2" style="font-size:8.6px">Supporting Evidence</div>
+        <ul class="list-compact">{_ddi_evidence_list(therapy.get('supporting_evidence'))}</ul>
+        <div class="h2" style="font-size:8.6px;margin-top:6px">Counter-Evidence</div>
+        <ul class="list-compact">{_ddi_evidence_list(therapy.get('counter_evidence'))}</ul>
+      </div>
+      <div>
+        <div class="h2" style="font-size:8.6px">Unresolved Evidence</div>
+        <ul class="list-compact">{_ddi_evidence_list(therapy.get('unresolved_evidence'))}</ul>
+        <div class="h2" style="font-size:8.6px;margin-top:6px">Clinical Impression</div>
+        <p class="small">{_t(therapy.get('clinical_impression'))}</p>
+      </div>
+    </div>
+    <div class="h2" style="margin-top:6px">Recommended Monitoring</div>
+    <div class="pill-row">{monitoring_pills}</div>
+  </div>
+"""
+
+
+# ----------------------------------------------------------------------
+# 07. Drug Interactions -- top-of-section summary overview
+#
+# Combines current_pair_assessments (pair-level DDI screening) and
+# therapy_assessments (per-drug evidence assessment) into one at-a-glance
+# table, computed entirely from real, already-generated fields -- never a
+# hardcoded per-drug row. The detailed per-therapy evidence cards below
+# remain the full record; this is an additive index into them, not a
+# replacement.
+# ----------------------------------------------------------------------
+
+# Evidence-item modality -> which real layer produced it, for the summary
+# table's "Evidence Source" column (a display label, not a new computation --
+# every modality here is one already assigned by path_d.ddi.aggregation).
+_MODALITY_LAYER_LABEL: dict[str, str] = {
+    "pharmacokinetic_ddi": "Curated DDI (Flockhart)",
+    "pharmacodynamic_ddi": "Pharmacodynamic rule",
+    "pharmacogenomic": "Patient pharmacogenomic findings",
+    "clinical": "Clinical record",
+    "eeg": "EEG findings",
+    "laboratory": "Laboratory findings",
+    "literature": "External evidence (PubMed)",
+    "genomic_evidence": "External evidence (ClinVar)",
+    "labeling": "External evidence (DailyMed)",
+    "clinical_trial": "External evidence (ClinicalTrials.gov)",
+}
+
+# One short clinical sentence per therapy_assessment "position" value -- keyed by the
+# computed enum value, never by drug name, so this generalizes to any medication that
+# reaches that position.
+_POSITION_KEY_FINDING: dict[str, str] = {
+    "continuation_supported": "Supporting evidence outweighs counter-evidence for continuation.",
+    "continuation_with_monitoring": "Mixed evidence; continuation supported with monitoring.",
+    "effectiveness_incomplete": "Therapeutic evidence present, but clinical effectiveness remains incomplete.",
+    "indication_supported_response_inadequate": "Indication is supported, but clinical response remains inadequate.",
+    "evidence_insufficient": "Evidence is insufficient to support a therapeutic conclusion.",
+    "high_caution": "High-caution counter-evidence identified for this therapy.",
+    "reconciliation_required": "Medication reconciliation is required before further interpretation.",
+}
+
+# Traffic-light label per severity color class, reused for both pair and therapy rows --
+# green means "no resolved major finding," never "confirmed safe."
+_FLAG_LABEL_BY_CLASS: dict[str, str] = {
+    "sev-low": "NO MAJOR CONCERN",
+    "sev-mod": "UNRESOLVED",
+    "sev-high": "RISK IDENTIFIED",
+    "sev-neutral": "UNRESOLVED",
+}
+_POSITION_RANK: dict[str, int] = {"sev-high": 3, "sev-mod": 2, "sev-neutral": 1, "sev-low": 0}
+
+
+def _evidence_source_labels(items: list[dict[str, Any]] | None) -> str:
+    labels: list[str] = []
+    for item in items or []:
+        label = _MODALITY_LAYER_LABEL.get(item.get("modality"))
+        if label and label not in labels:
+            labels.append(label)
+    return "; ".join(labels) if labels else "No resolved evidence source identified"
+
+
+def _patient_impact_from_impression(clinical_impression: Any) -> str:
+    """clinical_impression already carries a real, computed clinical-notes inference
+    sentence (patient_prime_agent.path_d.ddi.aggregation.build_therapy_assessment) --
+    this reuses that exact text rather than generating new prose."""
+    text = _raw_text(clinical_impression)
+    marker = "Clinical-notes inference:"
+    if marker in text:
+        return text.split(marker, 1)[1].strip()
+    return text
+
+
+def _pair_evidence_source_items(pair: dict[str, Any]) -> list[dict[str, Any]]:
+    """Evidence Source for a pair row: the curated/rule-based items that actually drove
+    the pair's status (never "unresolved" ones like the generic SuperCYPsPred-unavailable
+    note), PLUS the real pair-level PubMed query (external_evidence_summary.py's
+    by_drug_pair, e.g. "Lamotrigine AND Levetiracetam") even though its own direction is
+    always "unresolved" -- a genuine combined DDI literature search was performed for this
+    exact pair, and that provenance must be visible, not hidden by the same "unresolved
+    items don't count as a source" rule that correctly excludes tangential noise."""
+    return [e for e in (pair.get("evidence") or []) if e.get("direction") != "unresolved" or e.get("modality") == "literature"]
+
+
+def _ddi_summary_pair_row(
+    pair: dict[str, Any],
+    coverage: dict[str, Any],
+    name_map: dict[str, str],
+    therapy_by_source_name: dict[str, dict[str, Any]],
+) -> dict[str, str]:
+    status = pair.get("status")
+    if status == "interaction_detected":
+        css_class = "sev-high"
+        mechanisms = pair.get("mechanisms") or []
+        key_finding = _raw_text((mechanisms[0] if mechanisms else {}).get("description")) if mechanisms else "Clinically relevant interaction mechanism identified."
+        evidence_items = _pair_evidence_source_items(pair)
+    elif status == "no_interaction_detected":
+        drug_a_norm = name_map.get(pair.get("drug_a"))
+        drug_b_norm = name_map.get(pair.get("drug_b"))
+        unresolved = set(coverage.get("unresolved_drugs") or [])
+        css_class = "sev-mod" if (drug_a_norm in unresolved or drug_b_norm in unresolved) else "sev-low"
+        key_finding = "No resolved major DDI identified between these two current medications."
+        evidence_items = _pair_evidence_source_items(pair)
+    else:  # not_evaluated -- e.g. a proposed-drug pair, not applicable to the current regimen
+        css_class = "sev-mod"
+        key_finding = "This pair was not evaluated as part of the current regimen."
+        evidence_items = []
+
+    worse_therapy: dict[str, Any] | None = None
+    for name in (pair.get("drug_a"), pair.get("drug_b")):
+        candidate = therapy_by_source_name.get(name)
+        if candidate is None:
+            continue
+        candidate_rank = _POSITION_RANK.get(_DDI_POSITION_CLASS.get(str(candidate.get("position") or "").lower(), "sev-neutral"), 0)
+        worse_rank = _POSITION_RANK.get(_DDI_POSITION_CLASS.get(str((worse_therapy or {}).get("position") or "").lower(), "sev-neutral"), -1)
+        if worse_therapy is None or candidate_rank > worse_rank:
+            worse_therapy = candidate
+    patient_impact = (
+        f"{_patient_impact_from_impression(worse_therapy.get('clinical_impression'))} This reflects therapy-level "
+        "effectiveness, not a confirmed drug interaction."
+        if worse_therapy is not None
+        else "No therapy-level effectiveness concern is connected to this pair."
+    )
+
+    return {
+        "subject": f"{_t(pair.get('drug_a'))} + {_t(pair.get('drug_b'))}",
+        "flag_css": css_class,
+        "flag_label": _FLAG_LABEL_BY_CLASS[css_class],
+        "key_finding": _t(key_finding),
+        "patient_impact": _t(patient_impact),
+        "evidence_source": _t(_evidence_source_labels(evidence_items)),
+    }
+
+
+def _ddi_summary_therapy_row(therapy: dict[str, Any]) -> dict[str, str]:
+    medication = therapy.get("medication") or {}
+    position = therapy.get("position")
+    css_class = _DDI_POSITION_CLASS.get(str(position or "").lower(), "sev-neutral")
+    resolved_evidence = (therapy.get("supporting_evidence") or []) + (therapy.get("counter_evidence") or [])
+    return {
+        "subject": _t(medication.get("source_name")),
+        "flag_css": css_class,
+        "flag_label": _FLAG_LABEL_BY_CLASS.get(css_class, "UNRESOLVED"),
+        "key_finding": _t(_POSITION_KEY_FINDING.get(position, _humanize(position))),
+        "patient_impact": _t(_patient_impact_from_impression(therapy.get("clinical_impression"))),
+        "evidence_source": _t(_evidence_source_labels(resolved_evidence)),
+    }
+
+
+def _ddi_summary_overview_card(ddi: dict[str, Any]) -> str:
+    coverage = _get(ddi, "source_coverage", default={})
+    reconciliation = _get(ddi, "medication_reconciliation", default={})
+    pair_assessments = _get(ddi, "current_pair_assessments", default=[])
+    therapy_assessments = _get(ddi, "therapy_assessments", default=[])
+
+    name_map = {m.get("source_name"): m.get("normalized_name") for m in reconciliation.get("normalized_medications") or []}
+    therapy_by_source_name = {(t.get("medication") or {}).get("source_name"): t for t in therapy_assessments}
+
+    # Only current-current pairs belong in a "current regimen" overview -- a proposed-drug
+    # pair (pair_context != "current_current") is out of scope here, same restriction the
+    # detailed pair table below already applies.
+    rows = [
+        _ddi_summary_pair_row(p, coverage, name_map, therapy_by_source_name)
+        for p in pair_assessments
+        if p.get("pair_context") == "current_current"
+    ]
+    rows += [_ddi_summary_therapy_row(t) for t in therapy_assessments]
+    if not rows:
+        return ""
+
+    clinically_relevant = sum(1 for r in rows if r["flag_css"] in ("sev-high", "sev-low"))
+    unresolved = sum(1 for r in rows if r["flag_css"] in ("sev-mod", "sev-neutral"))
+
+    # Real interaction-source coverage for this regimen (patient_prime_agent.path_d.ddi_summary's
+    # own resolved/unresolved/not_evaluated_drugs lists) -- not a fabricated coverage percentage
+    # against some larger candidate-drug universe this project doesn't screen against.
+    total_current_drugs = len(reconciliation.get("normalized_medications") or [])
+    resolved_count = len(coverage.get("resolved_drugs") or [])
+    unresolved_count = len(coverage.get("unresolved_drugs") or [])
+    not_evaluated_count = len(coverage.get("not_evaluated_drugs") or [])
+    coverage_stats = [
+        (str(total_current_drugs), "Current Medications Screened"),
+        (str(resolved_count), "Resolved in Curated DDI Source"),
+        (str(unresolved_count), "Unresolved / Not in Curated Source"),
+        (str(not_evaluated_count), "Not Evaluated"),
+    ]
+    coverage_stat_html = "".join(f'<div class="stat"><b>{_t(v)}</b><span>{_t(l)}</span></div>' for v, l in coverage_stats)
+
+    table_rows = "".join(
+        f'<tr><td>{r["subject"]}</td>'
+        f'<td><span class="badge {r["flag_css"]}">{r["flag_label"]}</span></td>'
+        f'<td>{r["key_finding"]}</td>'
+        f'<td>{r["patient_impact"]}</td>'
+        f'<td class="small muted">{r["evidence_source"]}</td></tr>'
+        for r in rows
+    )
+
+    return f"""
+  <div class="card" style="margin-bottom:8px">
+    <div class="h2">DDI &amp; Patient-Specific Therapy Assessment &mdash; Summary</div>
+    <p class="small" style="margin:2px 0 6px"><b>Overall: {clinically_relevant} clinically relevant findings | {unresolved} unresolved finding(s).</b></p>
+    <div class="grid4" style="margin-bottom:8px">{coverage_stat_html}</div>
+    <table class="datatable"><thead><tr><th>Drug Pair</th><th>Flag</th><th>Key Finding</th><th>Patient Impact</th><th>Evidence Source</th></tr></thead>
+    <tbody>{table_rows}</tbody></table>
+    <div class="callout" style="margin-top:8px"><b>Key clinical interpretation:</b> These flags identify findings that require ongoing clinical monitoring, not an automatic medication change. Each finding should be interpreted alongside the patient's actual treatment response, adverse effects, and the clinical/laboratory findings documented elsewhere in this report -- a resolved or unresolved flag is not itself a prescribing instruction.</div>
+    <div class="h2" style="margin-top:8px">Monitoring / Clinician Review Checklist</div>
+    <ul class="list-compact">
+      <li>Medication reconciliation (dose, frequency, and route consistent across all source records)</li>
+      <li>Actual treatment response (seizure/symptom control on the current regimen)</li>
+      <li>Relevant adverse effects reported since the last review</li>
+      <li>Therapeutic drug levels, when indicated and available</li>
+      <li>Relevant laboratory and clinical parameters (e.g. renal, hepatic, hematological)</li>
+    </ul>
+  </div>
+"""
+
+
+def _ddi_coverage_action_table(ddi: dict[str, Any]) -> str:
+    """Medicine / Status / Meaning / Action table: for each reconciled
+    current-regimen drug, whether curated pharmacokinetic (Flockhart)
+    reference data actually exists for it (source_coverage's own
+    resolved/unresolved/not_evaluated_drugs lists -- never a new
+    classification computed here), what that status means in plain
+    language, and a coverage-status-specific next action. This is additive
+    to the Medication Reconciliation table above (which never varies its
+    "current" status) and to the DDI & Therapy Assessment summary card
+    (which is pair/therapy-outcome-oriented, not coverage-oriented). The
+    Action column is deliberately not a drug's recommended_monitoring text
+    -- that already appears once, per drug, in its therapy card below."""
+    coverage = _get(ddi, "source_coverage", default={})
+    reconciliation = _get(ddi, "medication_reconciliation", default={})
+    resolved = coverage.get("resolved_drugs") or []
+    unresolved = coverage.get("unresolved_drugs") or []
+    not_evaluated = coverage.get("not_evaluated_drugs") or []
+    name_by_source = {m.get("source_name"): m.get("normalized_name") for m in reconciliation.get("normalized_medications") or []}
+    flockhart_source = _raw_text(coverage.get("flockhart_source"))
+
+    def _row(source_name: Any) -> str:
+        normalized = name_by_source.get(source_name)
+        if normalized in resolved:
+            badge_class, label = "sev-low", "Resolved"
+            meaning = f"Curated CYP/pharmacokinetic reference data exists for this drug ({flockhart_source})."
+        elif normalized in unresolved:
+            badge_class, label = "sev-mod", "Unresolved"
+            meaning = "No curated CYP/pharmacokinetic reference entry for this drug; screening relies on pharmacodynamic rules and pharmacogenomic findings only."
+        elif normalized in not_evaluated:
+            badge_class, label = "sev-mod", "Not Evaluated"
+            meaning = "Not present in the curated reference or pharmacogenomic findings; no automated interaction evidence is available."
+        else:
+            badge_class, label = "sev-neutral", "Not Determined"
+            meaning = "Coverage status not determined by this assessment."
+        if badge_class == "sev-low":
+            action = "No additional action required beyond the current-current pair evidence below."
+        elif label == "Not Evaluated":
+            action = "Verify coverage manually before adding an interacting medication."
+        else:
+            action = "Review current-current pair evidence and pharmacogenomic findings below before adding an interacting medication."
+        return (
+            f"<tr><td>{_t(source_name)}</td><td><span class=\"badge {badge_class}\">{label}</span></td>"
+            f"<td>{_t(meaning)}</td><td>{_t(action)}</td></tr>"
+        )
+
+    rows = "".join(_row(m.get("source_name")) for m in reconciliation.get("normalized_medications") or [])
+    if not rows:
+        return ""
+    return f"""
+  <div class="card" style="margin-top:8px">
+    <div class="h2">Current Regimen &mdash; Curated-Source Coverage</div>
+    <table class="datatable"><thead><tr><th>Medicine</th><th>Status</th><th>Meaning</th><th>Action</th></tr></thead><tbody>{rows}</tbody></table>
+  </div>
+"""
+
+
+def _ddi_clinical_inference_callout(ddi: dict[str, Any]) -> str:
+    """Standalone, visually prominent statement of DDI_Integration_Plan_v02's
+    conflict-resolution rule 6 ("unresolved does not mean no interaction")
+    and rule 7 ("absence of data does not mean absence of risk") -- placed
+    beside the coverage/overview data rather than folded into a longer
+    general note, so it reads as the section's single load-bearing caution
+    rather than one clause among many."""
+    uncertainties = _get(ddi, "overall_interpretation", "principal_uncertainties", default=[])
+    items = "".join(f"<li>{_t(u)}</li>" for u in uncertainties)
+    return f"""
+  <div class="callout warn" style="margin-top:8px">
+    <b>Clinical inference:</b> Absence of a resolved current-current interaction does not establish absence of
+    interaction. Unresolved predicted-model coverage limits interpretation; the active medication list should be
+    reassessed against a complete interaction source before any treatment change.
+    {f'<ul class="list-compact" style="margin-top:4px">{items}</ul>' if items else ''}
+  </div>
 """
 
 
@@ -1211,7 +1611,7 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
     coverage = _get(ddi, "source_coverage", default={})
     reconciliation = _get(ddi, "medication_reconciliation", default={})
     pair_assessments = _get(ddi, "current_pair_assessments", default=[])
-    overall = _get(ddi, "overall_interpretation", default={})
+    therapy_assessments = _get(ddi, "therapy_assessments", default=[])
     limitations = _get(ddi, "limitations", default=[])
 
     sub = (
@@ -1219,10 +1619,13 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
         f"{_raw_text(coverage.get('flockhart_source'))} ({_raw_text(coverage.get('flockhart_version'))})"
     )
 
+    # No "Status" column: this reconciliation table only ever lists current-regimen
+    # medications (patient_prime_agent.path_d.ddi.normalizer only ever produces "current" --
+    # see that module's docstring), so the value is constant and adds no information here;
+    # the section subtitle above already states "N current medication(s) reconciled."
     med_rows = "".join(
         f"<tr><td>{_t(m.get('source_name'))}</td>"
         f"<td>{_t((m.get('dose') or {}).get('value'))} {_t((m.get('dose') or {}).get('unit'))} {_t(m.get('frequency'))}</td>"
-        f"<td>{_t(m.get('status'))}</td>"
         f"<td>{', '.join(m.get('reconciliation_flags') or []) or '&mdash;'}</td></tr>"
         for m in reconciliation.get("normalized_medications") or []
     )
@@ -1234,8 +1637,10 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
     )
 
     # Only clinically relevant/required pairs -- an actual interaction, or one that is
-    # genuinely unresolved -- are listed; a resolved "no interaction" pair is not required
-    # reading and is skipped here (its full record remains in the source JSON).
+    # genuinely unresolved -- get a dedicated detail card here. A resolved "no interaction"
+    # pair is not required reading as its own card: the summary overview above already
+    # shows it (Flag/Key Finding/Patient Impact/Evidence Source), so repeating a bare
+    # "no interaction identified" callout here would just be the same conclusion twice.
     relevant_pairs = [p for p in pair_assessments if p.get("status") != "no_interaction_detected"]
     pair_rows = "".join(
         f"<tr><td>{_t(p.get('drug_a'))} + {_t(p.get('drug_b'))}</td>"
@@ -1244,33 +1649,34 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
         f"<td>{_t(p.get('patient_specific_interpretation'))}</td></tr>"
         for p in relevant_pairs
     )
-    pairs_html = (
-        f'<table class="datatable"><thead><tr><th>Drug Pair</th><th>Status</th><th>Severity</th>'
-        f"<th>Clinical Significance</th></tr></thead><tbody>{pair_rows}</tbody></table>"
+    pairs_card = (
+        f"""
+  <div class="card" style="margin-top:8px">
+    <div class="h2">Clinically Relevant Interactions</div>
+    <table class="datatable"><thead><tr><th>Drug Pair</th><th>Status</th><th>Severity</th>
+      <th>Clinical Significance</th></tr></thead><tbody>{pair_rows}</tbody></table>
+  </div>"""
         if relevant_pairs
-        else '<div class="callout">No clinically required drug-drug interaction was identified for the current regimen.</div>'
+        else ""
     )
 
-    monitoring = overall.get("recommended_monitoring") or []
-    monitoring_pills = "".join(f'<span class="pill">{_t(m)}</span>' for m in monitoring)
+    therapy_cards = "".join(_therapy_assessment_card(t) for t in therapy_assessments)
 
     return f"""
 <section class="section">
   {_section_head(7, "Drug Interactions", sub)}
+  {_ddi_summary_overview_card(ddi)}
   <div class="card">
     <div class="h2">Medication Reconciliation</div>
-    <table class="datatable"><thead><tr><th>Drug</th><th>Dose</th><th>Status</th><th>Flags</th></tr></thead>
+    <table class="datatable"><thead><tr><th>Drug</th><th>Dose</th><th>Flags</th></tr></thead>
       <tbody>{med_rows}</tbody></table>
     {conflict_html}
   </div>
-  <div class="card" style="margin-top:8px">
-    <div class="h2">Clinically Relevant Interactions</div>
-    {pairs_html}
-  </div>
-  <div class="card" style="margin-top:8px">
-    <div class="h2">Essential Monitoring</div>
-    <div class="pill-row">{monitoring_pills or '<span class="pill">None recorded.</span>'}</div>
-  </div>
+  {_ddi_coverage_action_table(ddi)}
+  {_ddi_clinical_inference_callout(ddi)}
+  <div class="callout" style="margin-top:8px"><b>Therapy-Level Evidence Assessment:</b> for each current medication, the supporting, counter, and unresolved evidence identified across pharmacokinetic, pharmacodynamic, pharmacogenomic, clinical, EEG, and laboratory sources -- not a pass/fail interaction check. Absence of data does not establish absence of risk; "unresolved" is never presented as "no interaction." Recommended monitoring appears per therapy below (see also the section-level checklist above).</div>
+  {therapy_cards}
+  {pairs_card}
   {_ddi_live_evidence_card(external)}
   <div class="callout gap" style="margin-top:6px"><b>Limitations of this screen:</b> {
     ' '.join(_t(item) for item in limitations)

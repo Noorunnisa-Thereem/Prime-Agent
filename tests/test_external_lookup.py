@@ -210,6 +210,7 @@ def test_clinvar_lookup_parses_germline_classification(monkeypatch, tmp_path):
             "4887952": {
                 "accession": "VCV004887952",
                 "title": "NM_001165963.4(SCN1A):c.383+4T>C",
+                "genes": [{"symbol": "SCN1A", "geneid": "6323"}],
                 "germline_classification": {
                     "description": "Uncertain significance",
                     "review_status": "criteria provided, single submitter",
@@ -235,6 +236,66 @@ def test_clinvar_lookup_parses_germline_classification(monkeypatch, tmp_path):
     assert record["linked_traits"] == ["Severe myoclonic epilepsy in infancy"]
 
 
+def test_clinvar_lookup_keeps_record_whose_genes_field_matches_queried_gene(monkeypatch, tmp_path):
+    """Correct-matching case: NCBI's own [gene] scoping is trusted, but only
+    after this module's own local check confirms the summary's "genes" field
+    genuinely names the queried gene (confirmed live: querying SCN1A[gene]
+    returns records whose "genes" field genuinely contains SCN1A)."""
+    esearch_body = {"esearchresult": {"idlist": ["4887952"], "count": "1"}}
+    esummary_body = {
+        "result": {
+            "4887952": {
+                "accession": "VCV004887952",
+                "title": "NM_001165963.4(SCN1A):c.383+4T>C",
+                "genes": [{"symbol": "SCN1A", "geneid": "6323"}],
+                "germline_classification": {"description": "Uncertain significance", "trait_set": []},
+            }
+        }
+    }
+    fake = _fake_fetch_json(
+        {
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi": esearch_body,
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi": esummary_body,
+        }
+    )
+    monkeypatch.setattr(clinvar_lookup, "fetch_json", fake)
+
+    envelope = clinvar_lookup.search_clinvar_by_gene("SCN1A", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] == "ok"
+    assert envelope["records"][0]["accession"] == "VCV004887952"
+    assert envelope["records"][0]["genes"] == ["SCN1A"]
+
+
+def test_clinvar_lookup_rejects_record_whose_genes_field_does_not_match_queried_gene(monkeypatch, tmp_path):
+    """Bad-match-rejected case: a uid returned by esearch whose own summary
+    names a different gene (a coincidental text match, not a real
+    same-gene finding) must not be surfaced as if it were evidence for the
+    queried gene -- it should be filtered out, degrading to no_results
+    rather than a false positive."""
+    esearch_body = {"esearchresult": {"idlist": ["9999999"], "count": "1"}}
+    esummary_body = {
+        "result": {
+            "9999999": {
+                "accession": "VCV009999999",
+                "title": "Some unrelated variant",
+                "genes": [{"symbol": "SCN2A", "geneid": "6326"}],
+                "germline_classification": {"description": "Benign", "trait_set": []},
+            }
+        }
+    }
+    fake = _fake_fetch_json(
+        {
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi": esearch_body,
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi": esummary_body,
+        }
+    )
+    monkeypatch.setattr(clinvar_lookup, "fetch_json", fake)
+
+    envelope = clinvar_lookup.search_clinvar_by_gene("SCN1A", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] == "no_results"
+    assert envelope["records"] == []
+
+
 def test_dailymed_lookup_parses_spl_entries(monkeypatch, tmp_path):
     body = {
         "data": [
@@ -256,6 +317,37 @@ def test_dailymed_lookup_parses_spl_entries(monkeypatch, tmp_path):
     assert record["url"].endswith(record["setid"])
 
 
+def test_dailymed_lookup_rejects_loose_substring_match_on_unrelated_product(monkeypatch, tmp_path):
+    """Bad-match-rejected case: DailyMed's own drug_name= parameter does loose
+    substring matching -- confirmed live that drug_name=depa returns an
+    unrelated hand-sanitizer label matched only via a substring hit inside
+    "DEPArtment". A real match ("LAMOTRIGINE TABLET...") must still be kept
+    alongside it, proving this is a targeted rejection, not a blanket one."""
+    body = {
+        "data": [
+            {
+                "setid": "aaaaaaaa-0000-0000-0000-000000000000",
+                "spl_version": 1,
+                "published_date": "Jan 1, 2026",
+                "title": "NE MEXICO AGING LONG TERM SERVICES DEPARTMENT HAND SANITIZER (BENZALKONIUM CHLORIDE) GEL [SOMBRA COSMETICS]",
+            },
+            {
+                "setid": "17a20462-d9d2-43ac-bcad-603e8cc76e3b",
+                "spl_version": 44,
+                "published_date": "Aug 20, 2026",
+                "title": "LAMICTAL (LAMOTRIGINE) TABLET",
+            },
+        ]
+    }
+    fake = _fake_fetch_json({"https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json": body})
+    monkeypatch.setattr(dailymed_lookup, "fetch_json", fake)
+
+    envelope = dailymed_lookup.search_dailymed("depa", memory_path=tmp_path / "memory.json")
+    setids = {r["setid"] for r in envelope["records"]}
+    assert "aaaaaaaa-0000-0000-0000-000000000000" not in setids, "hand-sanitizer label must not be returned for a 'depa' query"
+    assert setids == set()  # "depa" itself names no real drug in either title
+
+
 def test_trials_lookup_parses_studies(monkeypatch, tmp_path):
     body = {
         "studies": [
@@ -264,6 +356,8 @@ def test_trials_lookup_parses_studies(monkeypatch, tmp_path):
                     "identificationModule": {"nctId": "NCT05450978", "briefTitle": "A trial"},
                     "statusModule": {"overallStatus": "RECRUITING"},
                     "designModule": {"phases": ["PHASE2"]},
+                    "conditionsModule": {"conditions": ["Epilepsy"]},
+                    "armsInterventionsModule": {"interventions": [{"type": "DRUG", "name": "Lamotrigine"}]},
                 }
             }
         ],
@@ -277,6 +371,65 @@ def test_trials_lookup_parses_studies(monkeypatch, tmp_path):
     record = envelope["records"][0]
     assert record["nct_id"] == "NCT05450978"
     assert record["overall_status"] == "RECRUITING"
+    assert record["conditions"] == ["Epilepsy"]
+
+
+def test_trials_lookup_keeps_study_with_matching_intervention_and_overlapping_condition(monkeypatch, tmp_path):
+    """Correct-matching case, shaped after a real live call: a trial whose
+    structured conditions/interventions genuinely relate to the query
+    (querying "Focal impaired-awareness seizures" + "Levetiracetam" and
+    getting a "Partial Seizures" trial that structurally lists
+    levetiracetam as an intervention) must be kept."""
+    body = {
+        "studies": [
+            {
+                "protocolSection": {
+                    "identificationModule": {"nctId": "NCT00537238", "briefTitle": "Pregabalin Versus Levetiracetam In Partial Seizures"},
+                    "statusModule": {"overallStatus": "COMPLETED"},
+                    "designModule": {"phases": ["PHASE4"]},
+                    "conditionsModule": {"conditions": ["Partial Seizures"]},
+                    "armsInterventionsModule": {
+                        "interventions": [{"type": "DRUG", "name": "Pregabalin"}, {"type": "DRUG", "name": "Levetiracetam"}]
+                    },
+                }
+            }
+        ],
+        "totalCount": 1,
+    }
+    fake = _fake_fetch_json({"https://clinicaltrials.gov/api/v2/studies": body})
+    monkeypatch.setattr(trials_lookup, "fetch_json", fake)
+
+    envelope = trials_lookup.search_trials("Focal impaired-awareness seizures", "Levetiracetam", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] == "ok"
+    assert envelope["records"][0]["nct_id"] == "NCT00537238"
+
+
+def test_trials_lookup_rejects_study_missing_the_queried_drug_as_a_structured_intervention(monkeypatch, tmp_path):
+    """Bad-match-rejected case: ClinicalTrials.gov's own query.intr= can
+    surface a study via loose matching even when the drug is not actually
+    one of its structured interventions (e.g. a placebo-only arm study).
+    Such a study must be filtered out rather than returned as if the drug
+    were genuinely studied there."""
+    body = {
+        "studies": [
+            {
+                "protocolSection": {
+                    "identificationModule": {"nctId": "NCT99999999", "briefTitle": "Placebo-controlled seizure trial"},
+                    "statusModule": {"overallStatus": "COMPLETED"},
+                    "designModule": {"phases": ["PHASE3"]},
+                    "conditionsModule": {"conditions": ["Seizures"]},
+                    "armsInterventionsModule": {"interventions": [{"type": "DRUG", "name": "Placebo"}]},
+                }
+            }
+        ],
+        "totalCount": 1,
+    }
+    fake = _fake_fetch_json({"https://clinicaltrials.gov/api/v2/studies": body})
+    monkeypatch.setattr(trials_lookup, "fetch_json", fake)
+
+    envelope = trials_lookup.search_trials("Seizures", "Levetiracetam", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] == "no_results"
+    assert envelope["records"] == []
 
 
 def test_cpic_lookup_reports_no_results_when_drug_not_in_cpic(monkeypatch, tmp_path):
@@ -309,6 +462,51 @@ def test_cpic_lookup_resolves_pair_and_guideline(monkeypatch, tmp_path):
     assert record["guideline"]["name"] == "UGT1A4 and Lamotrigine"
 
 
+def test_cpic_lookup_normalizes_brand_name_to_generic_before_querying(monkeypatch, tmp_path):
+    """Correct-matching case: CPIC's drug table is keyed by generic name --
+    confirmed live that "levetiracetam" resolves while a brand name never
+    would. A brand name like "Keppra" reaching this module must be queried
+    as "levetiracetam", not left as-is (which would produce a false
+    "no CPIC drug entry" even though real CPIC coverage exists)."""
+    drug_urls: list[str] = []
+
+    def _fake(url, *, cache_dir=None, refresh=False, timeout=15, max_retries=1):
+        if url.startswith("https://api.cpicpgx.org/v1/drug"):
+            drug_urls.append(url)
+            body = [{"drugid": "RxNorm:9999", "name": "levetiracetam"}]
+        elif url.startswith("https://api.cpicpgx.org/v1/pair"):
+            body = []
+        else:
+            body = None
+        return {"url": url, "http_status": 200, "body": body, "retrieved_at": "2026-01-01T00:00:00Z", "from_cache": False, "error": None}
+
+    monkeypatch.setattr(cpic_lookup, "fetch_json", _fake)
+
+    envelope = cpic_lookup.lookup_cpic_pair("RYR1", "Keppra", memory_path=tmp_path / "memory.json")
+    assert "levetiracetam" in drug_urls[0]
+    assert "Keppra" not in drug_urls[0]
+    assert envelope["query"]["drug_name_generic"] == "levetiracetam"
+
+
+def test_cpic_lookup_leaves_already_generic_name_unchanged(monkeypatch, tmp_path):
+    """Bad-match-rejected case: the brand->generic map must not rewrite a
+    name that is not one of its known brand keys -- confirms the fix is a
+    narrow, safe lookup rather than a normalization step that could distort
+    an already-correct generic name into the wrong drug's query."""
+    drug_urls: list[str] = []
+
+    def _fake(url, *, cache_dir=None, refresh=False, timeout=15, max_retries=1):
+        if url.startswith("https://api.cpicpgx.org/v1/drug"):
+            drug_urls.append(url)
+        return {"url": url, "http_status": 200, "body": [], "retrieved_at": "2026-01-01T00:00:00Z", "from_cache": False, "error": None}
+
+    monkeypatch.setattr(cpic_lookup, "fetch_json", _fake)
+
+    envelope = cpic_lookup.lookup_cpic_pair("SCN1A", "levetiracetam", memory_path=tmp_path / "memory.json")
+    assert "levetiracetam" in drug_urls[0]
+    assert "drug_name_generic" not in envelope["query"]
+
+
 # ---------------------------------------------------------------------------
 # Orchestrator: patient-data-only extraction (no network)
 # ---------------------------------------------------------------------------
@@ -338,3 +536,42 @@ def test_build_report_returns_no_current_regimen_status_when_regimen_missing():
     report = external_evidence_summary.build_report(clinical_notes={}, genetics={})
     assert report["status"] == "no_current_regimen"
     assert report["by_drug"] == []
+    assert report["by_drug_pair"] == []
+
+
+def test_current_drug_pairs_generates_sorted_current_current_combinations():
+    assert external_evidence_summary._current_drug_pairs(["levetiracetam", "lamotrigine"]) == [("lamotrigine", "levetiracetam")]
+    assert external_evidence_summary._current_drug_pairs(["only-one-drug"]) == []
+    assert external_evidence_summary._current_drug_pairs([]) == []
+    # Three drugs -> three unique pairs, never a drug paired with itself.
+    three = external_evidence_summary._current_drug_pairs(["c", "a", "b"])
+    assert three == [("a", "b"), ("a", "c"), ("b", "c")]
+
+
+def test_build_report_queries_drug_pairs_as_one_combined_call_not_two_single_drug_calls(monkeypatch):
+    clinical_notes = _load("clinical_notes/clinical__notes_summary.json")
+    genetics = _load("genetics/genetics_clinical_summary.json")
+
+    pubmed_calls: list[str] = []
+
+    def _fake_search_pubmed(term, **kwargs):
+        pubmed_calls.append(term)
+        return {"status": "no_results", "records": [], "retrieved_at": "2026-01-01T00:00:00Z", "from_cache": False}
+
+    monkeypatch.setattr(external_evidence_summary.pubmed_lookup, "search_pubmed", _fake_search_pubmed)
+    monkeypatch.setattr(external_evidence_summary.dailymed_lookup, "search_dailymed", lambda *a, **k: {"status": "no_results", "records": []})
+    monkeypatch.setattr(external_evidence_summary.trials_lookup, "search_trials", lambda *a, **k: {"status": "no_results", "records": []})
+    monkeypatch.setattr(external_evidence_summary.clinvar_lookup, "search_clinvar_by_gene", lambda *a, **k: {"status": "no_results", "records": []})
+    monkeypatch.setattr(external_evidence_summary.cpic_lookup, "lookup_cpic_pair", lambda *a, **k: {"status": "no_results", "records": []})
+
+    report = external_evidence_summary.build_report(clinical_notes, genetics)
+
+    # Exactly one drug-pair entry for this patient's two current-regimen drugs, and it is a
+    # SINGLE combined query -- never two separate single-drug interaction queries merged.
+    assert len(report["by_drug_pair"]) == 1
+    pair_entry = report["by_drug_pair"][0]
+    assert {pair_entry["drug_a"], pair_entry["drug_b"]} == {"lamotrigine", "levetiracetam"}
+
+    combined_terms = [t for t in pubmed_calls if " AND " in t and "lamotrigine" in t.lower() and "levetiracetam" in t.lower()]
+    assert len(combined_terms) == 1, f"expected exactly one combined drug-pair PubMed query, got: {pubmed_calls}"
+    assert combined_terms[0].lower() == "lamotrigine and levetiracetam"

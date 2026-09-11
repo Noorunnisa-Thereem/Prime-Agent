@@ -150,3 +150,58 @@ def test_pgx_card_omits_the_discrepancy_note_when_pmids_match():
     html_fragment = report_html._pgx_live_evidence_card(external, worst_findings)
 
     assert "independent live PubMed search, may differ" not in html_fragment
+
+
+def test_provenance_line_is_compact_no_resource_name_no_cache_badge_no_placeholder_version():
+    # Per user feedback: the resource name just repeats the column header, the LIVE/CACHED
+    # badge added clutter without changing what a reader does with the finding, and a
+    # "Version —" placeholder for sources with no real version is noise, not information.
+    envelope_without_version = {"resource": "PubMed (NCBI E-utils)", "retrieved_at": "2026-09-10T00:00:00Z", "from_cache": True, "verification": "cached"}
+    line = report_html._provenance_line(envelope_without_version, id_label="PMID", record_id="12345")
+
+    assert "PMID 12345" in line and "Retrieved 10 Sep 2026" in line
+    assert "NCBI E-utils" not in line
+    assert "CACHED" not in line and "LIVE" not in line
+    assert "Version" not in line
+
+    envelope_with_version = {"resource": "DailyMed (NLM REST API v2)", "retrieved_at": "2026-09-10T00:00:00Z", "from_cache": False}
+    line_with_version = report_html._provenance_line(envelope_with_version, id_label="SetID", record_id="abc-123", version=20)
+
+    assert "v20" in line_with_version
+    assert "NLM REST API" not in line_with_version
+
+
+def test_pgx_summary_chips_render_every_real_gene_from_the_metabolizer_profile():
+    genetics = {
+        "metabolizer_profile": [
+            {"gene": "CYP2D6", "status": "GG", "impact": "Methylphenidate - reduced efficacy signal"},
+            {"gene": "CYP3A4", "status": "TT", "impact": "Lamotrigine - reduced efficacy signal"},
+        ]
+    }
+    html_fragment = report_html._pgx_summary_chips(genetics)
+
+    assert html_fragment.count('class="chip"') == 2
+    assert "CYP2D6" in html_fragment and "GG" in html_fragment
+    assert "CYP3A4" in html_fragment and "TT" in html_fragment
+
+
+def test_pgx_summary_chips_degrade_to_nothing_without_inventing_a_profile():
+    assert report_html._pgx_summary_chips({}) == ""
+    assert report_html._pgx_summary_chips({"metabolizer_profile": []}) == ""
+
+
+def test_sec_pharmacogenomics_explains_interpretive_method_and_points_to_section_07():
+    sections = {
+        report_html.SEC_GENETICS: {
+            "patient": {"variants_analyzed": 76, "drugs_covered": 47, "report_date": "2026-09-10"},
+            "metabolizer_profile": [{"gene": "CYP3A4", "status": "TT", "impact": "Lamotrigine - reduced efficacy signal"}],
+            "findings_by_therapeutic_class": {"mood_stabilizers_antiepileptics": []},
+        }
+    }
+    html_fragment = report_html._sec_pharmacogenomics(sections)
+
+    assert "Pharmacogenomic Panel Summary" in html_fragment
+    assert "Interpretive method" in html_fragment
+    assert "never used as an isolated prescribing instruction" in html_fragment
+    assert "Section 07" in html_fragment
+    assert "CYP3A4" in html_fragment

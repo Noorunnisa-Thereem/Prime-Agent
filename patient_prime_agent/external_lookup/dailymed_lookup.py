@@ -13,6 +13,7 @@ long-term memory store (keyed by drug name, 30-day TTL) -- see
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -51,7 +52,11 @@ def search_dailymed(
             )
 
         entries = (fetch_result.get("body") or {}).get("data", [])
-        records = [_dailymed_record(entry) for entry in entries if isinstance(entry, dict) and entry.get("setid")]
+        records = [
+            _dailymed_record(entry)
+            for entry in entries
+            if isinstance(entry, dict) and entry.get("setid") and _title_names_drug(entry.get("title"), drug_name)
+        ]
 
         return build_envelope(
             resource=RESOURCE_NAME,
@@ -69,6 +74,22 @@ def search_dailymed(
         refresh=refresh,
         remember_statuses=_REMEMBER_STATUSES,
     )
+
+
+def _title_names_drug(title: Any, drug_name: str) -> bool:
+    """True only if ``title`` actually names ``drug_name`` as a whole word.
+    DailyMed's own ``drug_name=`` parameter does loose substring matching --
+    confirmed live that ``drug_name=depa`` returns an unrelated hand-sanitizer
+    label matched only via a substring hit inside "DEPArtment". A plain
+    ``in`` check would repeat that mistake; the word-boundary regex used here
+    still accepts a real match like "LAMOTRIGINE TABLET..." for a
+    "lamotrigine" query while rejecting the "depa"/"department" case."""
+    if not isinstance(title, str) or not title.strip():
+        return False
+    needle = drug_name.strip()
+    if not needle:
+        return False
+    return re.search(r"\b" + re.escape(needle.lower()) + r"\b", title.lower()) is not None
 
 
 def _dailymed_record(entry: dict[str, Any]) -> dict[str, Any]:

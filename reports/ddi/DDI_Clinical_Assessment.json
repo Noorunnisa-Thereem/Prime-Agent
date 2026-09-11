@@ -1,7 +1,7 @@
 {
   "report_type": "Drug-Drug Interaction & Therapy Evidence Assessment",
   "patient_id": "SYN-100482",
-  "generated_at": "2026-09-10T16:15:47",
+  "generated_at": "2026-09-11T16:57:27",
   "medication_reconciliation": {
     "normalized_medications": [
       {
@@ -100,6 +100,14 @@
           "statement": "SuperCYPsPred predicted-interaction evidence is not available locally for lamotrigine and levetiracetam.",
           "source_reference": "SuperCYPsPred (no local snapshot)",
           "evidence_level": "predicted",
+          "patient_specific": false
+        },
+        {
+          "modality": "literature",
+          "direction": "unresolved",
+          "statement": "PubMed candidate reference (PMID 33573557): \"Use of Phenytoin, Phenobarbital Carbamazepine, Levetiracetam Lamotrigine and Valproate in Pregnancy and Breastfeeding: Risk of Major Malformations, Dose-dependency, Monotherapy vs Polytherapy, Pharmacokinetics and Clinical Implications.\" -- requires study-level review before use as a patient-specific finding.",
+          "source_reference": "https://pubmed.ncbi.nlm.nih.gov/33573557/",
+          "evidence_level": "moderate",
           "patient_specific": false
         },
         {
@@ -249,6 +257,94 @@
           "patient_specific": true
         },
         {
+          "modality": "literature",
+          "direction": "unresolved",
+          "statement": "PubMed candidate reference (PMID 28862044): \"Acute lamotrigine overdose: a systematic review of published adult and pediatric cases.\" -- requires study-level review before use as a patient-specific finding.",
+          "source_reference": "https://pubmed.ncbi.nlm.nih.gov/28862044/",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "labeling",
+          "direction": "unresolved",
+          "statement": "DailyMed label on file: \"LAMOTRIGINE TABLET, FILM COATED, EXTENDED RELEASE [AMNEAL PHARMACEUTICALS LLC]\" (published Aug 20, 2026); label section text (warnings/interactions/contraindications) was not extracted by this lookup and requires direct review.",
+          "source_reference": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0833d3df-2df1-4abd-abe0-7fb2c0253c80",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "clinical_trial",
+          "direction": "unresolved",
+          "statement": "ClinicalTrials.gov: no trial matched this exact condition/drug query at the time checked.",
+          "source_reference": "ClinicalTrials.gov (API v2)",
+          "evidence_level": "low",
+          "patient_specific": false
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "unresolved",
+          "statement": "CPIC: CPIC lists 'lamotrigine' (RxNorm:28439) but has no SCN1A-lamotrigine pair on record.",
+          "source_reference": "CPIC (api.cpicpgx.org)",
+          "evidence_level": "low",
+          "patient_specific": false
+        },
+        {
+          "modality": "genomic_evidence",
+          "direction": "unresolved",
+          "statement": "ClinVar VCV004887952: Uncertain significance (5406 total gene-wide record(s) for this gene, not variant-specific).",
+          "source_reference": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887952/",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "unresolved",
+          "statement": "CPIC: CPIC lists 'lamotrigine' (RxNorm:28439) but has no ABCB1-lamotrigine pair on record.",
+          "source_reference": "CPIC (api.cpicpgx.org)",
+          "evidence_level": "low",
+          "patient_specific": false
+        },
+        {
+          "modality": "genomic_evidence",
+          "direction": "unresolved",
+          "statement": "ClinVar VCV004858346: Uncertain significance (797 total gene-wide record(s) for this gene, not variant-specific).",
+          "source_reference": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4858346/",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "unresolved",
+          "statement": "CPIC: CPIC lists 'lamotrigine' (RxNorm:28439) but has no CYP3A4-lamotrigine pair on record.",
+          "source_reference": "CPIC (api.cpicpgx.org)",
+          "evidence_level": "low",
+          "patient_specific": false
+        },
+        {
+          "modality": "genomic_evidence",
+          "direction": "unresolved",
+          "statement": "ClinVar VCV004885026: Uncertain significance (70 total gene-wide record(s) for this gene, not variant-specific).",
+          "source_reference": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4885026/",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "unresolved",
+          "statement": "CPIC: CPIC lists 'lamotrigine' (RxNorm:28439) but has no CACNA1H-lamotrigine pair on record.",
+          "source_reference": "CPIC (api.cpicpgx.org)",
+          "evidence_level": "low",
+          "patient_specific": false
+        },
+        {
+          "modality": "genomic_evidence",
+          "direction": "unresolved",
+          "statement": "ClinVar VCV004886626: Uncertain significance (4289 total gene-wide record(s) for this gene, not variant-specific).",
+          "source_reference": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4886626/",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
           "modality": "pharmacokinetic_ddi",
           "direction": "unresolved",
           "statement": "Lamotrigine was not resolved against a live drug-drug interaction knowledge base in the available sources; only curated reference pharmacology and this patient's own pharmacogenomic findings were evaluated.",
@@ -257,7 +353,7 @@
           "patient_specific": false
         }
       ],
-      "clinical_impression": "4 supporting, 5 counter, and 2 unresolved evidence item(s) were identified for Lamotrigine. Clinical-notes inference: Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression.",
+      "clinical_impression": "4 supporting, 5 counter, and 13 unresolved evidence item(s) were identified for Lamotrigine. Clinical-notes inference: Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression.",
       "position": "effectiveness_incomplete",
       "recommended_monitoring": [
         "Continue EEG-derived seizure-risk monitoring.",
@@ -343,6 +439,46 @@
           "patient_specific": true
         },
         {
+          "modality": "literature",
+          "direction": "unresolved",
+          "statement": "PubMed candidate reference (PMID 30036676): \"Levetiracetam.\" -- requires study-level review before use as a patient-specific finding.",
+          "source_reference": "https://pubmed.ncbi.nlm.nih.gov/30036676/",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "labeling",
+          "direction": "unresolved",
+          "statement": "DailyMed label on file: \"LEVETIRACETAM TABLET [REMEDYREPACK INC.]\" (published Sep 07, 2026); label section text (warnings/interactions/contraindications) was not extracted by this lookup and requires direct review.",
+          "source_reference": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2d307850-0ed5-4f32-ac62-0e1e2fe27a7a",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
+          "modality": "clinical_trial",
+          "direction": "unresolved",
+          "statement": "ClinicalTrials.gov NCT00537238 (COMPLETED): \"Pregabalin Versus Levetiracetam In Partial Seizures\" -- registration does not establish study quality or results.",
+          "source_reference": "https://clinicaltrials.gov/study/NCT00537238",
+          "evidence_level": "low",
+          "patient_specific": false
+        },
+        {
+          "modality": "pharmacogenomic",
+          "direction": "unresolved",
+          "statement": "CPIC: CPIC has no drug entry matching 'levetiracetam'; no gene-drug pair can exist for it.",
+          "source_reference": "CPIC (api.cpicpgx.org)",
+          "evidence_level": "low",
+          "patient_specific": false
+        },
+        {
+          "modality": "genomic_evidence",
+          "direction": "unresolved",
+          "statement": "ClinVar VCV004887952: Uncertain significance (5406 total gene-wide record(s) for this gene, not variant-specific).",
+          "source_reference": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887952/",
+          "evidence_level": "moderate",
+          "patient_specific": false
+        },
+        {
           "modality": "pharmacokinetic_ddi",
           "direction": "unresolved",
           "statement": "Levetiracetam (Keppra) was not resolved against a live drug-drug interaction knowledge base in the available sources; only curated reference pharmacology and this patient's own pharmacogenomic findings were evaluated.",
@@ -351,7 +487,7 @@
           "patient_specific": false
         }
       ],
-      "clinical_impression": "3 supporting, 3 counter, and 2 unresolved evidence item(s) were identified for Levetiracetam (Keppra). Clinical-notes inference: Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression.",
+      "clinical_impression": "3 supporting, 3 counter, and 7 unresolved evidence item(s) were identified for Levetiracetam (Keppra). Clinical-notes inference: Current antiseizure therapy is associated with stable clinician impressions but incomplete seizure suppression.",
       "position": "effectiveness_incomplete",
       "recommended_monitoring": [
         "Continue EEG-derived seizure-risk monitoring.",
@@ -378,6 +514,7 @@
   "limitations": [
     "This assessment is clinical decision support, not an automated prescribing system; no dose, start, or stop decision is made or implied here.",
     "No proposed/candidate medication list is present in the source data, so only the current regimen's pairwise and therapy-level evidence is evaluated.",
-    "Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug not listed there is reported as unresolved, not as free of interactions."
+    "Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug not listed there is reported as unresolved, not as free of interactions.",
+    "Therapy assessments also draw on the live external-evidence layer (see Known Limitations under External Database Evidence, below, for its source-by-source scope and caveats)."
   ]
 }

@@ -33,6 +33,7 @@ DEFAULT_GENETICS_PATH = Path("reports") / "genetics" / "genetics_clinical_summar
 DEFAULT_EEG_PATH = Path("reports") / "eeg" / "EEG_clinical_summary.json"
 DEFAULT_ECG_PATH = Path("reports") / "ecg" / "ECG_Clinical_Summary.json"
 DEFAULT_CBC_PATH = Path("reports") / "cbc" / "CBC_consolidated_summary.json"
+DEFAULT_EXTERNAL_EVIDENCE_PATH = Path("reports") / "external_evidence" / "External_Evidence_Report.json"
 DEFAULT_OUTPUT_PATH = Path("reports") / "ddi" / "DDI_Clinical_Assessment.json"
 
 
@@ -43,6 +44,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--eeg", type=Path, default=DEFAULT_EEG_PATH)
     parser.add_argument("--ecg", type=Path, default=DEFAULT_ECG_PATH)
     parser.add_argument("--cbc", type=Path, default=DEFAULT_CBC_PATH)
+    parser.add_argument(
+        "--external-evidence",
+        type=Path,
+        default=DEFAULT_EXTERNAL_EVIDENCE_PATH,
+        help="Live PubMed/ClinVar/DailyMed/CPIC/ClinicalTrials.gov report (external_evidence_summary.py). "
+        "Optional -- if not yet generated, therapy assessments are built without it.",
+    )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
     args = parser.parse_args(argv)
 
@@ -52,6 +60,7 @@ def main(argv: list[str] | None = None) -> int:
         eeg=_load_json(args.eeg),
         ecg=_load_json(args.ecg),
         cbc=_load_json(args.cbc),
+        external_evidence=_load_json(args.external_evidence),
     )
     ensure_dir(args.output.parent)
     args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -68,14 +77,47 @@ def _load_json(path: Path) -> dict[str, Any]:
         return {}
 
 
+def _index_external_evidence(
+    external_evidence: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, list[dict[str, Any]]], dict[frozenset[str], dict[str, Any]]]:
+    """Index external_evidence_summary.py's report for lookup: ``by_drug`` (drug name ->
+    its pubmed/dailymed/clinicaltrials_gov entry), gene-drug pairs grouped by drug name (a
+    drug can have more than one relevant gene), and ``by_drug_pair`` (an unordered
+    frozenset of the two normalized drug names -> its combined-query pubmed entry) so a
+    real "Drug A AND Drug B" DDI literature lookup can be matched to the exact
+    current-current pair it was queried for, regardless of which drug ended up as drug_a
+    vs drug_b in path_d.ddi.pairing's own sorted combinations. Missing or malformed input
+    degrades to empty indexes -- callers then simply have nothing to synthesize, never a
+    fabricated entry."""
+    by_drug: dict[str, Any] = {}
+    for entry in external_evidence.get("by_drug") or []:
+        if isinstance(entry, dict) and entry.get("drug_name"):
+            by_drug[str(entry["drug_name"]).strip().lower()] = entry
+
+    gene_drug_pairs_by_drug: dict[str, list[dict[str, Any]]] = {}
+    for pair in external_evidence.get("by_gene_drug_pair") or []:
+        if isinstance(pair, dict) and pair.get("drug_name"):
+            gene_drug_pairs_by_drug.setdefault(str(pair["drug_name"]).strip().lower(), []).append(pair)
+
+    by_drug_pair: dict[frozenset[str], dict[str, Any]] = {}
+    for pair in external_evidence.get("by_drug_pair") or []:
+        if isinstance(pair, dict) and pair.get("drug_a") and pair.get("drug_b"):
+            key = frozenset({str(pair["drug_a"]).strip().lower(), str(pair["drug_b"]).strip().lower()})
+            by_drug_pair[key] = pair
+
+    return by_drug, gene_drug_pairs_by_drug, by_drug_pair
+
+
 def build_report(
     clinical_notes: dict[str, Any],
     genetics: dict[str, Any],
     eeg: dict[str, Any],
     ecg: dict[str, Any],
     cbc: dict[str, Any],
+    external_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     patient_id = _resolve_patient_id(clinical_notes, genetics, cbc)
+    external_by_drug, external_gene_drug_pairs_by_drug, external_by_drug_pair = _index_external_evidence(external_evidence or {})
 
     current_medications, conflicts = normalize_regimen(clinical_notes)
     proposed_medications: list = []  # no proposed-medication list exists in this dataset
@@ -89,10 +131,19 @@ def build_report(
     inference = clinical_notes.get("clinical_inference") if isinstance(clinical_notes, dict) else {}
     medication_response = (inference or {}).get("medication_response") or {}
 
+    def _external_pubmed_for_pair(pair: dict[str, Any]) -> dict[str, Any] | None:
+        entry = external_by_drug_pair.get(frozenset({pair["drug_a"].normalized_name, pair["drug_b"].normalized_name}))
+        return entry.get("pubmed_combined_query") if entry else None
+
     pairs = pairing.generate_pairs(current_medications, proposed_medications)
     pair_assessments = [
         aggregation.build_pair_assessment(
-            pair["drug_a"], pair["drug_b"], pair["pair_context"], pgx_evidence_by_drug, regimen_wide_evidence
+            pair["drug_a"],
+            pair["drug_b"],
+            pair["pair_context"],
+            pgx_evidence_by_drug,
+            regimen_wide_evidence,
+            external_pubmed_pair=_external_pubmed_for_pair(pair),
         )
         for pair in pairs
     ]
@@ -105,6 +156,8 @@ def build_report(
             pgx_evidence=pgx_evidence_by_drug.get(medication.normalized_name, []),
             regimen_wide_evidence=regimen_wide_evidence,
             medication_response=medication_response,
+            external_by_drug=external_by_drug.get(medication.normalized_name),
+            external_gene_drug_pairs=external_gene_drug_pairs_by_drug.get(medication.normalized_name),
         )
         for medication in current_medications
     ]
@@ -164,6 +217,8 @@ def build_report(
             "regimen's pairwise and therapy-level evidence is evaluated.",
             "Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug "
             "not listed there is reported as unresolved, not as free of interactions.",
+            "Therapy assessments also draw on the live external-evidence layer (see Known Limitations under "
+            "External Database Evidence, below, for its source-by-source scope and caveats).",
         ],
     }
     return report

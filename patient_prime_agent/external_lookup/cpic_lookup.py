@@ -34,6 +34,35 @@ RESOURCE_NAME = "CPIC (api.cpicpgx.org)"
 _BASE_URL = "https://api.cpicpgx.org/v1"
 _REMEMBER_STATUSES = frozenset({"ok", "no_results"})
 
+# CPIC's own drug table is keyed by generic name (confirmed live: "levetiracetam"
+# and "lamotrigine" both resolve, but a brand name never would). This dataset's
+# normalizer.py strips a "(Brand)" suffix rather than doing a real brand->generic
+# lookup, so a bare brand name reaching this module would otherwise query CPIC for
+# a name it can never match -- producing a false "no CPIC drug entry" even when
+# real CPIC coverage exists under the generic name. Anti-seizure medications only,
+# matching this dataset's regimen; not a general-purpose brand/generic dictionary.
+_BRAND_TO_GENERIC = {
+    "keppra": "levetiracetam",
+    "lamictal": "lamotrigine",
+    "depakote": "valproate",
+    "depakene": "valproic acid",
+    "trileptal": "oxcarbazepine",
+    "tegretol": "carbamazepine",
+    "dilantin": "phenytoin",
+    "onfi": "clobazam",
+    "topamax": "topiramate",
+    "vimpat": "lacosamide",
+    "fycompa": "perampanel",
+    "briviact": "brivaracetam",
+    "zonegran": "zonisamide",
+    "neurontin": "gabapentin",
+    "lyrica": "pregabalin",
+}
+
+
+def _to_generic_name(drug_name: str) -> str:
+    return _BRAND_TO_GENERIC.get(drug_name.strip().lower(), drug_name)
+
 
 def _validate_cpic_url(url: Any) -> str | None:
     """CPIC's guideline content lives on clinpgx.org (CPIC's knowledge base was
@@ -59,15 +88,20 @@ def lookup_cpic_pair(
     gene_symbol = validate_query_term(gene_symbol, field_name="gene_symbol")
     drug_name = validate_query_term(drug_name, field_name="drug_name")
     memory_term = f"{gene_symbol}|{drug_name}"
+    generic_drug_name = _to_generic_name(drug_name)
 
     def _live_lookup() -> dict[str, Any]:
-        drug_endpoint = f"{_BASE_URL}/drug?name=ilike.*{_quote(drug_name)}*&select=drugid,name"
+        drug_endpoint = f"{_BASE_URL}/drug?name=ilike.*{_quote(generic_drug_name)}*&select=drugid,name"
         drug_result = fetch_json(drug_endpoint, cache_dir=cache_dir, refresh=refresh)
+
+        query: dict[str, Any] = {"gene_symbol": gene_symbol, "drug_name": drug_name}
+        if generic_drug_name.lower() != drug_name.strip().lower():
+            query["drug_name_generic"] = generic_drug_name
 
         envelope: dict[str, Any] = {
             "resource": RESOURCE_NAME,
             "endpoint": drug_endpoint,
-            "query": {"gene_symbol": gene_symbol, "drug_name": drug_name},
+            "query": query,
             "retrieved_at": drug_result.get("retrieved_at"),
             "from_cache": drug_result.get("from_cache", False),
             "http_status": drug_result.get("http_status"),
@@ -85,7 +119,9 @@ def lookup_cpic_pair(
         drug_rows = drug_result.get("body") or []
         if not drug_rows:
             envelope["status"] = "no_results"
-            envelope["note"] = f"CPIC has no drug entry matching '{drug_name}'; no gene-drug pair can exist for it."
+            envelope["note"] = (
+                f"CPIC has no drug entry matching '{generic_drug_name}'; no gene-drug pair can exist for it."
+            )
             return envelope
 
         drugid = drug_rows[0].get("drugid")

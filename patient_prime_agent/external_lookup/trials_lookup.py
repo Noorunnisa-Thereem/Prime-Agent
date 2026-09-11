@@ -12,6 +12,7 @@ see ``memory_store.py``.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -55,7 +56,20 @@ def search_trials(
 
         studies = (fetch_result.get("body") or {}).get("studies", [])
         total_count = (fetch_result.get("body") or {}).get("totalCount")
-        records = [_trial_record(study) for study in studies if isinstance(study, dict)]
+        # query.cond/query.intr already scope the search server-side, but this never trusts
+        # that scoping blindly (confirmed live: a "Focal impaired-awareness seizures" +
+        # "Levetiracetam" query returned a genuinely on-topic epilepsy trial alongside a
+        # cancer-context trial whose only real link was a shared "Seizures" condition token
+        # and an incidental levetiracetam arm) -- each study's own structured
+        # armsInterventionsModule/conditionsModule is checked before it is shown as a match.
+        relevant_studies = [
+            study
+            for study in studies
+            if isinstance(study, dict)
+            and _record_intervention_matches(study, drug_name)
+            and _record_condition_overlaps(study, condition)
+        ]
+        records = [_trial_record(study) for study in relevant_studies]
 
         envelope = build_envelope(resource=RESOURCE_NAME, endpoint=endpoint, query=query, fetch_result=fetch_result, records=records)
         envelope["total_matches_on_clinicaltrials_gov"] = total_count
@@ -71,6 +85,53 @@ def search_trials(
     )
 
 
+_CONDITION_STOPWORDS = frozenset(
+    {"and", "the", "with", "from", "for", "of", "in", "on", "to", "adult", "adults", "patients", "patient"}
+)
+
+
+def _condition_tokens(text: str) -> set[str]:
+    words = re.findall(r"[a-z0-9]+", text.lower())
+    return {w for w in words if len(w) > 3 and w not in _CONDITION_STOPWORDS}
+
+
+def _record_intervention_matches(study: dict[str, Any], drug_name: str | None) -> bool:
+    """True if ``drug_name`` genuinely appears as a structured intervention
+    on this study -- not merely because the API's own ``query.intr`` said so.
+    When no ``drug_name`` was requested, every study passes (nothing to
+    verify)."""
+    if not drug_name:
+        return True
+    arms = (study.get("protocolSection") or {}).get("armsInterventionsModule") or {}
+    interventions = arms.get("interventions")
+    if not isinstance(interventions, list):
+        return False
+    needle = drug_name.strip().lower()
+    return any(isinstance(iv, dict) and needle in str(iv.get("name") or "").lower() for iv in interventions)
+
+
+def _record_condition_overlaps(study: dict[str, Any], condition: str) -> bool:
+    """True if this study's own ``conditionsModule.conditions`` shares at
+    least one meaningful word with the queried ``condition`` -- rejects a
+    trial whose only real link to the query is an unrelated condition list
+    (confirmed live: a "Seizures"-labeled cancer trial surfaced for a
+    "Focal impaired-awareness seizures" query via keyword overlap alone,
+    while sharing no other clinical context with the patient's epilepsy
+    diagnosis). This is a coarse word-overlap heuristic, not clinical
+    judgment -- it cannot and does not try to distinguish "Partial Seizures"
+    from "Seizures" in an unrelated oncology context; it only rejects
+    conditions with zero token overlap at all. A study missing structured
+    condition data is passed through rather than rejected, since there is
+    nothing here to verify against."""
+    conditions = ((study.get("protocolSection") or {}).get("conditionsModule") or {}).get("conditions")
+    if not isinstance(conditions, list) or not conditions:
+        return True
+    query_tokens = _condition_tokens(condition)
+    if not query_tokens:
+        return True
+    return any(isinstance(c, str) and _condition_tokens(c) & query_tokens for c in conditions)
+
+
 def _trial_record(study: dict[str, Any]) -> dict[str, Any]:
     """Build one output record, running every third-party text field through
     sanitize_response_field and the URL through validate_source_url before
@@ -80,6 +141,8 @@ def _trial_record(study: dict[str, Any]) -> dict[str, Any]:
     status_module = protocol.get("statusModule") or {}
     design_module = protocol.get("designModule") or {}
 
+    conditions_module = protocol.get("conditionsModule") or {}
+
     clean_nct_id = sanitize_response_field(identification.get("nctId"), max_length=20) or None
     url = validate_source_url(f"https://clinicaltrials.gov/study/{clean_nct_id}", _EXPECTED_DOMAIN) if clean_nct_id else None
     phases = design_module.get("phases")
@@ -88,12 +151,19 @@ def _trial_record(study: dict[str, Any]) -> dict[str, Any]:
         if isinstance(phases, list)
         else None
     )
+    conditions = conditions_module.get("conditions")
+    clean_conditions = (
+        [sanitize_response_field(c, max_length=200) for c in conditions if isinstance(c, str)]
+        if isinstance(conditions, list)
+        else None
+    )
     return {
         "nct_id": clean_nct_id,
         "url": url,
         "brief_title": sanitize_response_field(identification.get("briefTitle")) or None,
         "overall_status": sanitize_response_field(status_module.get("overallStatus"), max_length=60) or None,
         "phases": [p for p in clean_phases if p] if clean_phases is not None else None,
+        "conditions": [c for c in clean_conditions if c] if clean_conditions is not None else None,
     }
 
 

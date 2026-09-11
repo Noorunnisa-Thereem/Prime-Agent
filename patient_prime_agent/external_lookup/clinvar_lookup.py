@@ -85,7 +85,12 @@ def search_clinvar_by_gene(
             return envelope
 
         summary_by_uid: dict[str, Any] = (esummary_result.get("body") or {}).get("result", {})
-        records = [_clinvar_record(uid, summary_by_uid.get(uid)) for uid in uids]
+        # Defensive local verification: [gene] field-scoping was confirmed live to be
+        # reliable, but this never trusts NCBI's own scoping blindly -- a uid whose
+        # summary doesn't actually list the queried gene among its own "genes" field is
+        # excluded rather than presented as if it were a real finding for this gene.
+        matching_uids = [uid for uid in uids if _record_gene_matches(summary_by_uid.get(uid), gene_symbol)]
+        records = [_clinvar_record(uid, summary_by_uid.get(uid)) for uid in matching_uids]
 
         envelope = build_envelope(
             resource=RESOURCE_NAME,
@@ -107,6 +112,24 @@ def search_clinvar_by_gene(
     )
 
 
+def _record_gene_matches(summary: dict[str, Any] | None, gene_symbol: str) -> bool:
+    """True only if ``summary``'s own ``genes`` field genuinely names
+    ``gene_symbol`` -- defense-in-depth against blindly trusting NCBI's
+    ``[gene]`` search-field scoping (confirmed live to be reliable, but this
+    never assumes an external API's own scoping is bug-free). A record with
+    no usable ``genes`` field, or none matching, is excluded rather than
+    presented as if it were a real finding for this gene."""
+    if not isinstance(summary, dict):
+        return False
+    genes = summary.get("genes")
+    if not isinstance(genes, list):
+        return False
+    target = gene_symbol.strip().lower()
+    return any(
+        isinstance(gene, dict) and str(gene.get("symbol") or "").strip().lower() == target for gene in genes
+    )
+
+
 def _clinvar_record(uid: str, summary: dict[str, Any] | None) -> dict[str, Any]:
     """Build one output record, running every third-party text field through
     sanitize_response_field and the URL through validate_source_url before
@@ -123,11 +146,18 @@ def _clinvar_record(uid: str, summary: dict[str, Any] | None) -> dict[str, Any]:
         for t in traits
         if isinstance(t, dict) and t.get("trait_name")
     ]
+    genes = summary.get("genes") or []
+    matched_genes = [
+        sanitize_response_field(g.get("symbol"), max_length=40)
+        for g in genes
+        if isinstance(g, dict) and g.get("symbol")
+    ]
     return {
         "uid": clean_uid,
         "accession": sanitize_response_field(summary.get("accession"), max_length=60) or None,
         "url": url,
         "title": sanitize_response_field(summary.get("title")) or None,
+        "genes": [g for g in matched_genes if g],
         "clinical_significance": sanitize_response_field(germline.get("description"), max_length=200) or None,
         "review_status": sanitize_response_field(germline.get("review_status"), max_length=200) or None,
         "last_evaluated": sanitize_response_field(germline.get("last_evaluated"), max_length=60) or None,
