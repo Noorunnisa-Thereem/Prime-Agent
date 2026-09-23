@@ -85,6 +85,63 @@ def search_trials(
     )
 
 
+def search_trials_drug_pair(
+    drug_a: str,
+    drug_b: str,
+    *,
+    page_size: int = 5,
+    cache_dir: Path = DEFAULT_CACHE_DIR,
+    refresh: bool = False,
+    memory_path: Path = memory_store.DEFAULT_STORE_PATH,
+) -> dict[str, Any]:
+    """Search ClinicalTrials.gov for studies whose structured interventions
+    genuinely include BOTH ``drug_a`` and ``drug_b`` -- a real drug-pair
+    query (no ``condition`` needed), the same combined-query shape
+    ``pubmed_lookup.search_pubmed_drug_pair`` already uses for PubMed.
+
+    Same never-trust-the-raw-match discipline ``search_trials`` itself
+    already applies: ``query.intr=DrugA AND DrugB`` scopes the search
+    server-side (confirmed live it returns real studies), but a study is
+    only kept when its own structured ``armsInterventionsModule`` lists
+    BOTH drugs as real interventions -- a study that merely mentions one of
+    them, or names both only in an unrelated field, is dropped, not shown
+    as a match."""
+    drug_a = validate_query_term(drug_a, field_name="drug_a")
+    drug_b = validate_query_term(drug_b, field_name="drug_b")
+    memory_term = f"{drug_a}|{drug_b}"
+
+    def _live_lookup() -> dict[str, Any]:
+        params = f"query.intr={_quote(f'{drug_a} AND {drug_b}')}&pageSize={int(page_size)}&format=json&countTotal=true"
+        endpoint = f"{_STUDIES_URL}?{params}"
+        fetch_result = fetch_json(endpoint, cache_dir=cache_dir, refresh=refresh)
+        query = {"drug_a": drug_a, "drug_b": drug_b, "page_size": page_size}
+
+        if fetch_result.get("error") is not None:
+            return build_envelope(resource=RESOURCE_NAME, endpoint=endpoint, query=query, fetch_result=fetch_result, records=[])
+
+        studies = (fetch_result.get("body") or {}).get("studies", [])
+        total_count = (fetch_result.get("body") or {}).get("totalCount")
+        relevant_studies = [
+            study
+            for study in studies
+            if isinstance(study, dict) and _record_intervention_matches(study, drug_a) and _record_intervention_matches(study, drug_b)
+        ]
+        records = [_trial_record(study) for study in relevant_studies]
+
+        envelope = build_envelope(resource=RESOURCE_NAME, endpoint=endpoint, query=query, fetch_result=fetch_result, records=records)
+        envelope["total_matches_on_clinicaltrials_gov"] = total_count
+        return envelope
+
+    return memory_store.recall_or_compute(
+        RESOURCE_NAME,
+        memory_term,
+        _live_lookup,
+        store_path=memory_path,
+        refresh=refresh,
+        remember_statuses=_REMEMBER_STATUSES,
+    )
+
+
 _CONDITION_STOPWORDS = frozenset(
     {"and", "the", "with", "from", "for", "of", "in", "on", "to", "adult", "adults", "patients", "patient"}
 )

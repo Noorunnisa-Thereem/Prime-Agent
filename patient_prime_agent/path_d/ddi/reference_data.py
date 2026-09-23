@@ -60,6 +60,10 @@ CURATED_RATIONALE_NOTES: dict[str, str] = {
 DRUG_CLASS_MAP: dict[str, str] = {
     "levetiracetam": "antiepileptic",
     "lamotrigine": "antiepileptic",
+    "oxcarbazepine": "antiepileptic",
+    "clobazam": "antiepileptic",
+    "ethosuximide": "antiepileptic",
+    "perampanel": "antiepileptic",
     "diazepam": "benzodiazepine_sedative",
     "clonazepam": "benzodiazepine_sedative",
     "sertraline": "ssri",
@@ -68,6 +72,14 @@ DRUG_CLASS_MAP: dict[str, str] = {
     "fluoxetine": "ssri",
     "paroxetine": "ssri",
 }
+# Venlafaxine (SNRI), Olanzapine/Quetiapine (atypical antipsychotics), and
+# Aripiprazole/Haloperidol/Nortriptyline/... from the DDI screening candidate
+# panel (see path_d.ddi.candidate_drugs) are deliberately NOT added here --
+# none of pharmacodynamic_rules.RULES fires on an SNRI or antipsychotic class
+# today, so adding a class label for them would add categorization with no
+# real rule behind it yet. A drug absent from this map makes
+# pharmacodynamic_rules.evaluate_pair() honestly return no rules for it,
+# rather than a fabricated one.
 
 
 def curated_cyp_relationships(normalized_drug_name: str) -> list[dict[str, Any]]:

@@ -25,6 +25,7 @@ SOURCE_REPORTS: tuple[tuple[str, str, str], ...] = (
     ("genetics", "reports/genetics/genetics_clinical_summary.json", "genetics_clinical_summary"),
     ("ddi", "reports/ddi/DDI_Clinical_Assessment.json", "DDI_Clinical_Assessment"),
     ("external_evidence", "reports/external_evidence/External_Evidence_Report.json", "External_Evidence_Report"),
+    ("ddi_flag_evidence", "reports/drug_interaction_flags/Flag_Sheet_Live_Evidence.json", "Flag_Sheet_Live_Evidence"),
 )
 
 DEFAULT_OUTPUT_PATH = Path("reports") / "Digital_Twin_Consolidated_Report.json"

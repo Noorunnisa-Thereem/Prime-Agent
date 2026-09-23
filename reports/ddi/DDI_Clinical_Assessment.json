@@ -1,7 +1,7 @@
 {
   "report_type": "Drug-Drug Interaction & Therapy Evidence Assessment",
   "patient_id": "SYN-100482",
-  "generated_at": "2026-09-11T16:57:27",
+  "generated_at": "2026-09-18T14:47:43",
   "medication_reconciliation": {
     "normalized_medications": [
       {
@@ -515,6 +515,6 @@
     "This assessment is clinical decision support, not an automated prescribing system; no dose, start, or stop decision is made or implied here.",
     "No proposed/candidate medication list is present in the source data, so only the current regimen's pairwise and therapy-level evidence is evaluated.",
     "Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug not listed there is reported as unresolved, not as free of interactions.",
-    "Therapy assessments also draw on the live external-evidence layer (see Known Limitations under External Database Evidence, below, for its source-by-source scope and caveats)."
+    "Therapy assessments also draw on the live external-evidence layer (see Known Limitations under Pharmacogenomics, above, for its source-by-source scope and caveats)."
   ]
 }

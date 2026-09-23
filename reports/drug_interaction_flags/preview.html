@@ -1,0 +1,178 @@
+<title>DDI Flag Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=IBM+Plex+Sans:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#1c2430; --muted:#5b6675; --paper:#f6f7f4; --card:#ffffff; --line:#dfe3e0;
+  --green-ink:#1c5c3e; --green-bg:#e7f4ec; --green-line:#bfe3cd;
+  --red-ink:#8a2f2b; --red-bg:#fbebe9; --red-line:#f0c4c0;
+  --accent:#3b5166; --header-bg:#2a3a4a; --header-ink:#f4f6f8;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+  --sans:"IBM Plex Sans","Segoe UI",-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8ecef; --muted:#9aa6b2; --paper:#12161b; --card:#1a2028; --line:#2a323c;
+    --green-ink:#8fe0b0; --green-bg:#12261c; --green-line:#1f3f2e;
+    --red-ink:#f3a9a4; --red-bg:#2a1715; --red-line:#4a2320;
+    --accent:#8fb4d6; --header-bg:#0d1420; --header-ink:#eef2f6;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8ecef; --muted:#9aa6b2; --paper:#12161b; --card:#1a2028; --line:#2a323c;
+  --green-ink:#8fe0b0; --green-bg:#12261c; --green-line:#1f3f2e;
+  --red-ink:#f3a9a4; --red-bg:#2a1715; --red-line:#4a2320;
+  --accent:#8fb4d6; --header-bg:#0d1420; --header-ink:#eef2f6;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);margin:0}
+.wrap{max-width:980px;margin:0 auto;padding-inline:20px;padding-block:36px 56px}
+header{margin-bottom:22px}
+.eyebrow{font:700 11px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+h1{font-size:clamp(24px,4vw,32px);line-height:1.15;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+.meta{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:70ch}
+.meta code{font-family:var(--mono);font-size:12.5px;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+.legend{display:flex;gap:18px;margin-top:16px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.legend .g{background:var(--green-bg);border:1px solid var(--green-line)}
+.legend .r{background:var(--red-bg);border:1px solid var(--red-line)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+thead th{position:sticky;top:0;background:var(--header-bg);color:var(--header-ink);text-align:left;padding:12px 16px;font:700 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+thead th:first-child{border-top-left-radius:9px}
+thead th:last-child{border-top-right-radius:9px}
+tbody td{padding:14px 16px;vertical-align:top;border-top:1px solid var(--line);width:50%}
+tbody td.g{background:var(--green-bg)}
+tbody td.r{background:var(--red-bg)}
+tbody td.empty{background:var(--card)}
+.pair{font:700 14px var(--mono);letter-spacing:-.01em;margin-bottom:7px}
+td.g .pair{color:var(--green-ink)}
+td.r .pair{color:var(--red-ink)}
+ul{margin:0;padding-left:18px}
+li{font-size:13px;line-height:1.5;color:var(--ink);margin:3px 0}
+footer{margin-top:22px;font-size:12px;color:var(--muted);line-height:1.6}
+@media(max-width:700px){
+  table, thead, tbody, tr{display:block}
+  thead{display:none}
+  tbody tr{display:block;border-top:1px solid var(--line)}
+  tbody tr:first-child{border-top:0}
+  tbody td{display:block;width:100%;border-top:none}
+  tbody td.empty{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Drug&ndash;Drug Interaction Flag Sheet</div>
+    <h1>Green Flags &amp; Red Flags across the extracted drug list</h1>
+    <p class="meta">
+      Drug list source: <code>reports/genetics/genetics_clinical_summary.json</code> &mdash; the NeuroTwin PGx
+      drug-extraction report (44 distinct drugs across 5 therapeutic classes). Cross-checked against the
+      NeuroPrecisionDx PGx report (Sample ID <code>1325006529</code>, pp.&nbsp;2&ndash;3), which groups the same
+      drugs by class with color-coded PGx response markers. Each pair below was independently confirmed against
+      open pharmacology sources (drug labels, peer-reviewed literature). Decision-support reference only &mdash;
+      not a prescribing instruction.
+    </p>
+    <div class="legend">
+      <span><i class="g"></i>Green &mdash; no significant interaction</span>
+      <span><i class="r"></i>Red &mdash; clinically significant interaction</span>
+    </div>
+  </header>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th>Green Flags</th><th>Red Flags</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <footer>16 curated pairs shown (7 green, 9 red) out of the 44-drug extracted list &mdash; not exhaustive across all possible combinations.</footer>
+</div>
+
+<script>
+const GREEN = [
+  ["Lamotrigine + Levetiracetam", [
+    "Patient's actual current regimen. No shared CYP pathway; levetiracetam is barely liver-metabolized.",
+    "This patient's own DDI screen found no resolved pharmacokinetic/pharmacodynamic interaction between them."
+  ]],
+  ["Levetiracetam + Sertraline", [
+    "Levetiracetam does not inhibit or induce any CYP enzyme sertraline depends on.",
+    "No clinically significant interaction reported between the two."
+  ]],
+  ["Levetiracetam + Escitalopram", [
+    "Same clean metabolic profile applies; escitalopram's CYP2C19/3A4 clearance is unaffected.",
+    "No dose adjustment typically needed for either drug."
+  ]],
+  ["Levetiracetam + Atorvastatin", [
+    "Levetiracetam has no effect on CYP3A4, atorvastatin's main clearance route.",
+    "Statin exposure and effectiveness are unaffected by adding levetiracetam."
+  ]],
+  ["Levetiracetam + Aripiprazole", [
+    "No shared metabolic pathway; levetiracetam doesn't touch CYP2D6/CYP3A4.",
+    "Aripiprazole dosing is unaffected by concurrent levetiracetam use."
+  ]],
+  ["Levetiracetam + Atomoxetine", [
+    "Different clearance routes (renal vs. CYP2D6); no meaningful metabolic overlap.",
+    "No significant interaction documented between the two."
+  ]],
+  ["Levetiracetam + Methylphenidate", [
+    "Different mechanisms of action and metabolism; often co-prescribed in pediatric epilepsy+ADHD care.",
+    "No significant pharmacokinetic interaction reported."
+  ]],
+];
+const RED = [
+  ["Lamotrigine + Valproic Acid", [
+    "Valproate blocks lamotrigine's UGT1A4 clearance, roughly doubling lamotrigine blood levels.",
+    "Raises toxicity and serious skin-reaction risk (SJS/TEN); lamotrigine dose must be cut ~50%."
+  ]],
+  ["Lamotrigine + Carbamazepine", [
+    "Carbamazepine speeds up lamotrigine breakdown, lowering its level and effectiveness.",
+    "Combination also causes added CNS toxicity (diplopia, dizziness) even at “normal” drug levels."
+  ]],
+  ["Carbamazepine + Phenytoin", [
+    "Each drug induces the other's metabolism, making both levels unpredictable over 2–4 weeks.",
+    "Risk of breakthrough seizures from sub-therapeutic levels; needs frequent level checks."
+  ]],
+  ["Valproic Acid + Phenytoin", [
+    "Valproate displaces phenytoin from plasma proteins and blocks its metabolism at the same time.",
+    "Free (active) phenytoin can rise sharply while total level looks normal — toxicity is easy to miss."
+  ]],
+  ["Fluoxetine + Aripiprazole", [
+    "Fluoxetine strongly blocks CYP2D6, the main enzyme clearing aripiprazole.",
+    "Levels can rise 2–3x, increasing tremor/akathisia/sedation risk; FDA label calls for dose reduction."
+  ]],
+  ["Bupropion + Nortriptyline", [
+    "Bupropion inhibits CYP2D6, raising nortriptyline blood levels.",
+    "Both drugs lower seizure threshold, so the combination compounds seizure risk too."
+  ]],
+  ["Lithium + Haloperidol", [
+    "Case reports describe a neurotoxicity syndrome (confusion, rigidity, fever) with this combination.",
+    "Rare but severe outcomes (irreversible dyskinesia) reported even at standard doses — monitor closely."
+  ]],
+  ["Carbamazepine + Atorvastatin", [
+    "Carbamazepine strongly induces CYP3A4, which atorvastatin depends on for clearance.",
+    "Statin exposure can drop 53–82%, meaningfully reducing cholesterol-lowering effect."
+  ]],
+  ["Duloxetine + Paroxetine", [
+    "Combining two serotonergic antidepressants raises serotonin-syndrome risk.",
+    "Paroxetine also inhibits the enzyme that clears duloxetine, pushing duloxetine levels higher."
+  ]],
+];
+
+function cell(entry, cls) {
+  if (!entry) return `<td class="empty"></td>`;
+  const [pair, bullets] = entry;
+  const li = bullets.map(b => `<li>${b}</li>`).join("");
+  return `<td class="${cls}"><div class="pair">${pair}</div><ul>${li}</ul></td>`;
+}
+
+const rows = document.getElementById("rows");
+const n = Math.max(GREEN.length, RED.length);
+let html = "";
+for (let i = 0; i < n; i++) {
+  html += `<tr>${cell(GREEN[i], "g")}${cell(RED[i], "r")}</tr>`;
+}
+rows.innerHTML = html;
+</script>

@@ -35,6 +35,10 @@ from reportlab.pdfgen import canvas as canvas_module
 from pypdf import PdfReader, PdfWriter
 
 from .core.utils import ensure_dir
+from .ddi_flag_data import ARTIFACT_URL as DDI_FLAG_ARTIFACT_URL
+from .ddi_flag_data import GREEN_FLAGS as DDI_GREEN_FLAGS
+from .ddi_flag_data import RED_FLAGS as DDI_RED_FLAGS
+from .ddi_flag_data import SOURCE_NOTE as DDI_FLAG_SOURCE_NOTE
 
 DEFAULT_INPUT_PATH = Path("reports") / "Digital_Twin_Consolidated_Report.json"
 DEFAULT_OUTPUT_PATH = Path("reports") / "Digital_Twin_Integrated_Report.pdf"
@@ -55,19 +59,16 @@ SEC_QUESTIONNAIRE = "Questionnaire_consolidated_summary"
 SEC_GENETICS = "genetics_clinical_summary"
 SEC_DDI = "DDI_Clinical_Assessment"
 SEC_EXTERNAL_EVIDENCE = "External_Evidence_Report"
+SEC_DDI_FLAG_EVIDENCE = "Flag_Sheet_Live_Evidence"
 
 CURRENT_REGIMEN_DRUG_NAMES = ("levetiracetam", "lamotrigine")
 
-# Severity color class per pgx predicted_effect category -- a display-only recolor of an
-# already-real category value (same pattern as _status_class), used to pick the single
-# worst/most clinically significant finding per current-regimen drug.
+# Rank per pgx predicted_effect category, used to pick the single worst/most
+# clinically significant finding per current-regimen drug. (Section 07's
+# Table 1 renders this as a plain-language sentence and relevance tier via
+# _pgx_interpretation_sentence/_pgx_clinical_relevance, not a colored badge --
+# see that pair of functions for the corresponding "uncolored" phrasing map.)
 _PGX_EFFECT_RANK: dict[str, int] = {"toxicity": 3, "reduced efficacy": 2, "moderate": 1, "efficacy": 0}
-_PGX_EFFECT_CLASS: dict[str, str] = {
-    "toxicity": "sev-high",
-    "reduced efficacy": "sev-mod",
-    "moderate": "sev-mod",
-    "efficacy": "sev-low",
-}
 
 # Severity color class per DDI therapy_assessment "position" value (patient_prime_agent.path_d.ddi.
 # aggregation.build_therapy_assessment) -- a display-only recolor of an already-real, deterministically
@@ -385,6 +386,11 @@ table {{ border-collapse:collapse; width:100%; font-size:8.8px; }}
 table.datatable th {{ background:var(--navy); color:#fff; text-align:left; padding:4px 6px; font-size:8px; text-transform:uppercase; letter-spacing:.03em; }}
 table.datatable td {{ padding:4px 6px; border-top:1px solid var(--line); vertical-align:top; }}
 table.datatable tr:nth-child(even) td {{ background:var(--gray-bg); }}
+.flagpair-table td {{ vertical-align:top; width:50%; }}
+.flagpair-block {{ padding:6px 0; border-top:1px solid var(--line); }}
+.flagpair-block:first-child {{ border-top:0; padding-top:0; }}
+.flagpair-title {{ font-weight:800; color:var(--navy2); margin-bottom:2px; }}
+.flagpair-line {{ margin:1px 0; }}
 .stat {{ border-top:3px solid var(--teal); background:var(--blue); border-radius:0 0 6px 6px; padding:6px 8px; text-align:center; }}
 .stat b {{ display:block; font-size:15px; color:var(--navy); line-height:1.1; }}
 .stat span {{ font-size:7.6px; color:var(--muted); }}
@@ -880,7 +886,7 @@ def _error_message_cell(envelope: dict[str, Any]) -> str:
     return _unresolved_cell(message)
 
 
-def _provenance_line(envelope: dict[str, Any], *, id_label: str, record_id: Any, version: Any = None) -> str:
+def _provenance_line(envelope: dict[str, Any], *, id_label: str, record_id: Any, version: Any = None, id_already_shown: bool = False) -> str:
     """Compact provenance footer for a rendered finding: the record's own ID
     and retrieval date, plus a version only when the source actually
     returns one (DailyMed's spl_version -- every other source here has no
@@ -890,9 +896,19 @@ def _provenance_line(envelope: dict[str, Any], *, id_label: str, record_id: Any,
     ClinicalTrials.gov) already identifies it. The LIVE/CACHED badge is
     deliberately omitted too, per user feedback that it added clutter
     without changing what a reader does with the finding; the retrieval
-    date itself is kept as the one freshness signal."""
+    date itself is kept as the one freshness signal.
+
+    ``id_already_shown=True`` (PubMed and ClinVar both link the record's own
+    ID as their main line's clickable text, e.g. "PMID 123456: <title>") omits
+    the id_label/record_id repeat here -- printing it again right below was a
+    literal duplicate of the ID just shown one line above, not a second fact.
+    CPIC's main line links the *guideline name*, not its DrugID, so CPIC
+    still passes id_already_shown=False and keeps the ID here -- that's the
+    only place it's shown."""
     retrieved = _pretty_date(envelope["retrieved_at"]) if envelope.get("retrieved_at") else NOT_AVAILABLE
     version_part = f" &middot; v{_t(version)}" if version not in (None, "") else ""
+    if id_already_shown:
+        return f'<div class="small muted" style="margin-top:3px">Retrieved {retrieved}</div>'
     return f'<div class="small muted" style="margin-top:3px">{id_label} {_t(record_id)}{version_part} &middot; Retrieved {retrieved}</div>'
 
 
@@ -946,7 +962,7 @@ def _pubmed_cell(pubmed: dict[str, Any] | None) -> str:
         title = _t(rec.get("title")) or "(title not returned by PubMed)"
         return (
             f'<a href="{xml_escape(_raw_text(rec.get("url")))}">PMID {_t(rec.get("pmid"))}</a>: {title}'
-            f'{_provenance_line(pubmed, id_label="PMID", record_id=rec.get("pmid"))}'
+            f'{_provenance_line(pubmed, id_label="PMID", record_id=rec.get("pmid"), id_already_shown=True)}'
         )
     if status == "no_results":
         return _unresolved_cell("No PubMed citation matched this exact query at the time checked.")
@@ -987,7 +1003,7 @@ def _clinvar_cell(clinvar: dict[str, Any] | None) -> str:
             f'{_clinvar_significance_badge(rec.get("clinical_significance"))}'
             f'<br><span class="small muted">{_t(total)} total ClinVar record(s) for this gene '
             f"(gene-wide count, not variant-specific)</span>"
-            f'{_provenance_line(clinvar, id_label="Accession", record_id=record_id)}'
+            f'{_provenance_line(clinvar, id_label="Accession", record_id=record_id, id_already_shown=True)}'
         )
     if status == "no_results":
         return _unresolved_cell("No ClinVar record matched this exact gene query at the time checked.")
@@ -1076,16 +1092,145 @@ def _trials_cell(trials: dict[str, Any] | None) -> str:
     return NOT_AVAILABLE
 
 
+def _pgx_cpic_status(cpic: dict[str, Any] | None) -> tuple[bool, str]:
+    """Short, plain (no badge, no color) status text for one CPIC lookup, plus
+    whether it actually resolved. Detailed provenance (DrugID, guideline name,
+    retrieval date) is intentionally NOT built here -- see
+    _pgx_provenance_item, which renders that below the table instead."""
+    if not cpic:
+        return False, NOT_AVAILABLE
+    status = cpic.get("status")
+    if status == "ok" and cpic.get("records"):
+        rec = cpic["records"][0]
+        has_guideline = bool(rec.get("guideline") and rec["guideline"].get("url"))
+        return True, f"Level {_t(rec.get('cpic_level'))}, {'active guideline' if has_guideline else 'no active guideline'}"
+    if status == "no_results" or cpic.get("error"):
+        return False, "Unresolved"
+    return False, NOT_AVAILABLE
+
+
+def _pgx_clinvar_status(clinvar: dict[str, Any] | None) -> tuple[bool, str]:
+    """Short, plain status text for one ClinVar lookup. ClinVar's OWN
+    clinical_significance text is shown as-is, uncolored -- see
+    _clinvar_significance_badge (used elsewhere) for the colored version this
+    table deliberately does not use."""
+    if not clinvar:
+        return False, NOT_AVAILABLE
+    status = clinvar.get("status")
+    if status == "ok" and clinvar.get("records"):
+        rec = clinvar["records"][0]
+        return True, _t(rec.get("clinical_significance")) or "Not classified"
+    if status == "no_results" or clinvar.get("error"):
+        return False, "Unresolved"
+    return False, NOT_AVAILABLE
+
+
+def _pgx_pubmed_status(pubmed: dict[str, Any] | None) -> tuple[bool, str]:
+    """Short, plain status text for one PubMed lookup."""
+    if not pubmed:
+        return False, NOT_AVAILABLE
+    status = pubmed.get("status")
+    if status == "ok" and pubmed.get("records"):
+        rec = pubmed["records"][0]
+        return True, f"PMID {_t(rec.get('pmid'))} found"
+    if status == "no_results" or pubmed.get("error"):
+        return False, "Unresolved"
+    return False, NOT_AVAILABLE
+
+
+def _pgx_overall_status(resolved_flags: list[bool]) -> str:
+    """One combined status word per row -- plain text, no color -- summarizing
+    how many of the 3 sources (CPIC/ClinVar/PubMed) actually resolved."""
+    total = len(resolved_flags)
+    resolved = sum(resolved_flags)
+    if resolved == total:
+        return f"Resolved across all {total} sources"
+    if resolved == 0:
+        return f"Unresolved across all {total} sources"
+    return f"Partially resolved ({resolved} of {total} sources)"
+
+
+def _evidence_flag(resolved_flags: list[bool]) -> tuple[str, str]:
+    """Green/amber/red flag classification for one drug/pair's external-evidence
+    verification, driven by how many of its real per-source lookups actually
+    resolved. Reuses the report's existing plain text-color severity classes
+    (.sev-low/.sev-mod/.sev-high -- see the CSS block above, each just a
+    `color:` rule, never a background or border) so the flag reads as colored
+    text next to the heading, not as a filled badge box."""
+    total = len(resolved_flags)
+    resolved = sum(resolved_flags)
+    if total and resolved == total:
+        return "sev-low", "VERIFIED"
+    if resolved == 0:
+        return "sev-high", "UNVERIFIED"
+    return "sev-mod", "PARTIALLY VERIFIED"
+
+
+def _flag_block(subject: str, flag_css: str, flag_label: str, bullets: list[str]) -> str:
+    """One drug/pair's own flagged block: a bold subject heading, a colored
+    plain-text flag label (see _evidence_flag), and up to 2 short explanation
+    bullets -- reused wherever computed evidence should be grouped per
+    drug/pair under its own heading instead of merged into one shared table
+    (e.g. _pgx_live_evidence_card, _ddi_candidate_pair_blocks)."""
+    bullet_html = "".join(f"<li>{b}</li>" for b in bullets if b)
+    return (
+        f'<li style="margin-top:6px"><b>{subject}</b> &nbsp;<span class="{flag_css}">{flag_label}</span>'
+        f'<ul class="list-compact">{bullet_html}</ul></li>'
+    )
+
+
+def _pgx_provenance_item(pair_label: str, gene: str, drug: str, cpic: Any, clinvar: Any, pubmed: Any, citation: Any) -> str:
+    """Detailed provenance (record ID, retrieval date, cache status) for one
+    gene-drug pair's 3 lookups -- rendered as a single list item below the
+    table, not inline in a cell, per the table's own plain/uniform styling."""
+    parts = []
+    if isinstance(cpic, dict) and cpic.get("status") == "ok" and cpic.get("records"):
+        rec = cpic["records"][0]
+        guideline = rec.get("guideline")
+        g_name = f', guideline &ldquo;{_t(guideline.get("name"))}&rdquo;' if guideline and guideline.get("url") else ""
+        parts.append(f'CPIC &mdash; DrugID {_t(rec.get("drugid"))}{g_name} &middot; {_live_badge(_is_cached(cpic))} &middot; Retrieved {_pretty_date(cpic.get("retrieved_at"))}')
+    if isinstance(clinvar, dict) and clinvar.get("status") == "ok" and clinvar.get("records"):
+        rec = clinvar["records"][0]
+        record_id = rec.get("accession") or rec.get("uid")
+        total = clinvar.get("total_matches_in_clinvar")
+        parts.append(f'ClinVar &mdash; Accession {_t(record_id)} ({_t(total)} total gene-wide records) &middot; {_live_badge(_is_cached(clinvar))} &middot; Retrieved {_pretty_date(clinvar.get("retrieved_at"))}')
+    live_pmid = None
+    if isinstance(pubmed, dict) and pubmed.get("status") == "ok" and pubmed.get("records"):
+        rec = pubmed["records"][0]
+        live_pmid = rec.get("pmid")
+        parts.append(f'PubMed &mdash; PMID {_t(live_pmid)} &middot; {_live_badge(_is_cached(pubmed))} &middot; Retrieved {_pretty_date(pubmed.get("retrieved_at"))}')
+    if not parts:
+        return ""
+    # The patient panel's own citation (Table 1) and this row's independent live
+    # PubMed search are two different sources that can legitimately land on two
+    # different papers for the same pair -- flag it explicitly rather than let a
+    # reader assume they were supposed to match.
+    patient_pmid = _citation_pmid(citation)
+    discrepancy = ""
+    if live_pmid and patient_pmid and str(live_pmid) != patient_pmid:
+        discrepancy = " Note: Table 1's citation is from the patient's own PGx report; this is an independent live PubMed search, may differ."
+    return f"<li><b>{pair_label}:</b> {'; '.join(parts)}.{discrepancy}</li>"
+
+
 def _pgx_live_evidence_card(external: dict[str, Any], worst_findings: list[dict[str, Any]]) -> str:
-    """Live PubMed/ClinVar/CPIC evidence for exactly the gene-drug findings already
-    shown in the table above -- not every gene the panel found, only the ones the
-    clinician just read, so this stays in lockstep with the visible summary."""
+    """External Evidence Verification: live PubMed/ClinVar/CPIC status for
+    exactly the gene-drug findings already shown in Table 1 above -- not
+    every gene the panel found, only the ones the clinician just read, so
+    this stays in lockstep with the visible summary. Per request, this is no
+    longer one shared table across every pair -- each gene-drug pair gets its
+    own flagged block (colored VERIFIED/PARTIALLY VERIFIED/UNVERIFIED label,
+    plain text color only -- see _evidence_flag -- plus exactly 2 short
+    explanation bullets), the same visual pattern as the curated
+    Green-Flags/Red-Flags sheet further down the report. Detailed provenance
+    for each pair is still collected separately and rendered as a plain list
+    below the blocks, not inline."""
 
     pairs_by_key = {
         (str(p.get("drug_name", "")).strip().lower(), str(p.get("gene_symbol", "")).strip().upper()): p
         for p in (external.get("by_gene_drug_pair") or [])
     }
-    rows = []
+    blocks = []
+    provenance_items = []
     for finding in worst_findings:
         drug = str(finding.get("drug") or "").strip()
         gene = _gene_from_basis(finding.get("genetic_basis"))
@@ -1093,74 +1238,60 @@ def _pgx_live_evidence_card(external: dict[str, Any], worst_findings: list[dict[
         if not pair:
             continue
         cpic, clinvar, pubmed = pair.get("cpic"), pair.get("clinvar"), pair.get("pubmed_combined_query")
-        rows.append(
-            f"<tr><td><b>{_t(gene)}</b> &rarr; {_t(_sentence_case(drug))}</td>"
-            f"<td>{_cpic_cell(cpic)}</td><td>{_clinvar_cell(clinvar)}</td><td>{_pubmed_cell(pubmed)}</td></tr>"
-        )
-        # The patient panel's own citation (top table) and this row's independent live
-        # PubMed search are two different sources that can legitimately land on two
-        # different papers for the same pair -- flag it explicitly rather than let a
-        # reader assume they were supposed to match.
-        live_records = pubmed.get("records") if isinstance(pubmed, dict) and pubmed.get("status") == "ok" else None
-        live_pmid = live_records[0].get("pmid") if live_records else None
-        patient_pmid = _citation_pmid(finding.get("citation"))
-        if live_pmid and patient_pmid and str(live_pmid) != patient_pmid:
-            rows.append(
-                '<tr><td colspan="4" class="small muted" style="border-top:0;padding-top:0">'
-                "Note: top table = citation from patient's own PGx report; table below = "
-                "independent live PubMed search, may differ.</td></tr>"
+        cpic_ok, cpic_text = _pgx_cpic_status(cpic)
+        clinvar_ok, clinvar_text = _pgx_clinvar_status(clinvar)
+        pubmed_ok, pubmed_text = _pgx_pubmed_status(pubmed)
+        overall = _pgx_overall_status([cpic_ok, clinvar_ok, pubmed_ok])
+        flag_css, flag_label = _evidence_flag([cpic_ok, clinvar_ok, pubmed_ok])
+        pair_label = f"{_t(gene)} &rarr; {_t(_sentence_case(drug))}"
+        blocks.append(
+            _flag_block(
+                pair_label,
+                flag_css,
+                flag_label,
+                [f"CPIC: {cpic_text}. ClinVar: {clinvar_text}.", f"PubMed: {pubmed_text}. Overall: {overall}."],
             )
-    if not rows:
-        return ""
-    return f"""
-  <div class="card" style="margin-top:8px">
-    <div class="h2">External Database Evidence &mdash; PubMed / ClinVar / CPIC</div>
-    <p class="small muted" style="margin-bottom:6px"><b>Database evidence only, not patient-verified:</b> each row
-    below is a live public-database lookup for the same gene/drug pair as the patient-specific finding in the
-    table above -- it establishes general scientific plausibility for that pair, not a fact confirmed for this
-    individual patient. An UNRESOLVED result means this exact query returned nothing, or failed, at the time
-    checked -- it is not evidence that no relevant data exists, and must not be read as a clean or reassuring
-    negative.</p>
-    <table class="datatable"><thead><tr><th>Gene &rarr; Drug (patient-specific pair)</th><th>CPIC</th><th>ClinVar</th><th>PubMed</th></tr></thead>
-    <tbody>{''.join(rows)}</tbody></table>
-    {_evidence_scope_note()}
-    {_known_limitations_block(external)}
-  </div>
-"""
-
-
-def _ddi_live_evidence_card(external: dict[str, Any]) -> str:
-    """Live DailyMed/ClinicalTrials.gov/PubMed evidence for each current-regimen drug."""
-
-    by_drug = external.get("by_drug") or []
-    if not by_drug:
-        return ""
-    rows = []
-    for entry in by_drug:
-        dailymed, trials, pubmed = entry.get("dailymed"), entry.get("clinicaltrials_gov"), entry.get("pubmed")
-        rows.append(
-            f"<tr><td><b>{_t(_sentence_case(entry.get('drug_name')))}</b></td>"
-            f"<td>{_dailymed_cell(dailymed)}</td><td>{_trials_cell(trials)}</td><td>{_pubmed_cell(pubmed)}</td></tr>"
         )
+        item = _pgx_provenance_item(pair_label, gene, drug, cpic, clinvar, pubmed, finding.get("citation"))
+        if item:
+            provenance_items.append(item)
+    if not blocks:
+        return ""
+    provenance_block = (
+        f'<div class="callout" style="margin-top:8px"><b>Provenance</b><ul class="list-compact">{"".join(provenance_items)}</ul></div>'
+        if provenance_items
+        else ""
+    )
     return f"""
-  <div class="card" style="margin-top:8px">
-    <div class="h2">External Database Evidence &mdash; DailyMed / ClinicalTrials.gov / PubMed</div>
-    <p class="small muted" style="margin-bottom:6px"><b>Database evidence only, not patient-verified:</b> each row
-    below is a live public-database lookup keyed on the drug name from the patient's own current-regimen
-    medication reconciliation above -- it establishes general plausibility for that drug, not a fact confirmed
-    for this individual patient's actual dose or response. An UNRESOLVED result means this exact query returned
-    nothing, or failed, at the time checked -- it is not evidence that no relevant data exists, and must not be
-    read as a clean or reassuring negative.</p>
-    <table class="datatable"><thead><tr><th>Drug (from patient's current regimen)</th><th>DailyMed Label</th><th>ClinicalTrials.gov</th><th>PubMed</th></tr></thead>
-    <tbody>{''.join(rows)}</tbody></table>
-    {_evidence_scope_note()}
-    {_known_limitations_block(external)}
-  </div>
+  <div class="h2" style="margin-top:10px">External Evidence Verification</div>
+  <p class="small muted" style="margin-bottom:6px"><b>Database evidence only, not patient-verified:</b> each block
+  below is a live public-database lookup for the same gene/drug pair as the patient-specific finding in Table 1
+  above -- it establishes general scientific plausibility for that pair, not a fact confirmed for this
+  individual patient. An unresolved result means this exact query returned nothing, or failed, at the time
+  checked -- it is not evidence that no relevant data exists, and must not be read as a clean or reassuring
+  negative.</p>
+  <ul class="list-compact" style="padding-left:12px">{''.join(blocks)}</ul>
+  {provenance_block}
+  {_evidence_scope_note()}
+  {_known_limitations_block(external)}
 """
+
+
+# _ddi_live_evidence_card (the old "External Database Evidence -- DailyMed /
+# ClinicalTrials.gov / PubMed" table for the current-regimen drugs) was
+# removed: confirmed via a PDF-text identifier scan (matching PMIDs, NCT
+# numbers, and DailyMed SetIDs) that every fact it showed was already
+# present, in fuller form, inside each drug's own Unresolved Evidence
+# bullets in _therapy_assessment_card below (which additionally cover
+# CPIC/ClinVar, absent from that table) -- and its Evidence Scope /
+# Known Limitations blocks duplicated the identical text already rendered
+# once in Section 07 via _pgx_live_evidence_card. Single source of truth
+# for both now: the therapy cards for per-drug external evidence, Section 07
+# for the scope/limitations disclaimer.
 
 
 # ----------------------------------------------------------------------
-# 06. Pharmacogenomics
+# 07. Pharmacogenomics
 # ----------------------------------------------------------------------
 def _pgx_worst_per_drug(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Reduce a list of per-gene PGx findings to one row per drug: the single most
@@ -1195,6 +1326,43 @@ def _pgx_summary_chips(genetics: dict[str, Any]) -> str:
     return f'<div class="grid5" style="margin-bottom:8px">{chips}</div>'
 
 
+_PGX_INTERPRETATION_SENTENCE: dict[str, str] = {
+    "efficacy": "Genotype is associated with a favorable efficacy response to this therapy.",
+    "reduced efficacy": "Genotype is associated with a reduced-efficacy response to this therapy.",
+    "toxicity": "Genotype is associated with an increased toxicity/adverse-reaction risk on this therapy.",
+    "moderate": "Genotype is associated with a moderate or mixed response to this therapy.",
+}
+
+_PGX_RELEVANCE_TIER: dict[str, str] = {
+    "toxicity": "High",
+    "reduced efficacy": "Moderate",
+    "moderate": "Moderate",
+    "efficacy": "Supportive",
+}
+
+
+def _pgx_interpretation_sentence(entry: dict[str, Any]) -> str:
+    """Plain-language sentence for this finding's real predicted_effect enum
+    (efficacy / reduced efficacy / toxicity / moderate) -- never displays the
+    raw enum value directly."""
+    effect = str(entry.get("predicted_effect") or "").strip().lower()
+    sentence = _PGX_INTERPRETATION_SENTENCE.get(effect)
+    return _t(sentence) if sentence else _t(_sentence_case(entry.get("predicted_effect")))
+
+
+def _pgx_clinical_relevance(entry: dict[str, Any]) -> str:
+    """Whether this finding is flagged as clinically significant in the
+    source panel, plus its real citation -- a distinct judgment from
+    _pgx_interpretation_sentence's "what the genotype means," so the two
+    table columns state different facts rather than repeating one."""
+    effect = str(entry.get("predicted_effect") or "").strip().lower()
+    tier = _PGX_RELEVANCE_TIER.get(effect, "Uncertain")
+    flag_text = "flagged as clinically significant" if entry.get("significant") else "not flagged as clinically significant"
+    citation = entry.get("citation")
+    citation_part = f" (citation: {_t(citation)})" if citation else ""
+    return f"{_t(tier)} relevance; {flag_text} in the source panel{citation_part}."
+
+
 def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
     genetics = sections.get(SEC_GENETICS) or {}
     external = sections.get(SEC_EXTERNAL_EVIDENCE) or {}
@@ -1211,19 +1379,19 @@ def _sec_pharmacogenomics(sections: dict[str, Any]) -> str:
     worst_findings = _pgx_worst_per_drug(current_findings)
     worst_rows = "".join(
         f'<tr><td>{_t(e.get("drug"))}</td><td>{_t(e.get("genetic_basis"))}</td>'
-        f'<td><span class="badge {_PGX_EFFECT_CLASS.get(str(e.get("predicted_effect") or "").lower(), "sev-neutral")}">'
-        f'{_sentence_case(e.get("predicted_effect"))}</span></td>'
-        f'<td>{_t(e.get("citation"))}</td></tr>'
+        f'<td>{_pgx_interpretation_sentence(e)}</td>'
+        f'<td>{_pgx_clinical_relevance(e)}</td></tr>'
         for e in worst_findings
     )
 
     return f"""
 <section class="section">
-  {_section_head(6, "Pharmacogenomics", f"{genetics.get('patient', {}).get('variants_analyzed', '?')} variants across {genetics.get('patient', {}).get('drugs_covered', '?')} medications \u00b7 reported {_pretty_date(_get(genetics, 'patient', 'report_date'))}")}
+  {_section_head(7, "Pharmacogenomics", f"{genetics.get('patient', {}).get('variants_analyzed', '?')} variants across {genetics.get('patient', {}).get('drugs_covered', '?')} medications \u00b7 reported {_pretty_date(_get(genetics, 'patient', 'report_date'))}")}
   <div class="h2">Pharmacogenomic Panel Summary</div>
   {_pgx_summary_chips(genetics)}
-  <div class="callout" style="margin-bottom:8px"><b>Interpretive method:</b> a pharmacogenomic association is weighed against this patient's own observed clinical response, laboratory, and EEG evidence -- it is never used as an isolated prescribing instruction, and a favorable genotype cannot override documented toxicity or persistent symptoms. The table below shows the single most clinically significant finding per current-regimen drug; the full therapy-level assessment -- this finding combined with clinical, EEG, laboratory, and external-database evidence -- is presented in Section 07, Drug Interactions.</div>
-  <table class="datatable"><thead><tr><th>Drug</th><th>Gene (Genotype)</th><th>Worst / Most Significant Outcome</th><th>Citation</th></tr></thead><tbody>{worst_rows or '<tr><td colspan="4">No marker in this panel names a current-regimen drug directly.</td></tr>'}</tbody></table>
+  <div class="callout" style="margin-bottom:8px"><b>Interpretive method:</b> a pharmacogenomic association is weighed against this patient's own observed clinical response, laboratory, and EEG evidence -- it is never used as an isolated prescribing instruction, and a favorable genotype cannot override documented toxicity or persistent symptoms. The table below shows the single most clinically significant finding per current-regimen drug; the full therapy-level assessment -- this finding combined with clinical, EEG, laboratory, and external-database evidence -- is presented in Section 06, Drug Interactions.</div>
+  <div class="h2">Patient-Specific PGx Findings</div>
+  <table class="datatable"><thead><tr><th>Therapy</th><th>Gene/Genotype</th><th>Patient-Specific Interpretation</th><th>Clinical Relevance</th></tr></thead><tbody>{worst_rows or '<tr><td colspan="4">No marker in this panel names a current-regimen drug directly.</td></tr>'}</tbody></table>
   {_pgx_live_evidence_card(external, worst_findings)}
 </section>
 """
@@ -1263,13 +1431,35 @@ def _ddi_evidence_list(items: list[dict[str, Any]] | None) -> str:
     )
 
 
+_EVIDENCE_LEVEL_RANK: dict[str, int] = {"high": 3, "moderate": 2, "low": 1, "predicted": 0}
+
+
+def _top_evidence_items(items: list[dict[str, Any]] | None, limit: int = 3) -> list[dict[str, Any]]:
+    """Reduces a full evidence-item list to the ``limit`` most load-bearing
+    entries, per DDI_Integration_Plan_v02's own conflict-resolution rules --
+    rule 1 ("patient-specific observed evidence outranks predicted evidence")
+    and rule 3 ("clinical response outranks a favorable response
+    association") -- by sorting on each item's own real ``evidence_level``
+    (high/moderate/low/predicted) rather than truncating in whatever order
+    aggregation.py happened to emit them. A stable sort preserves that
+    original order among items tied on evidence_level. This never drops the
+    underlying data (the full lists still exist in DDI_Clinical_Assessment.json
+    and DDI_Clinical_Assessment's own JSON); it only narrows what this
+    specific card displays."""
+    items = items or []
+    ranked = sorted(items, key=lambda item: _EVIDENCE_LEVEL_RANK.get(str(item.get("evidence_level") or "").lower(), -1), reverse=True)
+    return ranked[:limit]
+
+
 def _therapy_assessment_card(therapy: dict[str, Any]) -> str:
     """Renders one patient_prime_agent.path_d.ddi.aggregation.build_therapy_assessment()
-    record per DDI_Integration_Plan_v02 section 13's required presentation: therapy name,
-    current clinical position, supporting/counter/unresolved evidence, clinical impression,
-    and recommended monitoring -- the therapy-specific evidence assessment the plan requires
-    instead of a pass/fail interaction list. Dose is deliberately not repeated here -- the
-    Medication Reconciliation table directly above is this section's single source for it."""
+    record: therapy name, current clinical position, the 3 most load-bearing supporting
+    and counter-evidence points (see _top_evidence_items), clinical impression, and
+    recommended monitoring. Unresolved evidence is intentionally not shown here (by
+    request, to match the reference report's 2-column current-therapy layout) -- it
+    remains fully available in DDI_Clinical_Assessment.json, just not rendered in this
+    card. Dose is deliberately not repeated here -- the Medication Reconciliation table
+    directly above is this section's single source for it."""
     medication = therapy.get("medication") or {}
     position = therapy.get("position")
     position_badge = f'<span class="badge {_DDI_POSITION_CLASS.get(str(position or "").lower(), "sev-neutral")}">{_humanize(position)}</span>'
@@ -1290,17 +1480,15 @@ def _therapy_assessment_card(therapy: dict[str, Any]) -> str:
     <div class="grid2">
       <div>
         <div class="h2" style="font-size:8.6px">Supporting Evidence</div>
-        <ul class="list-compact">{_ddi_evidence_list(therapy.get('supporting_evidence'))}</ul>
-        <div class="h2" style="font-size:8.6px;margin-top:6px">Counter-Evidence</div>
-        <ul class="list-compact">{_ddi_evidence_list(therapy.get('counter_evidence'))}</ul>
+        <ul class="list-compact">{_ddi_evidence_list(_top_evidence_items(therapy.get('supporting_evidence')))}</ul>
       </div>
       <div>
-        <div class="h2" style="font-size:8.6px">Unresolved Evidence</div>
-        <ul class="list-compact">{_ddi_evidence_list(therapy.get('unresolved_evidence'))}</ul>
-        <div class="h2" style="font-size:8.6px;margin-top:6px">Clinical Impression</div>
-        <p class="small">{_t(therapy.get('clinical_impression'))}</p>
+        <div class="h2" style="font-size:8.6px">Counter-Evidence</div>
+        <ul class="list-compact">{_ddi_evidence_list(_top_evidence_items(therapy.get('counter_evidence')))}</ul>
       </div>
     </div>
+    <div class="h2" style="margin-top:6px">Clinical Impression</div>
+    <p class="small">{_t(therapy.get('clinical_impression'))}</p>
     <div class="h2" style="margin-top:6px">Recommended Monitoring</div>
     <div class="pill-row">{monitoring_pills}</div>
   </div>
@@ -1308,7 +1496,7 @@ def _therapy_assessment_card(therapy: dict[str, Any]) -> str:
 
 
 # ----------------------------------------------------------------------
-# 07. Drug Interactions -- top-of-section summary overview
+# 06. Drug Interactions -- top-of-section summary overview
 #
 # Combines current_pair_assessments (pair-level DDI screening) and
 # therapy_assessments (per-drug evidence assessment) into one at-a-glance
@@ -1454,60 +1642,109 @@ def _ddi_summary_therapy_row(therapy: dict[str, Any]) -> dict[str, str]:
     }
 
 
-def _ddi_summary_overview_card(ddi: dict[str, Any]) -> str:
-    coverage = _get(ddi, "source_coverage", default={})
-    reconciliation = _get(ddi, "medication_reconciliation", default={})
-    pair_assessments = _get(ddi, "current_pair_assessments", default=[])
-    therapy_assessments = _get(ddi, "therapy_assessments", default=[])
+_FINDING_BUCKETS: tuple[str, ...] = ("clinically_significant", "resolved_no_concern", "unresolved")
+_FINDING_BUCKET_LABEL: dict[str, str] = {
+    "clinically_significant": "Clinically Significant",
+    "resolved_no_concern": "Resolved — No Concern",
+    "unresolved": "Unresolved",
+}
 
+
+def _flag_css_to_bucket(flag_css: str) -> str:
+    if flag_css == "sev-high":
+        return "clinically_significant"
+    if flag_css == "sev-low":
+        return "resolved_no_concern"
+    return "unresolved"  # sev-mod / sev-neutral
+
+
+def _ddi_finding_counts(ddi: dict[str, Any]) -> dict[str, int]:
+    """Single source of truth for every clinically-significant /
+    resolved-no-concern / unresolved count shown anywhere in Section 06's
+    summary overview card -- both the headline sentence and the stat tiles
+    below it are built from this same dict, so they can never diverge
+    again. (This fixes a real bug: the headline used to count
+    therapy_assessments + current_pair_assessments, while the tiles counted
+    an entirely different thing -- curated-source drug coverage from
+    source_coverage -- so the two answered different questions and could
+    show contradictory numbers, e.g. "2 unresolved" in the headline next to
+    "0" in the coverage tile.)
+
+    Counts across two inputs that never overlap: one bucket per
+    current-regimen medication's own therapy assessment
+    (_ddi_summary_therapy_row's flag_css), and one bucket per real
+    current-current pair in current_pair_assessments (_ddi_summary_pair_row's
+    flag_css).
+
+    This is deliberately scoped to the patient's real current regimen only.
+    The Drug Interaction Flag Sheet's ~325-pair screening panel
+    (_ddi_flag_sheet_card, drawn from path_d.ddi.candidate_drugs -- mostly
+    drugs the patient is not actually taking) is NOT folded into this
+    count: its own Positive/Negative/Needs-Review buckets answer a
+    different question ("what does the literature say about this
+    screening pair") than this headline's "how is the patient's actual
+    regimen doing" -- mixing them would inflate this section's real-patient
+    headline with screening-panel noise. The screening panel reports its
+    own coverage stats separately, in its own intro."""
+    counts = {b: 0 for b in _FINDING_BUCKETS}
+
+    reconciliation = _get(ddi, "medication_reconciliation", default={})
+    coverage = _get(ddi, "source_coverage", default={})
+    therapy_assessments = _get(ddi, "therapy_assessments", default=[])
     name_map = {m.get("source_name"): m.get("normalized_name") for m in reconciliation.get("normalized_medications") or []}
     therapy_by_source_name = {(t.get("medication") or {}).get("source_name"): t for t in therapy_assessments}
 
-    # Only current-current pairs belong in a "current regimen" overview -- a proposed-drug
-    # pair (pair_context != "current_current") is out of scope here, same restriction the
-    # detailed pair table below already applies.
-    rows = [
-        _ddi_summary_pair_row(p, coverage, name_map, therapy_by_source_name)
-        for p in pair_assessments
-        if p.get("pair_context") == "current_current"
-    ]
-    rows += [_ddi_summary_therapy_row(t) for t in therapy_assessments]
-    if not rows:
+    for therapy in therapy_assessments:
+        row = _ddi_summary_therapy_row(therapy)
+        counts[_flag_css_to_bucket(row["flag_css"])] += 1
+
+    current_pairs = [p for p in _get(ddi, "current_pair_assessments", default=[]) if p.get("pair_context") == "current_current"]
+    for pair in current_pairs:
+        row = _ddi_summary_pair_row(pair, coverage, name_map, therapy_by_source_name)
+        counts[_flag_css_to_bucket(row["flag_css"])] += 1
+
+    return counts
+
+
+def _ddi_summary_overview_card(ddi: dict[str, Any]) -> str:
+    therapy_assessments = _get(ddi, "therapy_assessments", default=[])
+    therapy_rows = [_ddi_summary_therapy_row(t) for t in therapy_assessments]
+
+    counts = _ddi_finding_counts(ddi)
+    total_findings = sum(counts.values())
+    if total_findings == 0:
         return ""
+    clinically_relevant = counts["clinically_significant"] + counts["resolved_no_concern"]
+    unresolved = counts["unresolved"]
 
-    clinically_relevant = sum(1 for r in rows if r["flag_css"] in ("sev-high", "sev-low"))
-    unresolved = sum(1 for r in rows if r["flag_css"] in ("sev-mod", "sev-neutral"))
-
-    # Real interaction-source coverage for this regimen (patient_prime_agent.path_d.ddi_summary's
-    # own resolved/unresolved/not_evaluated_drugs lists) -- not a fabricated coverage percentage
-    # against some larger candidate-drug universe this project doesn't screen against.
-    total_current_drugs = len(reconciliation.get("normalized_medications") or [])
-    resolved_count = len(coverage.get("resolved_drugs") or [])
-    unresolved_count = len(coverage.get("unresolved_drugs") or [])
-    not_evaluated_count = len(coverage.get("not_evaluated_drugs") or [])
-    coverage_stats = [
-        (str(total_current_drugs), "Current Medications Screened"),
-        (str(resolved_count), "Resolved in Curated DDI Source"),
-        (str(unresolved_count), "Unresolved / Not in Curated Source"),
-        (str(not_evaluated_count), "Not Evaluated"),
+    # Every stat tile comes from the exact same `counts` dict the headline sentence above
+    # uses -- see _ddi_finding_counts -- so the two can never show contradictory numbers.
+    stat_tiles = [
+        (str(total_findings), "Total Findings Assessed"),
+        (str(counts["clinically_significant"]), _FINDING_BUCKET_LABEL["clinically_significant"]),
+        (str(counts["resolved_no_concern"]), _FINDING_BUCKET_LABEL["resolved_no_concern"]),
+        (str(counts["unresolved"]), _FINDING_BUCKET_LABEL["unresolved"]),
     ]
-    coverage_stat_html = "".join(f'<div class="stat"><b>{_t(v)}</b><span>{_t(l)}</span></div>' for v, l in coverage_stats)
+    stat_html = "".join(f'<div class="stat"><b>{_t(v)}</b><span>{_t(l)}</span></div>' for v, l in stat_tiles)
 
+    # Per-drug rows only -- current-regimen pair rows moved out of this shared table into
+    # their own tables in _ddi_flag_sheet_card, so "Drug Pair" would no longer be an
+    # accurate header for what remains here.
     table_rows = "".join(
         f'<tr><td>{r["subject"]}</td>'
         f'<td><span class="badge {r["flag_css"]}">{r["flag_label"]}</span></td>'
         f'<td>{r["key_finding"]}</td>'
         f'<td>{r["patient_impact"]}</td>'
         f'<td class="small muted">{r["evidence_source"]}</td></tr>'
-        for r in rows
+        for r in therapy_rows
     )
 
     return f"""
   <div class="card" style="margin-bottom:8px">
     <div class="h2">DDI &amp; Patient-Specific Therapy Assessment &mdash; Summary</div>
     <p class="small" style="margin:2px 0 6px"><b>Overall: {clinically_relevant} clinically relevant findings | {unresolved} unresolved finding(s).</b></p>
-    <div class="grid4" style="margin-bottom:8px">{coverage_stat_html}</div>
-    <table class="datatable"><thead><tr><th>Drug Pair</th><th>Flag</th><th>Key Finding</th><th>Patient Impact</th><th>Evidence Source</th></tr></thead>
+    <div class="grid4" style="margin-bottom:8px">{stat_html}</div>
+    <table class="datatable"><thead><tr><th>Medication</th><th>Flag</th><th>Key Finding</th><th>Patient Impact</th><th>Evidence Source</th></tr></thead>
     <tbody>{table_rows}</tbody></table>
     <div class="callout" style="margin-top:8px"><b>Key clinical interpretation:</b> These flags identify findings that require ongoing clinical monitoring, not an automatic medication change. Each finding should be interpreted alongside the patient's actual treatment response, adverse effects, and the clinical/laboratory findings documented elsewhere in this report -- a resolved or unresolved flag is not itself a prescribing instruction.</div>
     <div class="h2" style="margin-top:8px">Monitoring / Clinician Review Checklist</div>
@@ -1518,6 +1755,42 @@ def _ddi_summary_overview_card(ddi: dict[str, Any]) -> str:
       <li>Therapeutic drug levels, when indicated and available</li>
       <li>Relevant laboratory and clinical parameters (e.g. renal, hepatic, hematological)</li>
     </ul>
+  </div>
+"""
+
+
+def _ddi_candidate_pair_blocks(ddi: dict[str, Any]) -> str:
+    """Candidate / Proposed Medication-Pair Screening: one flagged block per
+    proposed_pair_assessments entry (a candidate drug paired against a
+    current-regimen drug), each under its own heading -- same "own flagged
+    block per pair" principle as _ddi_flag_sheet_card, applied here since a
+    proposed pair's "not_evaluated" status doesn't fit that sheet's
+    Clinically-Significant/No-Significant-Concern taxonomy. This dataset has
+    no proposed-medication list
+    (see ddi_summary.py's module docstring), so proposed_pair_assessments is
+    always empty here; this states that gap explicitly rather than inventing
+    a candidate list to fill the section."""
+    proposed_pairs = _get(ddi, "proposed_pair_assessments", default=[])
+    if not proposed_pairs:
+        return """
+  <div class="card" style="margin-top:8px">
+    <div class="h2">Candidate / Proposed Medication-Pair Screening</div>
+    <p class="small muted">No candidate or proposed medications are present in this patient's regimen; no candidate-pair screening applies.</p>
+  </div>
+"""
+    items = "".join(
+        _flag_block(
+            f'{_t(p.get("drug_a"))} + {_t(p.get("drug_b"))}',
+            "sev-mod",
+            "NOT EVALUATED",
+            [_t(p.get("patient_specific_interpretation")), f'Severity if added: {_t(p.get("severity"))}.'],
+        )
+        for p in proposed_pairs
+    )
+    return f"""
+  <div class="card" style="margin-top:8px">
+    <div class="h2">Candidate / Proposed Medication-Pair Screening</div>
+    <ul class="list-compact" style="padding-left:12px">{items}</ul>
   </div>
 """
 
@@ -1579,38 +1852,225 @@ def _ddi_coverage_action_table(ddi: dict[str, Any]) -> str:
 
 
 def _ddi_clinical_inference_callout(ddi: dict[str, Any]) -> str:
-    """Standalone, visually prominent statement of DDI_Integration_Plan_v02's
+    """Single, visually prominent statement of DDI_Integration_Plan_v02's
     conflict-resolution rule 6 ("unresolved does not mean no interaction")
-    and rule 7 ("absence of data does not mean absence of risk") -- placed
-    beside the coverage/overview data rather than folded into a longer
-    general note, so it reads as the section's single load-bearing caution
-    rather than one clause among many."""
+    and rule 7 ("absence of data does not mean absence of risk") -- this is
+    the section's one load-bearing caution. It also introduces what the
+    therapy-level evidence cards below actually contain, so that framing is
+    stated once here rather than repeated in a second, separately-worded
+    callout further down the section."""
     uncertainties = _get(ddi, "overall_interpretation", "principal_uncertainties", default=[])
     items = "".join(f"<li>{_t(u)}</li>" for u in uncertainties)
     return f"""
   <div class="callout warn" style="margin-top:8px">
     <b>Clinical inference:</b> Absence of a resolved current-current interaction does not establish absence of
     interaction. Unresolved predicted-model coverage limits interpretation; the active medication list should be
-    reassessed against a complete interaction source before any treatment change.
+    reassessed against a complete interaction source before any treatment change. The therapy-level cards below
+    give the supporting, counter, and unresolved evidence behind that conclusion for each current medication,
+    across pharmacokinetic, pharmacodynamic, pharmacogenomic, clinical, EEG, and laboratory sources -- not a
+    pass/fail interaction check.
     {f'<ul class="list-compact" style="margin-top:4px">{items}</ul>' if items else ''}
   </div>
 """
 
 
+_IMPACT_COLUMN_LABEL: dict[str, str] = {
+    "positive": "Positive Impact",
+    "negative": "Negative Impact",
+}
+_IMPACT_ORDER: tuple[str, ...] = ("positive", "negative")
+
+
+def _ddi_flag_sheet_pairs_by_drug(flag_evidence: dict[str, Any] | None) -> dict[str, list[dict[str, Any]]]:
+    """Every screening-panel pair with real evidence
+    (patient_prime_agent.ddi_flag_evidence's output -- already dropped every
+    pair with no finding and every pair that didn't resolve clearly to
+    Positive or Negative; there is no third "needs review" bucket, see that
+    module's own docstring), indexed by EACH of its two drugs
+    (lowercased) -- so a pair like "Lamotrigine + Levetiracetam" appears
+    once under "lamotrigine" (partner "Levetiracetam") and once under
+    "levetiracetam" (partner "Lamotrigine"), letting each drug's own
+    section show every pair it is actually part of, from that drug's own
+    point of view -- matching the reference layout's per-drug sections."""
+    by_drug: dict[str, list[dict[str, Any]]] = {}
+    for pair in _get(flag_evidence or {}, "pairs", default=[]):
+        drug_a, drug_b = pair.get("drug_a"), pair.get("drug_b")
+        if not drug_a or not drug_b:
+            continue
+        by_drug.setdefault(str(drug_a).strip().lower(), []).append({**pair, "_self": drug_a, "_partner": drug_b})
+        by_drug.setdefault(str(drug_b).strip().lower(), []).append({**pair, "_self": drug_b, "_partner": drug_a})
+    return by_drug
+
+
+def _ddi_flag_sheet_hyperlink_anchor_text(primary_evidence_label: str | None) -> str:
+    """A short, human-readable link-anchor name for the pair's primary
+    evidence source -- ``entry["evidence_labels"][0]``, the same source
+    ``ddi_flag_evidence._pair_finding`` drew ``hyperlink_url`` from (its
+    ``candidates[0]``; text and url always come from the same candidate).
+
+    An earlier version of this renderer hard-coded the anchor text
+    "PubMed" for every pair regardless of source -- correct only while
+    PubMed was the sole live source that ever supplied a real URL. Now that
+    DailyMed, ClinicalTrials.gov, and Tavily also supply ``hyperlink_url``
+    (a live 325-pair run: PubMed supplies only 100 of the 315 linked
+    pairs' urls, DailyMed 59, ClinicalTrials.gov 97, Tavily 59), that
+    hard-coded text misnamed the other 215 links' actual destination --
+    e.g. a real clinicaltrials.gov URL captioned "PubMed"."""
+    label = primary_evidence_label or ""
+    if "PubMed" in label:
+        return "PubMed"
+    if "ClinicalTrials.gov" in label:
+        return "ClinicalTrials.gov"
+    if "DailyMed" in label:
+        return "DailyMed"
+    if "Tavily" in label or "General web search" in label:
+        return "General web search (Tavily)"
+    if "Curated DDI" in label:
+        return "Flockhart"
+    return label or "Source"
+
+
+def _ddi_flag_sheet_entry_block(entry: dict[str, Any]) -> str:
+    """One pair's own Finding/Evidence/Hyperlink block, from the section
+    drug's own point of view ("{self} + {partner}"). Evidence lists which
+    real source(s) contributed (Flockhart / pharmacodynamic rules / PubMed
+    / DailyMed / ClinicalTrials.gov / Tavily -- see ddi_flag_evidence.
+    _pair_finding); Hyperlink links the clickable resource NAME (the
+    source that actually supplied ``hyperlink_url``, via
+    ``entry["primary_evidence_label"]`` and ``_ddi_flag_sheet_hyperlink_
+    anchor_text`` -- never a hard-coded "PubMed", and never
+    ``evidence_labels[0]`` either: since ddi_flag_evidence.py's
+    priority-order fall-through, the source that resolves a pair's Finding/
+    url is not always the first one listed in ``evidence_labels`` -- a real,
+    observed bug this caused: a link whose href genuinely pointed to a
+    ClinicalTrials.gov study, or a general web page, was captioned with a
+    higher-priority source's name instead, because that source's own text
+    didn't classify and got skipped but still led evidence_labels), never
+    the raw URL, per the reference layout -- and is included only when a
+    real URL exists ("if there"), never a placeholder link."""
+    hyperlink_line = ""
+    url = entry.get("hyperlink_url")
+    if url:
+        anchor_text = _ddi_flag_sheet_hyperlink_anchor_text(entry.get("primary_evidence_label"))
+        hyperlink_line = f'<div class="flagpair-line"><b>Hyperlink:</b> <a href="{xml_escape(str(url))}">{xml_escape(anchor_text)}</a></div>'
+    evidence_text = "; ".join(entry.get("evidence_labels") or []) or "—"
+    return f"""
+    <div class="flagpair-block">
+      <div class="flagpair-title">{_t(entry["_self"])} + {_t(entry["_partner"])}</div>
+      <div class="flagpair-line"><b>Findings:</b> {_t(entry.get("finding"))}</div>
+      <div class="flagpair-line"><b>Evidence:</b> {_t(evidence_text)}</div>
+      {hyperlink_line}
+    </div>"""
+
+
+def _ddi_flag_sheet_drug_section(drug_display_name: str, entries: list[dict[str, Any]]) -> str:
+    """One drug's own 2-column Positive/Negative table -- every pair this
+    drug is part of (from the screening panel's surviving, evidence-backed
+    pairs only, each already resolved to exactly one of the two outcomes --
+    see ddi_flag_evidence._pair_finding) is sorted into exactly one column
+    by its own ``impact``; a pair never appears in more than one column for
+    the same drug."""
+    by_impact: dict[str, list[str]] = {impact: [] for impact in _IMPACT_ORDER}
+    for entry in sorted(entries, key=lambda e: str(e.get("_partner") or "")):
+        impact = entry.get("impact")
+        if impact in by_impact:
+            by_impact[impact].append(_ddi_flag_sheet_entry_block(entry))
+
+    no_pairs_note = '<p class="small muted">No pairs currently fall in this category.</p>'
+    header_cells = "".join(f"<th>{_t(_IMPACT_COLUMN_LABEL[impact])}</th>" for impact in _IMPACT_ORDER)
+    body_cells = "".join(f"<td>{''.join(by_impact[impact]) or no_pairs_note}</td>" for impact in _IMPACT_ORDER)
+
+    return f"""
+  <div class="h2" style="margin-top:10px">{_t(drug_display_name.upper())}</div>
+  <table class="datatable flagpair-table three-col"><thead><tr>{header_cells}</tr></thead>
+    <tbody><tr>{body_cells}</tr></tbody>
+  </table>
+"""
+
+
+def _ddi_flag_sheet_known_limitations_block(flag_evidence: dict[str, Any] | None) -> str:
+    """Renders ddi_flag_evidence.py's own recorded ``limitations`` list
+    verbatim -- real text already generated by that module, never invented
+    here -- so the Flag Sheet's own "(see Known Limitations)" reference
+    (in its intro paragraph, just above the per-drug tables) points at
+    something concrete. Same pattern as _known_limitations_block, which
+    does the equivalent job for external_evidence_summary's report -- kept
+    as a separate block because these are two different reports' own
+    limitations, never merged into one list that would blur which module
+    each caveat actually describes."""
+    items = _get(flag_evidence or {}, "limitations", default=[])
+    if not items:
+        return ""
+    return (
+        '<div class="callout gap" style="margin-top:8px"><b>Known Limitations (Drug Interaction Flag Sheet):</b>'
+        f'<ul class="list-compact">{"".join(f"<li>{_t(i)}</li>" for i in items)}</ul></div>'
+    )
+
+
+def _ddi_flag_sheet_card(flag_evidence: dict[str, Any] | None) -> str:
+    """Renders the Drug Interaction Flag Sheet's screening panel (see
+    patient_prime_agent.ddi_flag_evidence and, upstream,
+    path_d.ddi.candidate_drugs) as one section per screened drug, each with
+    its own Positive Impact / Negative Impact 2-column table -- matching
+    the reference "Extracted Drug List" layout exactly. A drug with zero
+    surviving (evidence-backed and resolved) pairs gets no section at all
+    -- nothing to show, and an all-empty 2-column table would add noise,
+    not information.
+
+    Every pair shown here already passed through ddi_flag_evidence.py's own
+    multi-source check (PGx/Flockhart/pharmacodynamic-rule/DailyMed/PubMed/
+    ClinicalTrials.gov/Tavily) and its own drop-if-unresolved rule -- a pair
+    with no finding, or whose evidence never resolved clearly to Positive
+    or Negative, never reaches this function at all, so "not listed under
+    this drug" always means "no resolved evidence was found for this
+    pair," never "confirmed compatible." This function's only job is to
+    lay out whatever ``flag_evidence`` already decided, once per drug, from
+    that drug's own point of view (see _ddi_flag_sheet_pairs_by_drug)."""
+    pairs = _get(flag_evidence or {}, "pairs", default=[])
+    if not pairs:
+        return """
+  <div class="h2" style="margin-top:10px">Drug Interaction Flag Sheet &mdash; Extracted Drug List</div>
+  <div class="callout gap">No live multi-source evidence is available for the drug-interaction screening panel yet.</div>
+"""
+
+    by_drug = _ddi_flag_sheet_pairs_by_drug(flag_evidence)
+    drug_display_by_normalized: dict[str, str] = {}
+    for pair in pairs:
+        for name in (pair.get("drug_a"), pair.get("drug_b")):
+            if name:
+                drug_display_by_normalized.setdefault(str(name).strip().lower(), str(name).strip())
+
+    sections = "".join(
+        _ddi_flag_sheet_drug_section(drug_display_by_normalized[normalized], by_drug.get(normalized, []))
+        for normalized in sorted(drug_display_by_normalized)
+    )
+
+    checked = _get(flag_evidence or {}, "pairs_checked", default=0)
+    with_evidence = _get(flag_evidence or {}, "pairs_with_evidence", default=0)
+    dropped = _get(flag_evidence or {}, "pairs_dropped_unresolved", default=0)
+
+    return f"""
+  <div class="h2" style="margin-top:10px">Drug Interaction Flag Sheet &mdash; Extracted Drug List</div>
+  <p class="small muted" style="margin-bottom:2px"><b>Positive Impact</b> = curated/literature evidence explicitly describes a favorable or well-tolerated combination; <b>Negative Impact</b> = a real curated pharmacokinetic mechanism, a pharmacodynamic-risk rule, or literature language explicitly describing a risk. A pair with no evidence, or whose evidence never clearly resolved either way, is not listed here at all -- it is never guessed into either column (see Known Limitations).</p>
+  <p class="small muted" style="margin-bottom:2px">Screened {_t(len(drug_display_by_normalized))} drug(s) across {_t(checked)} unique pairs; {_t(with_evidence)} pair(s) resolved clearly to Positive or Negative and are shown below. {_t(dropped)} pair(s) had no evidence, or evidence that did not clearly resolve either way, and are not listed here -- never shown as a negative/no-concern finding (see Known Limitations).</p>
+  {sections}
+  {_ddi_flag_sheet_known_limitations_block(flag_evidence)}
+"""
+
+
 # ----------------------------------------------------------------------
-# 07. Drug Interactions -- this dataset has no DDI screening data; this
+# 06. Drug Interactions -- this dataset has no DDI screening data; this
 # section states that gap explicitly rather than inventing interaction
 # findings (see module docstring).
 # ----------------------------------------------------------------------
 def _sec_drug_interactions(sections: dict[str, Any]) -> str:
     ddi = sections.get(SEC_DDI) or {}
-    external = sections.get(SEC_EXTERNAL_EVIDENCE) or {}
     if not ddi:
         return _sec_drug_interactions_gap(sections)
 
+    flag_evidence = sections.get(SEC_DDI_FLAG_EVIDENCE) or {}
     coverage = _get(ddi, "source_coverage", default={})
     reconciliation = _get(ddi, "medication_reconciliation", default={})
-    pair_assessments = _get(ddi, "current_pair_assessments", default=[])
     therapy_assessments = _get(ddi, "therapy_assessments", default=[])
     limitations = _get(ddi, "limitations", default=[])
 
@@ -1636,35 +2096,16 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
         else '<div class="callout" style="margin-top:6px">No conflicting doses found for the same drug across the reconciled source data.</div>'
     )
 
-    # Only clinically relevant/required pairs -- an actual interaction, or one that is
-    # genuinely unresolved -- get a dedicated detail card here. A resolved "no interaction"
-    # pair is not required reading as its own card: the summary overview above already
-    # shows it (Flag/Key Finding/Patient Impact/Evidence Source), so repeating a bare
-    # "no interaction identified" callout here would just be the same conclusion twice.
-    relevant_pairs = [p for p in pair_assessments if p.get("status") != "no_interaction_detected"]
-    pair_rows = "".join(
-        f"<tr><td>{_t(p.get('drug_a'))} + {_t(p.get('drug_b'))}</td>"
-        f'<td><span class="badge {_status_class(p.get("status"))}">{_humanize(p.get("status"))}</span></td>'
-        f'<td><span class="badge {_status_class(p.get("severity"))}">{_t(p.get("severity"))}</span></td>'
-        f"<td>{_t(p.get('patient_specific_interpretation'))}</td></tr>"
-        for p in relevant_pairs
-    )
-    pairs_card = (
-        f"""
-  <div class="card" style="margin-top:8px">
-    <div class="h2">Clinically Relevant Interactions</div>
-    <table class="datatable"><thead><tr><th>Drug Pair</th><th>Status</th><th>Severity</th>
-      <th>Clinical Significance</th></tr></thead><tbody>{pair_rows}</tbody></table>
-  </div>"""
-        if relevant_pairs
-        else ""
-    )
-
+    # Per-pair detail (status, finding, evidence source) for every known drug pair --
+    # both the current-regimen pair and the wider curated panel -- now lives entirely in
+    # _ddi_flag_sheet_card below -- one Status/Finding/Evidence-Source table per pair, so
+    # this fact is never split across a second "Clinically Relevant Interactions" table
+    # (removed) that only listed a subset of it.
     therapy_cards = "".join(_therapy_assessment_card(t) for t in therapy_assessments)
 
     return f"""
 <section class="section">
-  {_section_head(7, "Drug Interactions", sub)}
+  {_section_head(6, "Drug Interactions", sub)}
   {_ddi_summary_overview_card(ddi)}
   <div class="card">
     <div class="h2">Medication Reconciliation</div>
@@ -1672,12 +2113,11 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
       <tbody>{med_rows}</tbody></table>
     {conflict_html}
   </div>
+  {_ddi_flag_sheet_card(flag_evidence)}
   {_ddi_coverage_action_table(ddi)}
   {_ddi_clinical_inference_callout(ddi)}
-  <div class="callout" style="margin-top:8px"><b>Therapy-Level Evidence Assessment:</b> for each current medication, the supporting, counter, and unresolved evidence identified across pharmacokinetic, pharmacodynamic, pharmacogenomic, clinical, EEG, and laboratory sources -- not a pass/fail interaction check. Absence of data does not establish absence of risk; "unresolved" is never presented as "no interaction." Recommended monitoring appears per therapy below (see also the section-level checklist above).</div>
+  {_ddi_candidate_pair_blocks(ddi)}
   {therapy_cards}
-  {pairs_card}
-  {_ddi_live_evidence_card(external)}
   <div class="callout gap" style="margin-top:6px"><b>Limitations of this screen:</b> {
     ' '.join(_t(item) for item in limitations)
   }</div>
@@ -1694,11 +2134,11 @@ def _sec_drug_interactions_gap(sections: dict[str, Any]) -> str:
 
     return f"""
 <section class="section">
-  {_section_head(7, "Drug Interactions")}
+  {_section_head(6, "Drug Interactions")}
   <div class="callout gap">
     <b>No drug-drug interaction (DDI) screen is available for this patient.</b>
     The current regimen ({_t(drug_list)}) has not been checked against a drug-interaction database in the
-    available data. This is a different check from Pharmacogenomics (Section 06), which looks at how the
+    available data. This is a different check from Pharmacogenomics (Section 07), which looks at how the
     patient's own genes affect each drug, not how the drugs affect each other. A formal DDI screen of the
     reconciled medication list is recommended before any dose or drug change; see the Clinical Action Plan.
   </div>
@@ -1984,7 +2424,7 @@ def _action_plan_reconciliation_item(ddi: dict[str, Any]) -> str:
     if not ddi:
         return (
             "<li>Reconcile the current regimen and screen it against a drug-interaction "
-            "database (no DDI screen is present in the source data; see Section 07).</li>"
+            "database (no DDI screen is present in the source data; see Section 06).</li>"
         )
     conflicts = _get(ddi, "medication_reconciliation", "conflicts", default=[])
     items = [
@@ -2060,8 +2500,8 @@ def _build_html(digital_twin: dict[str, Any], sections: dict[str, Any], manifest
         _sec_seizure_trends(sections),
         _sec_aura_triggers(sections),
         _sec_medications(sections),
-        _sec_pharmacogenomics(sections),
         _sec_drug_interactions(sections),
+        _sec_pharmacogenomics(sections),
         _sec_eeg(sections),
         _sec_imaging(sections),
         _sec_ecg(sections),

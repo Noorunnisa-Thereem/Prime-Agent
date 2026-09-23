@@ -15,6 +15,7 @@ pipeline on the same patient data does not re-issue an identical live call
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -120,6 +121,72 @@ def search_pubmed(
         refresh=refresh,
         remember_statuses=_REMEMBER_STATUSES,
     )
+
+
+def search_pubmed_drug_pair(
+    drug_a: str,
+    drug_b: str,
+    *,
+    retmax: int = 5,
+    cache_dir: Path = DEFAULT_CACHE_DIR,
+    refresh: bool = False,
+    memory_path: Path = memory_store.DEFAULT_STORE_PATH,
+) -> dict[str, Any]:
+    """A drug-drug pair query with a real relevance bar, for callers (e.g.
+    the Drug Interaction Flag Sheet) that need a citation genuinely about
+    *both* named drugs together -- not just a paper where both terms happen
+    to appear somewhere in PubMed's "All Fields" index (author affiliation,
+    MeSH heading, substance registry entry, etc.).
+
+    Every record ``search_pubmed`` returns is required to actually name
+    *both* drugs in its title (a real, observed failure mode: a
+    "Levetiracetam AND Atomoxetine" query returned a Huntington Disease
+    chapter, and a "Levetiracetam AND Escitalopram" query returned an
+    unrelated deer-mice behavioral study -- both matched somewhere in
+    PubMed's index, neither one's title has anything to do with the queried
+    pair). A record whose title doesn't name both drugs is dropped entirely,
+    not just reordered (contrast ``_reorder_by_drug_relevance``, used by the
+    gene-drug path, which never drops a candidate) -- this never fabricates
+    a replacement result, it only narrows what's reported down to what's
+    verifiably on-topic; a pair with no on-topic title comes back exactly
+    like a real "no_results" response.
+
+    A ``[tiab]``-scoped query (title/abstract search, tightening the
+    candidate pool itself rather than only filtering it afterward) was
+    tried and rejected: ``validate_query_term`` -- the shared input
+    guardrail every ``external_lookup`` query term passes through, see
+    ``guardrails.py`` -- deliberately allows only letters, digits, spaces,
+    and hyphens, precisely so free text or an injection attempt can never
+    reach a live API; ``[`` and ``]`` fail that allowlist by design. Loosening
+    the shared guardrail to admit PubMed field-tag bracket syntax was judged
+    not worth it for a precision gain the title filter below already fully
+    delivers: a false positive here is false exactly when its title doesn't
+    name both drugs, regardless of which index field the underlying esearch
+    match came from, so the post-fetch filter alone already excludes every
+    observed failure case.
+
+    This never invents evidence: everything returned is a real esearch/
+    esummary hit; this only decides whether it is relevant enough to
+    display for a specific named pair.
+    """
+    envelope = search_pubmed(f"{drug_a} AND {drug_b}", retmax=retmax, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+    if envelope.get("status") != "ok":
+        return envelope
+
+    relevant = [r for r in envelope["records"] if _title_names_both_drugs(r.get("title"), drug_a, drug_b)]
+    if relevant:
+        return {**envelope, "records": relevant, "count": len(relevant)}
+    return {**envelope, "status": "no_results", "records": [], "count": 0}
+
+
+def _title_names_both_drugs(title: Any, drug_a: str, drug_b: str) -> bool:
+    """True only if ``title`` names both drugs as whole words -- the same
+    word-boundary approach dailymed_lookup._title_names_drug already uses to
+    reject a loose substring match."""
+    if not isinstance(title, str) or not title.strip():
+        return False
+    lowered = title.lower()
+    return all(re.search(r"\b" + re.escape(name.strip().lower()) + r"\b", lowered) for name in (drug_a, drug_b) if name and name.strip())
 
 
 def _reorder_by_drug_relevance(

@@ -218,7 +218,7 @@ def build_report(
             "Curated pharmacokinetic (CYP) coverage is limited to a small bundled reference table; a drug "
             "not listed there is reported as unresolved, not as free of interactions.",
             "Therapy assessments also draw on the live external-evidence layer (see Known Limitations under "
-            "External Database Evidence, below, for its source-by-source scope and caveats).",
+            "Pharmacogenomics, above, for its source-by-source scope and caveats).",
         ],
     }
     return report

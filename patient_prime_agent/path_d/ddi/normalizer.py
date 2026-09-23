@@ -52,7 +52,12 @@ class Medication:
         }
 
 
-def _normalize_name(source_name: str) -> str:
+def normalize_name(source_name: str) -> str:
+    """Strip a trailing "(Brand)" suffix and lowercase -- the same name
+    normalization ``normalize_regimen`` applies to every regimen entry.
+    Public (not ``_``-prefixed) because ``candidate_drugs.py`` also needs it
+    to build synthetic screening-candidate Medication records that dedupe
+    correctly against the real regimen."""
     without_brand = _BRAND_RE.sub("", source_name).strip()
     return without_brand.lower()
 
@@ -92,7 +97,7 @@ def normalize_regimen(
         source_name = str(entry.get("drug") or "").strip()
         if not source_name:
             continue
-        normalized = _normalize_name(source_name)
+        normalized = normalize_name(source_name)
         by_normalized_name.setdefault(normalized, []).append(entry)
 
     conflicts: list[dict[str, Any]] = []

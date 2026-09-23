@@ -117,6 +117,32 @@ def test_clinvar_cell_labels_the_total_as_gene_wide_not_variant_specific():
     assert "5406" in html_fragment
 
 
+def test_pubmed_cell_does_not_repeat_the_pmid_between_its_link_and_provenance_line():
+    # Bug: the main line linked "PMID 12345678" as its own text, and the provenance
+    # line right below it printed "PMID 12345678" again -- the same fact stated twice.
+    # (The PMID legitimately appears twice even after the fix -- once in the href
+    # URL, once as the visible link text -- so this checks the provenance <div>
+    # specifically, not a raw substring count.)
+    html_fragment = report_html._pubmed_cell(_pubmed_envelope_with("Some title"))
+    link_html, provenance_html = html_fragment.split('<div class="small muted"', 1)
+
+    assert "12345678" in link_html
+    assert "12345678" not in provenance_html, "the PMID must not be repeated in the provenance line"
+    assert "Retrieved" in provenance_html, "the retrieval date must still be shown"
+
+
+def test_clinvar_cell_does_not_repeat_the_accession_between_its_link_and_provenance_line():
+    clinvar = {
+        "status": "ok",
+        "total_matches_in_clinvar": "5406",
+        "records": [{"accession": "VCV004887952", "uid": "4887952", "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/4887952/", "clinical_significance": "Uncertain significance"}],
+    }
+    html_fragment = report_html._clinvar_cell(clinvar)
+
+    assert html_fragment.count("VCV004887952") == 1, "the accession must be shown once, not once as link text and again in the provenance line"
+    assert "Retrieved" in html_fragment
+
+
 def _finding(drug: str, genetic_basis: str, citation: str) -> dict:
     return {"drug": drug, "genetic_basis": genetic_basis, "predicted_effect": "reduced efficacy", "citation": citation}
 
@@ -150,6 +176,99 @@ def test_pgx_card_omits_the_discrepancy_note_when_pmids_match():
     html_fragment = report_html._pgx_live_evidence_card(external, worst_findings)
 
     assert "independent live PubMed search, may differ" not in html_fragment
+
+
+# ---------------------------------------------------------------------------
+# Section 06 redesign: Table 1 "Patient-Specific PGx Findings" (Therapy /
+# Gene-Genotype / Patient-Specific Interpretation / Clinical Relevance) and
+# Table 2 "External Evidence Verification" (Gene-Drug Pair / CPIC / ClinVar /
+# PubMed / Overall Evidence Status) -- plain uniform styling, no colored
+# badges/borders on either table, detailed provenance moved below Table 2.
+# ---------------------------------------------------------------------------
+
+
+def test_table1_has_the_four_requested_columns_and_no_colored_badges():
+    sections = {
+        report_html.SEC_GENETICS: {
+            "patient": {"variants_analyzed": 76, "drugs_covered": 47, "report_date": "2026-09-10"},
+            "findings_by_therapeutic_class": {
+                "mood_stabilizers_antiepileptics": [
+                    {"drug": "Lamotrigine", "genetic_basis": "CYP3A4 (TT)", "predicted_effect": "reduced efficacy", "significant": True, "citation": "PMID:28343093"},
+                ]
+            },
+        }
+    }
+    html_fragment = report_html._sec_pharmacogenomics(sections)
+
+    assert "Patient-Specific PGx Findings" in html_fragment
+    for header in ("<th>Therapy</th>", "<th>Gene/Genotype</th>", "<th>Patient-Specific Interpretation</th>", "<th>Clinical Relevance</th>"):
+        assert header in html_fragment
+
+    table1_html = html_fragment.split("Patient-Specific PGx Findings", 1)[1].split("</table>", 1)[0]
+    assert "Lamotrigine" in table1_html and "CYP3A4 (TT)" in table1_html
+    assert "reduced-efficacy response" in table1_html  # plain-language sentence, not the raw enum
+    assert "reduced efficacy</span>" not in table1_html, "the raw enum must not be shown as a colored badge"
+    assert 'class="badge' not in table1_html, "Table 1 must use plain text, no colored badges"
+    assert "PMID:28343093" in table1_html  # citation retained, just moved into the Clinical Relevance cell
+
+
+def test_table1_interpretation_and_relevance_columns_state_different_facts():
+    # Regression guard: these two columns must not just repeat each other -- one says
+    # what the genotype means, the other says how much weight/significance it carries.
+    entry = {"drug": "Lamotrigine", "genetic_basis": "CYP3A4 (TT)", "predicted_effect": "toxicity", "significant": False, "citation": "PMID:1"}
+
+    interpretation = report_html._pgx_interpretation_sentence(entry)
+    relevance = report_html._pgx_clinical_relevance(entry)
+
+    assert interpretation != relevance
+    assert "toxicity" in interpretation.lower()
+    assert "not flagged as clinically significant" in relevance
+
+
+def test_table2_is_now_separate_flagged_blocks_per_gene_drug_pair_not_a_shared_table():
+    # Per request: External Evidence Verification is no longer one shared table across every
+    # gene-drug pair -- each pair gets its own flagged block (VERIFIED/PARTIALLY VERIFIED/
+    # UNVERIFIED label + 2 short bullets), the same visual pattern as the curated
+    # Green-Flags/Red-Flags sheet.
+    external = {"by_gene_drug_pair": [_pair("CYP3A4", "lamotrigine", "21635243", "Effects of lamotrigine and phenytoin...")]}
+    worst_findings = [_finding("lamotrigine", "CYP3A4 (TT)", "PMID:28343093")]
+
+    html_fragment = report_html._pgx_live_evidence_card(external, worst_findings)
+
+    assert "External Evidence Verification" in html_fragment
+    assert "<table" not in html_fragment, "Table 2 must no longer render as a shared <table>"
+    blocks_html, rest = html_fragment.split('<div class="callout" style="margin-top:8px"><b>Provenance</b>', 1)
+
+    assert "CYP3A4 &rarr; Lamotrigine" in blocks_html
+    # _pair()'s fixture: CPIC and ClinVar are no_results, PubMed is ok -- 1 of 3 resolves.
+    assert 'class="sev-mod">PARTIALLY VERIFIED' in blocks_html, "the flag must reflect the real per-source resolution count, plain text color only"
+    assert "CPIC: Unresolved. ClinVar: Unresolved." in blocks_html
+    assert "PubMed: PMID 21635243 found. Overall: Partially resolved (1 of 3 sources)." in blocks_html
+    assert 'class="badge' not in blocks_html, "the flag must be plain colored text, no colored badge box"
+
+    # Detailed provenance (retrieval date) must be below the blocks, not inline in one.
+    assert "Retrieved" not in blocks_html
+    assert "Retrieved" in rest
+    assert "PMID 21635243" in rest
+
+
+def test_table2_overall_status_reflects_full_resolution_when_all_three_sources_resolve():
+    external = {
+        "by_gene_drug_pair": [
+            {
+                "gene_symbol": "CYP3A4",
+                "drug_name": "lamotrigine",
+                "cpic": {"status": "ok", "records": [{"drugid": "RxNorm:1", "cpic_level": "C", "guideline": None}], "retrieved_at": "2026-09-11T00:00:00Z"},
+                "clinvar": {"status": "ok", "total_matches_in_clinvar": "10", "records": [{"accession": "VCV1", "clinical_significance": "Uncertain significance"}], "retrieved_at": "2026-09-11T00:00:00Z"},
+                "pubmed_combined_query": {"status": "ok", "records": [{"pmid": "1", "url": "https://pubmed.ncbi.nlm.nih.gov/1/", "title": "A paper"}], "retrieved_at": "2026-09-11T00:00:00Z"},
+            }
+        ]
+    }
+    worst_findings = [_finding("lamotrigine", "CYP3A4 (TT)", "PMID:1")]
+
+    html_fragment = report_html._pgx_live_evidence_card(external, worst_findings)
+
+    assert "Resolved across all 3 sources" in html_fragment
 
 
 def test_provenance_line_is_compact_no_resource_name_no_cache_badge_no_placeholder_version():
@@ -190,7 +309,7 @@ def test_pgx_summary_chips_degrade_to_nothing_without_inventing_a_profile():
     assert report_html._pgx_summary_chips({"metabolizer_profile": []}) == ""
 
 
-def test_sec_pharmacogenomics_explains_interpretive_method_and_points_to_section_07():
+def test_sec_pharmacogenomics_explains_interpretive_method_and_points_to_section_06():
     sections = {
         report_html.SEC_GENETICS: {
             "patient": {"variants_analyzed": 76, "drugs_covered": 47, "report_date": "2026-09-10"},
@@ -203,5 +322,5 @@ def test_sec_pharmacogenomics_explains_interpretive_method_and_points_to_section
     assert "Pharmacogenomic Panel Summary" in html_fragment
     assert "Interpretive method" in html_fragment
     assert "never used as an isolated prescribing instruction" in html_fragment
-    assert "Section 07" in html_fragment
+    assert "Section 06" in html_fragment
     assert "CYP3A4" in html_fragment
