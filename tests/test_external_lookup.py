@@ -251,6 +251,208 @@ def test_search_pubmed_drug_pair_reports_no_results_when_every_candidate_is_drop
     assert pubmed_lookup._title_names_both_drugs(None, "Carbamazepine", "Atorvastatin") is False
 
 
+# ---------------------------------------------------------------------------
+# pubmed_lookup: structured abstracts (fetch_abstract_sections) -- a real,
+# observed bug fix: a title states a paper's aim, not its result.
+# ---------------------------------------------------------------------------
+
+_SAMPLE_STRUCTURED_ABSTRACT_XML = """<?xml version="1.0"?>
+<PubmedArticleSet>
+<PubmedArticle><MedlineCitation><Article>
+<Abstract>
+<AbstractText Label="PURPOSE" NlmCategory="OBJECTIVE">This study evaluated the pharmacokinetic interaction between two drugs.</AbstractText>
+<AbstractText Label="METHODS" NlmCategory="METHODS">Healthy volunteers received both drugs in an open-label study.</AbstractText>
+<AbstractText Label="RESULTS" NlmCategory="RESULTS">Pharmacokinetics of Drug A were not significantly affected by coadministration with Drug B.</AbstractText>
+<AbstractText Label="CONCLUSIONS" NlmCategory="CONCLUSIONS">No dose adjustment of Drug A is required when coadministered with Drug B.</AbstractText>
+</Abstract>
+</Article></MedlineCitation></PubmedArticle>
+</PubmedArticleSet>"""
+
+_SAMPLE_UNSTRUCTURED_ABSTRACT_XML = """<?xml version="1.0"?>
+<PubmedArticleSet>
+<PubmedArticle><MedlineCitation><Article>
+<Abstract>
+<AbstractText>A single unlabeled abstract block describing the real study in full.</AbstractText>
+</Abstract>
+</Article></MedlineCitation></PubmedArticle>
+</PubmedArticleSet>"""
+
+
+def test_fetch_abstract_sections_splits_a_real_structured_abstract_by_its_own_labels(monkeypatch, tmp_path):
+    fake = _fake_fetch_text({"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi": _SAMPLE_STRUCTURED_ABSTRACT_XML})
+    monkeypatch.setattr(pubmed_lookup, "fetch_text", fake)
+
+    envelope = pubmed_lookup.fetch_abstract_sections("21635243", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] == "ok"
+    sections = envelope["records"][0]["sections"]
+    # NlmCategory ("OBJECTIVE") is preferred over the human-readable Label ("PURPOSE") when
+    # both are present on the same element -- matches the real live PubMed XML shape.
+    assert set(sections) == {"OBJECTIVE", "METHODS", "RESULTS", "CONCLUSIONS"}
+    assert "not significantly affected" in sections["RESULTS"]
+
+
+def test_pick_results_or_conclusion_text_prefers_results_and_conclusions_never_the_purpose():
+    sections = {
+        "PURPOSE": "This study evaluated the pharmacokinetic interaction between two drugs.",
+        "RESULTS": "Pharmacokinetics of Drug A were not significantly affected by coadministration with Drug B.",
+        "CONCLUSIONS": "No dose adjustment of Drug A is required when coadministered with Drug B.",
+    }
+    text = pubmed_lookup.pick_results_or_conclusion_text(sections)
+    assert "not significantly affected" in text
+    assert "No dose adjustment" in text
+    assert "evaluated the pharmacokinetic interaction" not in text  # the PURPOSE/aim sentence, never used
+
+
+def test_pick_results_or_conclusion_text_falls_back_to_the_single_unlabeled_block():
+    sections = {"UNLABELED": "A single unlabeled abstract block describing the real study in full."}
+    assert pubmed_lookup.pick_results_or_conclusion_text(sections) == sections["UNLABELED"]
+
+
+def test_pick_results_or_conclusion_text_returns_none_when_nothing_usable_is_present():
+    assert pubmed_lookup.pick_results_or_conclusion_text({}) is None
+    assert pubmed_lookup.pick_results_or_conclusion_text({"PURPOSE": "Aim only, no results or conclusions."}) is None
+
+
+def test_pick_results_or_conclusion_text_trims_long_sections_to_roughly_two_sentences():
+    # Real, observed problem: an abstract's RESULTS/CONCLUSIONS section can be a full
+    # paragraph -- a Finding must stay to roughly 1-2 sentences, not reproduce the whole
+    # thing verbatim.
+    long_results = (
+        "Sentence one about the study design. Sentence two with the actual measured "
+        "outcome. Sentence three with additional detail. Sentence four with even more."
+    )
+    sections = {"RESULTS": long_results}
+    text = pubmed_lookup.pick_results_or_conclusion_text(sections)
+    assert text == "Sentence one about the study design. Sentence two with the actual measured outcome."
+    assert "Sentence three" not in text
+    assert "Sentence four" not in text
+
+
+def test_pick_results_or_conclusion_text_unlabeled_fallback_uses_the_last_sentences_not_the_first():
+    # A clinical abstract conventionally states background/aims first and its real
+    # conclusion last -- the UNLABELED (unstructured) fallback must grab the END of the
+    # abstract, not the beginning, or it would systematically return the aim instead of
+    # the outcome (exactly the bug this whole module exists to fix).
+    unlabeled = (
+        "Background sentence stating the study's aim. Methods sentence describing the design. "
+        "The combination was associated with a reduced response rate compared to monotherapy."
+    )
+    text = pubmed_lookup.pick_results_or_conclusion_text({"UNLABELED": unlabeled})
+    assert "reduced response rate" in text
+    assert "Background sentence stating the study's aim" not in text
+
+
+# ---------------------------------------------------------------------------
+# describes_genuine_combination -- Drug A vs. Drug B is not evidence for Drug A + Drug B
+# ---------------------------------------------------------------------------
+
+
+def test_describes_genuine_combination_accepts_real_combination_language():
+    sections = {"METHODS": "Participants received aripiprazole added to their existing duloxetine regimen as augmentation."}
+    assert pubmed_lookup.describes_genuine_combination(sections) is True
+
+
+def test_describes_genuine_combination_rejects_a_pure_comparator_design():
+    # Real failure mode: a head-to-head trial names both drugs as separate, alternative
+    # treatments -- never combined -- which must not become a Finding for the pair.
+    sections = {
+        "TITLE": "A randomized trial comparing aripiprazole versus duloxetine monotherapy for treatment-resistant depression",
+        "METHODS": "Participants were randomized to either aripiprazole monotherapy or duloxetine monotherapy; no participant received both drugs.",
+    }
+    assert pubmed_lookup.describes_genuine_combination(sections) is False
+
+
+def test_describes_genuine_combination_accepts_when_neither_signal_is_present():
+    # Silence is not itself a comparator red flag -- only an explicit, named comparator
+    # design is rejected.
+    sections = {"RESULTS": "Plasma concentrations of drug A increased by 20%."}
+    assert pubmed_lookup.describes_genuine_combination(sections) is True
+
+
+def test_describes_genuine_combination_prefers_combination_signal_when_both_present():
+    # A trial that compares combination therapy against monotherapy is still genuine
+    # combination evidence -- combination language anywhere accepts it.
+    sections = {"METHODS": "Combination therapy with both drugs was compared to monotherapy with either drug alone."}
+    assert pubmed_lookup.describes_genuine_combination(sections) is True
+
+
+def test_find_combination_excerpt_skips_leading_boilerplate_to_the_real_sentence():
+    # Real, observed bug this fixes: an arbitrary fetched web page's raw extracted text
+    # frequently has navigation/menu text concatenated right after the title, before the
+    # real article body -- trim_to_sentences's "first N sentences" would return that
+    # boilerplate. This must locate and return the actual combination-language sentence
+    # instead, regardless of where in the text it falls.
+    text = (
+        "Oxcarbazepine/Aripiprazole Interaction and Bipolar Relapse. Skip to content JCP PCC "
+        "Insights About Authors and Reviewers Sign In Subscribe Search Advanced Search Menu. "
+        "The patient was treated with oxcarbazepine coadministered with aripiprazole for six "
+        "months. Relapse occurred after oxcarbazepine was discontinued."
+    )
+    excerpt = pubmed_lookup.find_combination_excerpt(text, max_sentences=2)
+    assert excerpt is not None
+    assert "coadministered" in excerpt
+    assert "Skip to content" not in excerpt
+    assert "Oxcarbazepine/Aripiprazole Interaction and Bipolar Relapse" not in excerpt
+
+
+def test_find_combination_excerpt_returns_none_when_no_sentence_has_combination_language():
+    # Deliberately stricter than describes_genuine_combination: silence (neither
+    # combination nor comparator language) does NOT default-accept here -- several
+    # thousand characters of unstructured general web content can easily contain neither
+    # phrase while still being irrelevant to this specific pair.
+    text = "Drug A is metabolized by CYP3A4. Drug B is a substrate of CYP2D6. Both are commonly prescribed."
+    assert pubmed_lookup.find_combination_excerpt(text) is None
+
+
+def test_find_combination_excerpt_returns_none_for_empty_text():
+    assert pubmed_lookup.find_combination_excerpt("") is None
+    assert pubmed_lookup.find_combination_excerpt(None) is None
+
+
+def test_find_drug_mention_excerpt_never_starts_mid_word():
+    # Real, observed bug: a plain character-count window cut "CYP2B6" down to "YP2B6",
+    # silently dropping its leading letter. Force the same shape here with a long run-on
+    # token immediately before the match, placed so the old fixed window would land inside
+    # it -- generic Drug A/Drug B fixtures, no real drug name.
+    long_token = "word" * 75  # 300 chars, no internal spaces
+    section_text = f"{long_token} Drug A may require dose adjustment when combined with Drug B therapy."
+    excerpt = dailymed_lookup.find_drug_mention_excerpt(section_text, "Drug A")
+    assert excerpt is not None
+    first_word = excerpt.split()[0]
+    assert first_word in section_text.split(), f"excerpt began mid-word: {first_word!r}"
+
+
+def test_find_drug_mention_excerpt_never_ends_mid_word():
+    long_token = "tail" * 75  # 300 chars, no internal spaces
+    section_text = f"Patients receiving Drug A with Drug B require monitoring for altered clearance {long_token}"
+    excerpt = dailymed_lookup.find_drug_mention_excerpt(section_text, "Drug B")
+    assert excerpt is not None
+    last_word = excerpt.split()[-1]
+    assert last_word in section_text.split(), f"excerpt ended mid-word: {last_word!r}"
+
+
+def test_find_drug_mention_excerpt_never_adds_a_truncation_marker():
+    # The old behavior unconditionally wrapped a cut excerpt in literal "..." -- a real
+    # observed bug: the marker doesn't make an incomplete cut any more complete, and makes
+    # it indistinguishable from a real ellipsis the label might contain.
+    padding_before = "Overlapping enzyme pathway reference text. " * 10
+    padding_after = " Additional unrelated monitoring guidance follows this entry." * 10
+    section_text = f"{padding_before}Drug A interacts with Drug B via a shared metabolic pathway.{padding_after}"
+    excerpt = dailymed_lookup.find_drug_mention_excerpt(section_text, "Drug B")
+    assert excerpt is not None
+    assert "..." not in excerpt
+    assert "…" not in excerpt
+
+
+def test_fetch_abstract_sections_reports_no_results_when_abstract_is_missing(monkeypatch, tmp_path):
+    fake = _fake_fetch_text({})  # no matching prefix -> 404, per _fake_fetch_text's own default
+    monkeypatch.setattr(pubmed_lookup, "fetch_text", fake)
+
+    envelope = pubmed_lookup.fetch_abstract_sections("99999999", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] != "ok"
+    assert envelope["records"] == []
+
+
 def test_clinvar_lookup_parses_germline_classification(monkeypatch, tmp_path):
     esearch_body = {"esearchresult": {"idlist": ["4887952"], "count": "5406"}}
     esummary_body = {
@@ -647,6 +849,128 @@ def test_trials_lookup_drug_pair_reports_no_results_when_no_study_lists_both(mon
     assert envelope["records"] == []
 
 
+def test_trials_lookup_intervention_match_is_word_boundary_not_substring(monkeypatch, tmp_path):
+    # Real, observed bug (confirmed live against NCT01111552): a study whose only real
+    # interventions are "Escitalopram" and "Aripiprazole" incorrectly matched a "Citalopram"
+    # query, because "citalopram" is a plain substring of "escitalopram" -- they are different
+    # drugs. Word-boundary matching must reject this.
+    body = {
+        "studies": [
+            {
+                "protocolSection": {
+                    "identificationModule": {"nctId": "NCT01111552", "briefTitle": "Aripiprazole/Escitalopram trial"},
+                    "statusModule": {"overallStatus": "COMPLETED"},
+                    "designModule": {"phases": ["PHASE3"]},
+                    "conditionsModule": {"conditions": ["Major Depressive Disorder"]},
+                    "armsInterventionsModule": {
+                        "interventions": [
+                            {"type": "DRUG", "name": "Escitalopram"},
+                            {"type": "DRUG", "name": "Aripiprazole"},
+                            {"type": "DRUG", "name": "Placebo"},
+                        ]
+                    },
+                }
+            }
+        ],
+        "totalCount": 1,
+    }
+    fake = _fake_fetch_json({"https://clinicaltrials.gov/api/v2/studies": body})
+    monkeypatch.setattr(trials_lookup, "fetch_json", fake)
+
+    envelope = trials_lookup.search_trials_drug_pair("Aripiprazole", "Citalopram", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] == "no_results", "a study with no real Citalopram intervention must not match"
+    assert envelope["records"] == []
+
+    # But the genuinely correct pair still matches.
+    envelope_correct = trials_lookup.search_trials_drug_pair("Aripiprazole", "Escitalopram", memory_path=tmp_path / "memory-2.json")
+    assert envelope_correct["status"] == "ok"
+    assert envelope_correct["records"][0]["nct_id"] == "NCT01111552"
+
+
+def test_fetch_trial_outcome_summary_reports_results_not_posted_honestly(monkeypatch, tmp_path):
+    body = {"protocolSection": {}, "hasResults": False}
+    fake = _fake_fetch_json({"https://clinicaltrials.gov/api/v2/studies/NCT99999999": body})
+    monkeypatch.setattr(trials_lookup, "fetch_json", fake)
+
+    envelope = trials_lookup.fetch_trial_outcome_summary("NCT99999999", "DrugA", "DrugB", memory_path=tmp_path / "memory.json")
+    assert envelope["status"] == "ok"
+    record = envelope["records"][0]
+    assert record["results_posted"] is False
+    assert record["summary"] is None
+    assert "not been posted" in record["note"]
+    assert "NCT99999999" in record["note"]
+
+
+def test_fetch_trial_outcome_summary_summarizes_the_primary_outcome_comparison(monkeypatch, tmp_path):
+    # Shaped after the real NCT01111552 resultsSection confirmed live.
+    body = {
+        "hasResults": True,
+        "resultsSection": {
+            "outcomeMeasuresModule": {
+                "outcomeMeasures": [
+                    {
+                        "type": "PRIMARY",
+                        "reportingStatus": "POSTED",
+                        "title": "Mean Change in Depression Score",
+                        "description": "A negative change indicates improvement.",
+                        "groups": [
+                            {"id": "OG000", "title": "Escitalopram Monotherapy"},
+                            {"id": "OG001", "title": "Aripiprazole/Escitalopram Combination Therapy"},
+                        ],
+                        "analyses": [
+                            {"groupIds": ["OG000", "OG001"], "pValue": "=0.595"},
+                        ],
+                    }
+                ]
+            }
+        },
+    }
+    fake = _fake_fetch_json({"https://clinicaltrials.gov/api/v2/studies/NCT01111552": body})
+    monkeypatch.setattr(trials_lookup, "fetch_json", fake)
+
+    envelope = trials_lookup.fetch_trial_outcome_summary("NCT01111552", "Aripiprazole", "Escitalopram", memory_path=tmp_path / "memory.json")
+    record = envelope["records"][0]
+    assert record["results_posted"] is True
+    assert record["summary"] is not None
+    assert "not statistically significant" in record["summary"]
+    assert "p=0.595" in record["summary"]
+    # The direction clause is only ever a verbatim quote of the outcome's own description,
+    # never an inferred "improved"/"worsened" verdict.
+    assert "negative change indicates improvement" in record["summary"]
+
+
+def test_fetch_trial_outcome_summary_reports_when_no_confident_comparison_is_found(monkeypatch, tmp_path):
+    # Neither group's title names both screened drugs together -- must not fabricate a
+    # combination-arm comparison.
+    body = {
+        "hasResults": True,
+        "resultsSection": {
+            "outcomeMeasuresModule": {
+                "outcomeMeasures": [
+                    {
+                        "type": "PRIMARY",
+                        "reportingStatus": "POSTED",
+                        "title": "Some Outcome",
+                        "groups": [
+                            {"id": "OG000", "title": "Cohort 1"},
+                            {"id": "OG001", "title": "Cohort 2"},
+                        ],
+                        "analyses": [{"groupIds": ["OG000", "OG001"], "pValue": "=0.1"}],
+                    }
+                ]
+            }
+        },
+    }
+    fake = _fake_fetch_json({"https://clinicaltrials.gov/api/v2/studies/NCT00000099": body})
+    monkeypatch.setattr(trials_lookup, "fetch_json", fake)
+
+    envelope = trials_lookup.fetch_trial_outcome_summary("NCT00000099", "DrugA", "DrugB", memory_path=tmp_path / "memory.json")
+    record = envelope["records"][0]
+    assert record["results_posted"] is True
+    assert record["summary"] is None
+    assert "could not be confidently identified" in record["note"]
+
+
 def test_cpic_lookup_reports_no_results_when_drug_not_in_cpic(monkeypatch, tmp_path):
     fake = _fake_fetch_json({"https://api.cpicpgx.org/v1/drug": []})
     monkeypatch.setattr(cpic_lookup, "fetch_json", fake)
@@ -918,3 +1242,22 @@ def test_build_report_excludes_skipped_clinicaltrials_from_the_fallback_gate(mon
     for entry in report["by_drug"]:
         assert entry["clinicaltrials_gov"]["status"] == "skipped"
         assert entry["web_search_fallback"] is not None, "pubmed+dailymed no_results alone must still trigger the fallback"
+
+
+def test_find_drug_mention_context_covers_every_mention_with_wider_text():
+    filler = "Unrelated interaction text about other drug classes. " * 30
+    section = (
+        "Strong CYP3A4 inducers (e.g., carbamazepine) decreased exposure of the subject drug. "
+        + filler
+        + "Dosage: when carbamazepine is added, double the dose; reduce it if carbamazepine is withdrawn."
+    )
+    context = dailymed_lookup.find_drug_mention_context(section, "carbamazepine", window=200)
+    assert "decreased exposure" in context
+    assert "double the dose" in context  # second, distant mention is included too
+    assert "..." not in context
+    assert len(context) > len(dailymed_lookup.find_drug_mention_excerpt(section, "carbamazepine"))
+
+
+def test_find_drug_mention_context_rejects_absent_or_substring_only_drug():
+    assert dailymed_lookup.find_drug_mention_context("Mentions lamotrigineXR only.", "lamotrigine") is None
+    assert dailymed_lookup.find_drug_mention_context("", "lamotrigine") is None

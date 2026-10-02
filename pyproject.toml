@@ -28,6 +28,23 @@ llm = [
 quant = [
     "bitsandbytes>=0.43; platform_system != 'Darwin'",
 ]
+# GGUF-quantized local model support for the DDI Evidence/Finding Agent
+# (path_d/ddi/finding_agent.py) -- a precompiled, CPU-only llama.cpp-based runner.
+# This is the path that actually works on this project's reference CPU-only, no-CUDA
+# hardware: the `llm`/`quant` groups above load full float32 (or CUDA-only 4-bit) weights,
+# which real measurement showed does not reliably fit in ~7.69 GB RAM even for a 0.5B
+# model; a GGUF file is quantized on disk, so gpt4all never materializes a float32 copy in
+# memory. `llama-cpp-python` was tried first and could not even be installed here (no
+# prebuilt wheel for this Python version, no C/C++ toolchain to build one) -- gpt4all
+# ships a precompiled native binary instead, no build step needed.
+gguf = [
+    "gpt4all>=2.8",
+]
+# Hosted-model backend for the DDI Evidence/Finding Agent
+# (PRIME_AGENT_LLM_PROVIDER=openai; key read from OPENAI_API_KEY, never hardcoded).
+api = [
+    "openai>=1.40",
+]
 test = [
     "pytest>=8.0",
 ]

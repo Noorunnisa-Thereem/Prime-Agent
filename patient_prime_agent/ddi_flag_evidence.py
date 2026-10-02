@@ -36,7 +36,14 @@ is always called, regardless of what any of the others returned:
   1. **PubMed** (``pubmed_lookup.search_pubmed_drug_pair``): the "DrugA AND
      DrugB" combined query, with every returned record required to name
      *both* drugs in its title (see that function's own docstring for the
-     real failure mode this fixes).
+     real failure mode this fixes). The Finding text itself then comes from
+     that paper's real Results/Conclusions abstract text
+     (``pubmed_lookup.fetch_abstract_sections`` +
+     ``pick_results_or_conclusion_text``), not its title -- a title states
+     the paper's aim, not its result (a real, observed bug: see
+     ``_pubmed_finding_and_url``'s own docstring). Falls back to the title,
+     at lower confidence, only when no structured Results/Conclusions text
+     is available for that PMID.
   2. **DailyMed** -- two real checks, not one: ``search_dailymed`` still
      resolves each drug's label *pointer* (setid) once per unique drug (26
      calls, not once per pair), but this version also fetches each drug's
@@ -52,9 +59,18 @@ is always called, regardless of what any of the others returned:
      ``_dailymed_mention_result``).
   3. **ClinicalTrials.gov** (``trials_lookup.search_trials_drug_pair``): a
      combined ``query.intr=DrugA AND DrugB`` query, with every returned
-     study still required to structurally list *both* drugs as real
-     interventions (armsInterventionsModule) -- the same never-trust-the-
-     raw-match discipline ``search_trials`` already applies.
+     study still required to structurally, word-boundary-match list *both*
+     drugs as real interventions (armsInterventionsModule) -- the same
+     never-trust-the-raw-match discipline ``search_trials`` already
+     applies (word-boundary, not substring, matching fixes a real bug:
+     "Citalopram" matching inside "Escitalopram"). The Finding text then
+     comes from that study's real posted outcome data
+     (``trials_lookup.fetch_trial_outcome_summary``), not its
+     ``brief_title`` -- a title states the study's aim, not its result. When
+     results aren't posted (the common case) or no confident
+     combination-vs-comparator comparison can be identified, that real,
+     honest reason becomes the Finding text instead -- never a guessed
+     verdict, and never silently using the title as a stand-in.
   4. **Tavily** (``search_tools.search_tavily``): a combined "DrugA AND
      DrugB drug interaction" web-search query, called directly and
      unconditionally alongside the other three -- **not** through
@@ -70,7 +86,18 @@ is always called, regardless of what any of the others returned:
      result apart from PubMed/DailyMed/ClinicalTrials.gov in the rendered
      Evidence line, and Tavily's text is always the lowest-priority
      candidate for the primary Finding sentence (see below) -- it only
-     becomes the Finding when every other source returned nothing.
+     becomes the Finding when every other source returned nothing. The
+     Finding text itself is always the underlying page's own real content,
+     independently fetched (``search_tools.fetch_general_page_text``,
+     trimmed to ~2 sentences) -- never the bare search-result title or
+     snippet, and never Tavily's own bundled ``include_raw_content``
+     extraction either, which the live API does not reliably return (a
+     real, observed bug: an earlier version of this module fell back to the
+     title whenever that field was absent). When the page can't be fetched
+     or has no pair-specific content, Tavily contributes nothing for that
+     pair at all, exactly like any other source that returned nothing --
+     and is checked for an explicit comparator-only design before being
+     trusted, same as PubMed (see ``_tavily_finding_and_url``).
 
 **CPIC and ClinVar are deliberately not queried here**, for the same reason
 the original (16-pair) version of this module gave: both require a gene
@@ -143,16 +170,33 @@ close that gap by growing longer; dropping the pair says plainly what is
 true (no source here stated a clear direction) instead of forcing it into
 a label that overstates this module's own confidence.
 
-The Finding text itself is always the source's own real sentence/title,
+By default, the Finding text is always the source's own real sentence/title,
 verbatim -- never paraphrased or cleaned up into prose the source doesn't
 itself contain (the same rule the original 16-pair version of this module
 already applied).
+
+Evidence/Finding Agent (opt-in, disabled by default)
+------------------------------------------------------
+``_pair_finding`` hands the winning candidate's own text to
+``path_d.ddi.finding_agent.FindingAgent`` after classification, not before
+-- Positive/Negative Impact, ``evidence_labels``, and ``hyperlink_url`` are
+decided exactly as described above regardless of whether this agent is
+enabled. When enabled (``PRIME_AGENT_DDI_FINDING_AGENT=1`` -- a dedicated
+flag, independent of this project's existing ``PRIME_AGENT_ENABLE_LLM``;
+see ``finding_agent.py``'s own docstring for why), the agent reads that
+same candidate text and SKILL.md's own Part 6 ("Finding-text generation")
+and returns a concise, pair-specific Finding sentence instead of the raw
+verbatim text -- grounded in, never beyond, what that candidate's text
+already said. Disabled (the default), it returns that text unchanged, so
+the Finding is byte-identical to the pipeline's behaviour before this
+agent existed.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from itertools import combinations
 from pathlib import Path
@@ -160,6 +204,8 @@ from typing import Any
 
 from .core.utils import ensure_dir
 from .path_d.ddi import candidate_drugs, pharmacodynamic_rules, reference_data
+from .path_d.ddi.finding_agent import FindingAgent
+from .path_d.ddi.finding_agent import agent_enabled as finding_agent_enabled
 from .path_d.ddi.normalizer import Medication, normalize_regimen
 from .external_lookup import dailymed_lookup, memory_store, pubmed_lookup, search_tools, trials_lookup
 from .external_lookup.http_client import DEFAULT_CACHE_DIR
@@ -185,11 +231,19 @@ _TAVILY_EVIDENCE_LABEL = "General web search (Tavily)"
 # effective...") still resolves Positive, matching that precedent; this is
 # a known, accepted tradeoff, not an oversight.
 _POSITIVE_KEYWORDS: tuple[str, ...] = (
-    "well tolerated", "well-tolerated", "generally safe", "no significant interaction",
-    "no clinically significant", "safe and effective", "additive seizure control",
-    "compatible", "favorable outcome", "favorable", "effective", "efficacy",
-    "tolerat", "tolerab", "improv", "benefit", "successful", "manageable",
+    "well tolerated", "well-tolerated", "generally safe", "safe and effective",
+    "additive seizure control", "compatible", "favorable outcome", "favorable",
+    "effective", "efficacy", "tolerat", "tolerab", "improv", "benefit",
+    "successful", "manageable",
 )
+# Deliberately NOT positive keywords: "no significant interaction" / "no clinically
+# significant [interaction]" -- removed (a real fix, not an oversight). A source stating
+# only the ABSENCE of a documented interaction is not the same as affirmatively stating a
+# favorable efficacy/tolerability/benefit outcome (see the module docstring's Positive-
+# Impact guardrail) -- "no interaction was observed" describes what wasn't found, not what
+# was. Keeping it as a positive trigger meant a source that never actually evaluated
+# efficacy or tolerability could still resolve a pair Positive purely by stating an
+# absence. The remaining keywords above all name a real, stated, affirmative outcome.
 _NEGATIVE_KEYWORDS: tuple[str, ...] = (
     "decrease", "decreas", "reduc", "increase", "increas", "risk", "toxicity", "adverse",
     "caution", "contraindicat", "impair", "danger", "worsen", "overdose",
@@ -315,37 +369,299 @@ def _classify_text(text: str | None) -> str | None:
     return None
 
 
-def _pubmed_title_and_url(pubmed_result: dict[str, Any]) -> tuple[str | None, str | None]:
+def _pubmed_finding_and_url(
+    pubmed_result: dict[str, Any],
+    *,
+    cache_dir: Path,
+    refresh: bool,
+    memory_path: Path,
+) -> tuple[str | None, str | None]:
+    """The pair's PubMed-sourced Finding text and URL -- the paper's own
+    Results/Conclusions text (``pubmed_lookup.fetch_abstract_sections`` +
+    ``pick_results_or_conclusion_text``), never its title alone. A real,
+    observed bug this fixes: a title states the paper's *aim*
+    ("Effects of lamotrigine and phenytoin on the pharmacokinetics of
+    atorvastatin...") never its actual result -- confirmed live that the
+    same paper's real Results/Conclusions text states a specific, useful
+    finding ("Pharmacokinetics of atorvastatin were not significantly
+    affected by coadministration with lamotrigine...") a title-only Finding
+    could never surface. Falls back to the title, at lower confidence, only
+    when no abstract or no Results/Conclusions section is available for
+    this PMID.
+
+    Before any of that: ``pubmed_lookup.describes_genuine_combination``
+    checks the abstract (title included) for an explicit comparator design
+    (Drug A **vs.** Drug B) with no combination language anywhere -- a real
+    failure mode this rejects, not just a theoretical one: a title naming
+    both drugs can still be a trial that never combined them (one arm got
+    Drug A added to their regimen, a *different* arm was switched to a
+    different drug entirely). When that check fails, PubMed does not
+    resolve this pair at all -- not even via the title -- the caller falls
+    through to the next source in priority order, exactly like a source
+    that returned nothing."""
     if pubmed_result.get("status") != "ok" or not pubmed_result.get("records"):
         return None, None
     record = pubmed_result["records"][0]
     title = record.get("title")
     url = record.get("url") or (f"https://pubmed.ncbi.nlm.nih.gov/{record.get('pmid')}/" if record.get("pmid") else None)
-    return (title if isinstance(title, str) and title.strip() else None), url
+    title_text = title if isinstance(title, str) and title.strip() else None
+
+    pmid = record.get("pmid")
+    if pmid:
+        abstract_result = pubmed_lookup.fetch_abstract_sections(pmid, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+        if abstract_result.get("status") == "ok" and abstract_result.get("records"):
+            sections = dict(abstract_result["records"][0].get("sections") or {})
+            if title_text:
+                sections.setdefault("TITLE", title_text)
+            if not pubmed_lookup.describes_genuine_combination(sections):
+                return None, None
+            finding_text = pubmed_lookup.pick_results_or_conclusion_text({k: v for k, v in sections.items() if k != "TITLE"})
+            if finding_text:
+                return finding_text, url
+
+    # No abstract available -- the title alone still must not describe an explicit
+    # comparator-only design before being trusted as a (lower-confidence) Finding.
+    if title_text and not pubmed_lookup.describes_genuine_combination({"TITLE": title_text}):
+        return None, None
+    return title_text, url
 
 
-def _trials_title_and_url(trials_result: dict[str, Any]) -> tuple[str | None, str | None]:
+def _trials_finding_and_url(
+    trials_result: dict[str, Any],
+    display_a: str,
+    display_b: str,
+    *,
+    cache_dir: Path,
+    refresh: bool,
+    memory_path: Path,
+) -> tuple[str | None, str | None]:
+    """The pair's ClinicalTrials.gov-sourced Finding text and URL -- the
+    study's own real outcome summary (``trials_lookup.
+    fetch_trial_outcome_summary``), never its ``brief_title`` alone. A
+    real, observed bug this fixes: NCT01111552's title named a different
+    drug (Escitalopram) than the one actually being screened (Citalopram)
+    even though both were genuinely listed interventions -- a title-only
+    Finding stated the wrong pair's story. When results aren't posted (the
+    common case) or no confident comparison can be identified, the real,
+    honest reason becomes the Finding text -- never the title, and never
+    silence."""
     if trials_result.get("status") != "ok" or not trials_result.get("records"):
         return None, None
     record = trials_result["records"][0]
     title = record.get("brief_title")
-    return (title if isinstance(title, str) and title.strip() else None), record.get("url")
+    title_text = title if isinstance(title, str) and title.strip() else None
+    url = record.get("url")
+
+    nct_id = record.get("nct_id")
+    if nct_id:
+        outcome_result = trials_lookup.fetch_trial_outcome_summary(
+            nct_id, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path
+        )
+        if outcome_result.get("status") == "ok" and outcome_result.get("records"):
+            outcome_record = outcome_result["records"][0]
+            text = outcome_record.get("summary") or outcome_record.get("note")
+            if text:
+                return text, (outcome_record.get("url") or url)
+
+    return title_text, url
 
 
-def _tavily_title_and_url(tavily_envelope: dict[str, Any]) -> tuple[str | None, str | None]:
+def _tavily_finding_and_url(
+    tavily_envelope: dict[str, Any],
+    *,
+    cache_dir: Path,
+    refresh: bool,
+    memory_path: Path,
+) -> tuple[str | None, str | None]:
     """``tavily_envelope`` is ``search_tools.search_tavily``'s own unified
     envelope shape (``{"status", "result": {"records": [...]}, ...}``), not
     the ``{"status", "records": [...]}`` shape the other lookup modules in
     this package return -- see ``search_tools.py``'s module docstring for
     why (it normalizes every backend, including Tavily, into one common
-    shape)."""
+    shape).
+
+    The underlying page's real content, never the bare search-result title
+    or snippet -- a real, observed bug this fixes: an earlier version of
+    this function preferred Tavily's own bundled ``include_raw_content``
+    field when present, but silently fell back to the bare ``title`` (a
+    search-result title is itself a teaser, not what the page actually
+    says) whenever Tavily didn't return one, which in practice is common.
+    This independently fetches the result's own URL
+    (``search_tools.fetch_general_page_text``) instead of depending on
+    whatever Tavily's bundled extraction happens to return -- the same
+    discipline PubMed's and ClinicalTrials.gov's own Finding extraction
+    already applies (fetch the real resource, never settle for a title).
+    The fetched page text must contain an *explicit* combination-language
+    match (``pubmed_lookup.find_combination_excerpt``), which also locates
+    and returns the actual matching sentence (plus one following) as the
+    Finding text -- not merely ``trim_to_sentences``'s first two sentences
+    of the raw page, which for an arbitrary fetched web page are frequently
+    navigation/menu boilerplate concatenated right after the title, not the
+    real article body (a real, observed second bug this fixes -- see
+    ``find_combination_excerpt``'s own docstring). This is deliberately
+    stricter than ``pubmed_lookup.describes_genuine_combination`` (used by
+    PubMed and Trials): that function also accepts silently when neither a
+    combination nor a comparator phrase is found at all, which is a
+    reasonable default for a short, structured PubMed abstract but far too
+    permissive for several thousand characters of unstructured general web
+    content. If the page cannot be fetched, has no extractable text, or has
+    no sentence with an explicit combination-language match, this returns
+    ``(None, None)`` -- Tavily contributes no candidate for this pair at
+    all, exactly like a source that returned nothing; it is never allowed
+    to fall back to the title or snippet. ``title``/``content_snippet`` are
+    therefore never read by this function."""
     if tavily_envelope.get("status") != "ok":
         return None, None
     records = ((tavily_envelope.get("result") or {}).get("records")) or []
     if not records:
         return None, None
-    title = records[0].get("title")
-    return (title if isinstance(title, str) and title.strip() else None), records[0].get("url")
+    record = records[0]
+    url = record.get("url")
+    if not url:
+        return None, None
+
+    page_result = search_tools.fetch_general_page_text(url, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+    if page_result.get("status") != "ok" or not page_result.get("records"):
+        return None, None
+
+    page_text = page_result["records"][0].get("page_text")
+    if not page_text:
+        return None, None
+
+    excerpt = pubmed_lookup.find_combination_excerpt(page_text, max_sentences=2)
+    if not excerpt:
+        return None, None
+
+    return excerpt, url
+
+
+# --- Rich evidence context for the Evidence/Finding Agent ----------------------------------
+# The candidate texts above stay short on purpose: they are what _classify_text decides
+# Impact from, and what the report shows if the agent is off or rejects its own output.
+# The agent needs more than that to write a useful Finding (study design, population, effect
+# size, the source's own recommendation), so these build a fuller view of the SAME source.
+# Each reads with refresh=False, i.e. from the cache the main lookup just filled -- no extra
+# network calls -- and build_report only calls them when the agent is enabled.
+
+_AGENT_CONTEXT_MAX_CHARS = 6000
+
+
+def _pubmed_agent_context(pubmed_result: dict[str, Any], *, cache_dir: Path, memory_path: Path) -> str | None:
+    """Title, journal, date, and the paper's whole abstract, section by section."""
+    if pubmed_result.get("status") != "ok" or not pubmed_result.get("records"):
+        return None
+    record = pubmed_result["records"][0]
+    pmid = record.get("pmid")
+    if not pmid:
+        return None
+    abstract_result = pubmed_lookup.fetch_abstract_sections(pmid, cache_dir=cache_dir, refresh=False, memory_path=memory_path)
+    if abstract_result.get("status") != "ok" or not abstract_result.get("records"):
+        return None
+    sections = {k: v for k, v in (abstract_result["records"][0].get("sections") or {}).items() if k != "TITLE" and v}
+    if not sections:
+        return None
+    lines = [f"Title: {record['title']}"] if record.get("title") else []
+    published = ", ".join(str(record[k]) for k in ("source_journal", "pubdate") if record.get(k))
+    if published:
+        lines.append(f"Published: {published} (PMID {pmid})")
+    lines += [f"{name}: {text}" for name, text in sections.items()]
+    return "\n".join(lines)[:_AGENT_CONTEXT_MAX_CHARS]
+
+
+def _trials_agent_context(
+    trials_result: dict[str, Any], display_a: str, display_b: str, *, cache_dir: Path, memory_path: Path
+) -> str | None:
+    """Registry facts (title, status, phase, conditions) plus the outcome summary."""
+    if trials_result.get("status") != "ok" or not trials_result.get("records"):
+        return None
+    record = trials_result["records"][0]
+    lines = []
+    for label, key in (("Trial", "nct_id"), ("Title", "brief_title"), ("Status", "overall_status")):
+        if record.get(key):
+            lines.append(f"{label}: {record[key]}")
+    for label, key in (("Phase", "phases"), ("Conditions", "conditions")):
+        if record.get(key):
+            lines.append(f"{label}: {', '.join(map(str, record[key]))}")
+    if record.get("nct_id"):
+        outcome = trials_lookup.fetch_trial_outcome_summary(
+            record["nct_id"], display_a, display_b, cache_dir=cache_dir, refresh=False, memory_path=memory_path
+        )
+        if outcome.get("status") == "ok" and outcome.get("records"):
+            text = outcome["records"][0].get("summary") or outcome["records"][0].get("note")
+            if text:
+                lines.append(f"Outcome: {text}")
+    return "\n".join(lines)[:_AGENT_CONTEXT_MAX_CHARS] if lines else None
+
+
+def _tavily_agent_context(tavily_url: str | None, *, cache_dir: Path, memory_path: Path) -> str | None:
+    """The page's own text around the combination mention -- 8 sentences, not 2."""
+    if not tavily_url:
+        return None
+    page_result = search_tools.fetch_general_page_text(tavily_url, cache_dir=cache_dir, refresh=False, memory_path=memory_path)
+    if page_result.get("status") != "ok" or not page_result.get("records"):
+        return None
+    page_text = page_result["records"][0].get("page_text")
+    if not page_text:
+        return None
+    excerpt = pubmed_lookup.find_combination_excerpt(page_text, max_sentences=8)
+    return excerpt[:_AGENT_CONTEXT_MAX_CHARS] if excerpt else None
+
+
+def _dailymed_agent_context(subject_display_name: str, subject_section_result: dict[str, Any], other_display_name: str) -> str | None:
+    if subject_section_result.get("status") != "ok" or not subject_section_result.get("records"):
+        return None
+    section_text = subject_section_result["records"][0].get("section_text") or ""
+    context = dailymed_lookup.find_drug_mention_context(section_text, other_display_name)
+    return f"{subject_display_name}'s DailyMed label, Drug Interactions section:\n{context}" if context else None
+
+
+def _fetch_pubmed_candidate(
+    display_a: str,
+    display_b: str,
+    *,
+    cache_dir: Path,
+    refresh: bool,
+    memory_path: Path,
+) -> tuple[dict[str, Any], str | None, str | None]:
+    """One pair's PubMed lookup + its own finding/url extraction, bundled so
+    ``build_report`` can run it on a worker thread alongside the
+    ClinicalTrials.gov/Tavily equivalents below -- see that function's own
+    docstring for why (these 3 network round trips were previously
+    sequential, confirmed via live process inspection: a single TCP
+    connection open at a time for the whole pipeline run)."""
+    pubmed_result = pubmed_lookup.search_pubmed_drug_pair(display_a, display_b, cache_dir=cache_dir, memory_path=memory_path, refresh=refresh)
+    pubmed_title, pubmed_url = _pubmed_finding_and_url(pubmed_result, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+    return pubmed_result, pubmed_title, pubmed_url
+
+
+def _fetch_trials_candidate(
+    display_a: str,
+    display_b: str,
+    *,
+    cache_dir: Path,
+    refresh: bool,
+    memory_path: Path,
+) -> tuple[dict[str, Any], str | None, str | None]:
+    trials_result = trials_lookup.search_trials_drug_pair(display_a, display_b, cache_dir=cache_dir, memory_path=memory_path, refresh=refresh)
+    trials_title, trials_url = _trials_finding_and_url(
+        trials_result, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path
+    )
+    return trials_result, trials_title, trials_url
+
+
+def _fetch_tavily_candidate(
+    display_a: str,
+    display_b: str,
+    *,
+    cache_dir: Path,
+    refresh: bool,
+    memory_path: Path,
+) -> tuple[dict[str, Any], str | None, str | None]:
+    tavily_result = search_tools.search_tavily(
+        f"{display_a} AND {display_b} drug interaction", cache_dir=cache_dir, memory_path=memory_path, refresh=refresh
+    )
+    tavily_title, tavily_url = _tavily_finding_and_url(tavily_result, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+    return tavily_result, tavily_title, tavily_url
 
 
 def _fetch_interactions_sections(
@@ -420,6 +736,11 @@ def _pair_finding(
     trials_url: str | None,
     tavily_title: str | None,
     tavily_url: str | None,
+    *,
+    display_a: str = "Drug A",
+    display_b: str = "Drug B",
+    finding_agent: FindingAgent | None = None,
+    agent_contexts: dict[str, str | None] | None = None,
 ) -> tuple[str, str, list[str], str | None, str] | None:
     """(impact, finding, evidence_labels, hyperlink_url, primary_evidence_label) for
     one pair, or ``None`` if the pair is unresolved -- either no source
@@ -429,6 +750,29 @@ def _pair_finding(
     shown with a guessed or default verdict). A DailyMed "not mentioned"
     result never counts as a finding here -- only a real ``mentioned: True``
     does (see module docstring).
+
+    ``display_a``/``display_b``/``finding_agent`` are consulted for every
+    candidate that reaches classification (see below), not only the one
+    ultimately returned -- the Evidence/Finding Agent
+    (``path_d.ddi.finding_agent.FindingAgent``) reads that candidate's own
+    already-extracted text and SKILL.md's governing Finding-generation rules
+    to determine what the resource actually found about this exact pair.
+    ``impact`` is still decided purely by ``_classify_text`` -- the agent
+    never redefines Positive/Negative classification -- but the agent CAN
+    reject a candidate's usability as evidence: when it returns an explicit
+    ``reason == "llm_reported_insufficient_evidence"`` (the resource does
+    not genuinely concern this pair, or only restates background/cited-
+    reference material -- see ``FindingAgent``), that candidate is skipped
+    entirely, exactly like a retracted one, and the next candidate in
+    priority order is tried instead. A model failure, a disabled agent, or
+    any other non-explicit fallback reason is NOT treated this way -- the
+    candidate still resolves the pair with its original deterministic text,
+    exactly as before this agent existed (see ``FindingAgentOutcome.reason``
+    in finding_agent.py for the full set of reasons and which of them fall
+    through vs. which keep today's behavior). By default (``finding_agent``
+    disabled) every candidate's ``reason`` is ``"llm_disabled"``, never the
+    insufficient-evidence one, so the Finding is byte-identical to the
+    pre-agent pipeline.
 
     Candidates are gathered in priority order (Flockhart, pharmacodynamic
     rules, DailyMed mention, PubMed, ClinicalTrials.gov, Tavily -- see the
@@ -450,43 +794,76 @@ def _pair_finding(
     they were always the same, which mislabeled a real ClinicalTrials.gov/
     Tavily/PubMed link with whatever higher-priority source's label
     happened to be first, even when that source contributed no url at all."""
-    candidates: list[tuple[str, str, str | None]] = []  # (evidence_label, text, url), priority order
+    # (candidate_id, evidence_label, text, url), priority order. ``text`` is what Impact is
+    # classified from and what is published if the agent is off or rejects its own output;
+    # ``agent_contexts[candidate_id]``, when given, is the fuller view of the same source the
+    # agent reads instead (see _pubmed_agent_context and friends).
+    candidates: list[tuple[str, str, str, str | None]] = []
 
     if flockhart.get("mechanism_found"):
-        candidates.append((f"Curated DDI ({reference_data.FLOCKHART_SOURCE})", flockhart["statement"], None))
+        candidates.append(("flockhart", f"Curated DDI ({reference_data.FLOCKHART_SOURCE})", flockhart["statement"], None))
     if pd_rules:
-        summary = "; ".join(rule["expected_consequence"] for rule in pd_rules)
-        # No classification-biasing prefix here (an earlier version prepended
-        # "Pharmacodynamic interaction risk: ", which quietly reintroduced the exact bug
-        # this fix removes: the word "risk" in that prefix alone was enough to classify
-        # Negative regardless of what the rule's own expected_consequence actually said).
-        candidates.append(("Pharmacodynamic interaction reference", summary, None))
+        # Mechanism + consequence, not consequence alone -- states which property of each
+        # drug class creates the risk, not just the risk itself (e.g. "Additive central
+        # nervous system depression from combined GABAergic/sedative agents. Increased
+        # sedation, dizziness, impaired coordination, cognitive slowing." rather than just
+        # the second sentence). Both fields are already real, curated, hand-written text
+        # (pharmacodynamic_rules.RULES) -- this never adds a classification-biasing prefix
+        # (an earlier version prepended "Pharmacodynamic interaction risk: ", which
+        # reintroduced the exact bug this fix removes: the word "risk" alone was enough to
+        # classify Negative regardless of what the rule's own text said) -- mechanism text
+        # itself contains no positive/negative keyword, confirmed against every real rule in
+        # pharmacodynamic_rules.RULES.
+        summary = "; ".join(f"{rule['mechanism']} {rule['expected_consequence']}" for rule in pd_rules)
+        candidates.append(("pharmacodynamic", "Pharmacodynamic interaction reference", summary, None))
     if dailymed_mention_a.get("mentioned"):
-        candidates.append(("DailyMed label (Drug Interactions section)", dailymed_mention_a["excerpt"], dailymed_mention_a.get("url")))
+        candidates.append(("dailymed_a", "DailyMed label (Drug Interactions section)", dailymed_mention_a["excerpt"], dailymed_mention_a.get("url")))
     if dailymed_mention_b.get("mentioned"):
-        candidates.append(("DailyMed label (Drug Interactions section)", dailymed_mention_b["excerpt"], dailymed_mention_b.get("url")))
+        candidates.append(("dailymed_b", "DailyMed label (Drug Interactions section)", dailymed_mention_b["excerpt"], dailymed_mention_b.get("url")))
     if pubmed_title is not None:
-        candidates.append(("External evidence (PubMed)", pubmed_title, pubmed_url))
+        candidates.append(("pubmed", "External evidence (PubMed)", pubmed_title, pubmed_url))
     if trials_title is not None:
-        candidates.append(("ClinicalTrials.gov", trials_title, trials_url))
+        candidates.append(("trials", "ClinicalTrials.gov", trials_title, trials_url))
     if tavily_title is not None:
-        candidates.append((_TAVILY_EVIDENCE_LABEL, tavily_title, tavily_url))
+        candidates.append(("tavily", _TAVILY_EVIDENCE_LABEL, tavily_title, tavily_url))
 
     if not candidates:
         return None
 
-    evidence_labels = [label for label, _text, _url in candidates]
+    evidence_labels = [label for _id, label, _text, _url in candidates]
+    agent_contexts = agent_contexts or {}
 
-    for label, text, url in candidates:
+    for candidate_id, label, text, url in candidates:
         # A retracted citation's stated conclusion can't be trusted either way (see
         # _is_retracted) -- checked before classification, not folded into _classify_text's
         # own keyword check, so it is skipped exactly like ambiguous text: try the next
         # candidate rather than forcing a verdict from it.
         if _is_retracted(text):
             continue
-        impact = _classify_text(text)
-        if impact is not None:
-            return impact, text, evidence_labels, url, label
+        keyword_impact = _classify_text(text)
+        # With the agent off, an unclassifiable snippet resolves nothing (unchanged). With it on,
+        # the agent still gets to read it: a snippet like "no dosage adjustment is necessary"
+        # contains no classifier keyword at all, yet is exactly the explicit no-interaction
+        # statement SKILL.md Part 6 Step 5 counts as Positive.
+        if keyword_impact is None and not finding_agent_enabled():
+            continue
+        agent = finding_agent or FindingAgent()
+        resource_text = agent_contexts.get(candidate_id) or text
+        outcome = agent.generate_finding(display_a, display_b, label, resource_text, fallback_text=text)
+        if outcome.reason == "llm_reported_insufficient_evidence":
+            # The agent explicitly determined this resource does not genuinely concern this
+            # pair (or only restates background/cited-reference material) -- this candidate
+            # does not resolve the pair, exactly like a retracted one. Any other fallback
+            # reason (disabled, model error, empty output, ...) is NOT this path -- those
+            # keep today's behavior and fall through to `return` below with the original text.
+            continue
+        # The agent's Impact comes from the same evidence as its Finding, so the two can't
+        # disagree (a real bug: "tolerability" in a snippet filed a 50-67% exposure drop under
+        # Positive). The keyword verdict is used only when the agent produced no Finding.
+        impact = outcome.impact if outcome.used_llm and outcome.impact in ("positive", "negative") else keyword_impact
+        if impact is None:
+            continue
+        return impact, outcome.text, evidence_labels, url, label
 
     # No candidate's own text resolved clearly to Positive or Negative -- unresolved, per
     # the module docstring, not guessed either way.
@@ -524,7 +901,29 @@ def build_report(
     cache_dir: Path = DEFAULT_CACHE_DIR,
     memory_path: Path = memory_store.DEFAULT_STORE_PATH,
     refresh: bool = False,
+    finding_agent: FindingAgent | None = None,
 ) -> dict[str, Any]:
+    """``finding_agent`` defaults to a disabled :class:`FindingAgent`
+    (``PRIME_AGENT_DDI_FINDING_AGENT`` unset -- see that module's docstring
+    for why this is independent of ``PRIME_AGENT_ENABLE_LLM``), in which
+    case every pair's Finding text is exactly what it already was before
+    that agent existed. Passing an explicitly-enabled instance lets a
+    winning candidate's Finding sentence be composed by the model per
+    SKILL.md Part 6 instead -- Positive/Negative Impact, evidence_labels,
+    and hyperlink_url are unaffected either way (see ``_pair_finding``).
+
+    Per pair, the PubMed/ClinicalTrials.gov/Tavily lookups (each its own
+    network round trip, previously issued one after another) run
+    concurrently on a small worker pool -- confirmed via live process
+    inspection that this pipeline was otherwise holding a single TCP
+    connection open at a time for its entire run. Pairs themselves are
+    still processed strictly one at a time (never more than 3 outstanding
+    network calls at once, one per source, each to a different host), so
+    this does not risk tripping any single source's own rate limit the way
+    fanning out across many pairs at once would. DailyMed is unaffected --
+    it is already fetched once per unique drug, outside this per-pair loop,
+    not once per pair."""
+    finding_agent = finding_agent or FindingAgent()
     medications = _screening_medications(clinical_notes or {})
     pairs = _unique_pairs(medications)
 
@@ -541,56 +940,69 @@ def build_report(
 
     pairs_out: list[dict[str, Any]] = []
     dropped = 0
-    for drug_a, drug_b in pairs:
-        display_a, display_b = _display_name(drug_a), _display_name(drug_b)
+    # 3 workers, one per concurrently-fired source (PubMed/ClinicalTrials.gov/Tavily) for
+    # the pair currently being processed -- not one worker per pair; pairs are still handled
+    # strictly one at a time (see build_report's own docstring).
+    with ThreadPoolExecutor(max_workers=3, thread_name_prefix="ddi-source-lookup") as source_executor:
+        for drug_a, drug_b in pairs:
+            display_a, display_b = _display_name(drug_a), _display_name(drug_b)
 
-        flockhart = reference_data.pharmacokinetic_pair_summary(drug_a.normalized_name, drug_b.normalized_name)
-        pd_rules = pharmacodynamic_rules.evaluate_pair(drug_a.normalized_name, drug_b.normalized_name)
+            flockhart = reference_data.pharmacokinetic_pair_summary(drug_a.normalized_name, drug_b.normalized_name)
+            pd_rules = pharmacodynamic_rules.evaluate_pair(drug_a.normalized_name, drug_b.normalized_name)
 
-        # The 4 live sources -- all 4 always called for every pair, none conditional on
-        # what any of the others returned (see module docstring).
-        pubmed_result = pubmed_lookup.search_pubmed_drug_pair(display_a, display_b, cache_dir=cache_dir, memory_path=memory_path, refresh=refresh)
-        pubmed_title, pubmed_url = _pubmed_title_and_url(pubmed_result)
+            # The 4 live sources -- all 4 always called for every pair, none conditional on
+            # what any of the others returned (see module docstring). The 3 network-bound
+            # ones are fired together and awaited below, rather than one after another.
+            pubmed_future = source_executor.submit(_fetch_pubmed_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+            trials_future = source_executor.submit(_fetch_trials_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+            tavily_future = source_executor.submit(_fetch_tavily_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
 
-        trials_result = trials_lookup.search_trials_drug_pair(display_a, display_b, cache_dir=cache_dir, memory_path=memory_path, refresh=refresh)
-        trials_title, trials_url = _trials_title_and_url(trials_result)
+            pubmed_result, pubmed_title, pubmed_url = pubmed_future.result()
+            trials_result, trials_title, trials_url = trials_future.result()
+            tavily_result, tavily_title, tavily_url = tavily_future.result()
 
-        tavily_result = search_tools.search_tavily(
-            f"{display_a} AND {display_b} drug interaction", cache_dir=cache_dir, memory_path=memory_path, refresh=refresh
-        )
-        tavily_title, tavily_url = _tavily_title_and_url(tavily_result)
+            mention_a = _dailymed_mention_result(display_a, interactions_sections_by_drug.get(drug_a.normalized_name, {}), display_b)
+            mention_b = _dailymed_mention_result(display_b, interactions_sections_by_drug.get(drug_b.normalized_name, {}), display_a)
 
-        mention_a = _dailymed_mention_result(display_a, interactions_sections_by_drug.get(drug_a.normalized_name, {}), display_b)
-        mention_b = _dailymed_mention_result(display_b, interactions_sections_by_drug.get(drug_b.normalized_name, {}), display_a)
+            agent_contexts = None
+            if finding_agent_enabled():
+                agent_contexts = {
+                    "dailymed_a": _dailymed_agent_context(display_a, interactions_sections_by_drug.get(drug_a.normalized_name, {}), display_b),
+                    "dailymed_b": _dailymed_agent_context(display_b, interactions_sections_by_drug.get(drug_b.normalized_name, {}), display_a),
+                    "pubmed": _pubmed_agent_context(pubmed_result, cache_dir=cache_dir, memory_path=memory_path) if pubmed_title else None,
+                    "trials": _trials_agent_context(trials_result, display_a, display_b, cache_dir=cache_dir, memory_path=memory_path) if trials_title else None,
+                    "tavily": _tavily_agent_context(tavily_url, cache_dir=cache_dir, memory_path=memory_path) if tavily_title else None,
+                }
 
-        finding = _pair_finding(
-            flockhart, pd_rules, mention_a, mention_b, pubmed_title, pubmed_url, trials_title, trials_url, tavily_title, tavily_url
-        )
-        if finding is None:
-            dropped += 1
-            continue
+            finding = _pair_finding(
+                flockhart, pd_rules, mention_a, mention_b, pubmed_title, pubmed_url, trials_title, trials_url, tavily_title, tavily_url,
+                display_a=display_a, display_b=display_b, finding_agent=finding_agent, agent_contexts=agent_contexts,
+            )
+            if finding is None:
+                dropped += 1
+                continue
 
-        impact, finding_text, evidence_labels, hyperlink_url, primary_evidence_label = finding
-        pairs_out.append(
-            {
-                "drug_a": display_a,
-                "drug_b": display_b,
-                "impact": impact,
-                "finding": finding_text,
-                "evidence_labels": evidence_labels,
-                "hyperlink_url": hyperlink_url,
-                "primary_evidence_label": primary_evidence_label,
-                "flockhart": flockhart,
-                "pharmacodynamic_rules": pd_rules,
-                "pubmed_combined_query": pubmed_result,
-                "clinicaltrials_combined_query": trials_result,
-                "tavily_combined_query": tavily_result,
-                "dailymed_drug_a": dailymed_by_drug.get(drug_a.normalized_name),
-                "dailymed_drug_b": dailymed_by_drug.get(drug_b.normalized_name),
-                "dailymed_mention_in_drug_a_label": mention_a,
-                "dailymed_mention_in_drug_b_label": mention_b,
-            }
-        )
+            impact, finding_text, evidence_labels, hyperlink_url, primary_evidence_label = finding
+            pairs_out.append(
+                {
+                    "drug_a": display_a,
+                    "drug_b": display_b,
+                    "impact": impact,
+                    "finding": finding_text,
+                    "evidence_labels": evidence_labels,
+                    "hyperlink_url": hyperlink_url,
+                    "primary_evidence_label": primary_evidence_label,
+                    "flockhart": flockhart,
+                    "pharmacodynamic_rules": pd_rules,
+                    "pubmed_combined_query": pubmed_result,
+                    "clinicaltrials_combined_query": trials_result,
+                    "tavily_combined_query": tavily_result,
+                    "dailymed_drug_a": dailymed_by_drug.get(drug_a.normalized_name),
+                    "dailymed_drug_b": dailymed_by_drug.get(drug_b.normalized_name),
+                    "dailymed_mention_in_drug_a_label": mention_a,
+                    "dailymed_mention_in_drug_b_label": mention_b,
+                }
+            )
 
     return {
         "report_type": "Drug Interaction Flag Sheet -- Live Multi-Source Evidence",

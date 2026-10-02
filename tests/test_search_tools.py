@@ -219,6 +219,67 @@ def test_tavily_rejects_free_text_query():
 
 
 # ---------------------------------------------------------------------------
+# fetch_general_page_text -- the independent real-page fetch that replaced
+# relying on Tavily's own (often-absent) ``include_raw_content`` field. See
+# ddi_flag_evidence._tavily_finding_and_url, which never falls back to a
+# title/snippet when this returns anything other than "ok" + real text.
+# ---------------------------------------------------------------------------
+
+
+def test_fetch_general_page_text_returns_real_extracted_text_on_success(monkeypatch, tmp_path):
+    def _fake_fetch_text(url, *, cache_dir=None, refresh=False, timeout=15, max_retries=1, accept="*/*"):
+        assert url == "https://example.com/article"
+        html = "<html><body><p>Coadministration increased plasma levels significantly.</p></body></html>"
+        return {"url": url, "http_status": 200, "body": html, "retrieved_at": "2026-01-01T00:00:00Z", "from_cache": False, "error": None}
+
+    monkeypatch.setattr(search_tools, "fetch_text", _fake_fetch_text)
+
+    envelope = search_tools.fetch_general_page_text("https://example.com/article", memory_path=tmp_path / "memory.json")
+
+    assert envelope["status"] == "ok"
+    record = envelope["records"][0]
+    assert record["page_text"] == "Coadministration increased plasma levels significantly."
+    assert record["url"] == "https://example.com/article"
+
+
+def test_fetch_general_page_text_returns_error_status_when_the_fetch_fails(monkeypatch, tmp_path):
+    def _fake_fetch_text(url, *, cache_dir=None, refresh=False, timeout=15, max_retries=1, accept="*/*"):
+        return {"url": url, "http_status": 404, "body": None, "retrieved_at": "2026-01-01T00:00:00Z", "from_cache": False, "error": "HTTP 404: Not Found"}
+
+    monkeypatch.setattr(search_tools, "fetch_text", _fake_fetch_text)
+
+    envelope = search_tools.fetch_general_page_text("https://example.com/missing", memory_path=tmp_path / "memory.json")
+
+    assert envelope["status"] != "ok"
+    assert envelope["records"] == []
+
+
+def test_fetch_general_page_text_returns_no_results_for_a_page_with_no_extractable_text(monkeypatch, tmp_path):
+    def _fake_fetch_text(url, *, cache_dir=None, refresh=False, timeout=15, max_retries=1, accept="*/*"):
+        html = "<html><head><script>var x = 1;</script></head><body></body></html>"
+        return {"url": url, "http_status": 200, "body": html, "retrieved_at": "2026-01-01T00:00:00Z", "from_cache": False, "error": None}
+
+    monkeypatch.setattr(search_tools, "fetch_text", _fake_fetch_text)
+
+    envelope = search_tools.fetch_general_page_text("https://example.com/empty", memory_path=tmp_path / "memory.json")
+
+    assert envelope["status"] == "no_results"
+    assert envelope["records"] == []
+
+
+def test_fetch_general_page_text_rejects_a_non_http_url_without_fetching(monkeypatch, tmp_path):
+    def _fail_if_called(*args, **kwargs):
+        raise AssertionError("fetch_text must not be called for an invalid/unsafe URL")
+
+    monkeypatch.setattr(search_tools, "fetch_text", _fail_if_called)
+
+    envelope = search_tools.fetch_general_page_text("javascript:alert(1)", memory_path=tmp_path / "memory.json")
+
+    assert envelope["status"] != "ok"
+    assert envelope["records"] == []
+
+
+# ---------------------------------------------------------------------------
 # The dispatcher
 # ---------------------------------------------------------------------------
 

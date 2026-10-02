@@ -154,18 +154,64 @@ def _extract_drug_interactions_section_text(xml_text: str) -> str | None:
     return None
 
 
-_MENTION_EXCERPT_WINDOW = 300
+_MENTION_EXCERPT_WINDOW = 160
+# Real, observed problem with the old 300-char window: an FDA label's Drug Interactions
+# section is often a dense reference TABLE (many drug names and section-number markers
+# packed together, e.g. "...Antipsychotics: Potential for elevation of haloperidol and
+# clozapine levels (7.7) Anticonvulsants:...") rather than narrative prose -- whitespace
+# collapsing (see fetch_label_interactions_section) removes the row breaks that would
+# otherwise bound a single table entry, so a wide window swept in multiple unrelated
+# entries instead of the one sentence/clause actually about the queried pair. A narrower
+# window plus the hard max_length below keeps the excerpt to roughly the "1-2 sentences"
+# a Finding needs, at the cost of occasionally cutting a long clause short -- a real,
+# accepted tradeoff: a real, slightly-truncated excerpt is still never invented text.
+
+# How far beyond the window this may additionally search for a clean word boundary before
+# giving up -- see _expand_to_word_boundaries. Small on purpose: this exists only to avoid
+# cutting a word in half, not to systematically grow every excerpt.
+_MENTION_EXCERPT_BOUNDARY_MARGIN = 40
+
+
+def _expand_to_word_boundaries(text: str, start: int, end: int, *, margin: int) -> tuple[int, int]:
+    """Move ``start`` left and ``end`` right to the nearest whitespace, so the returned
+    excerpt never begins or ends in the middle of a word -- a real, observed bug this
+    fixes: a plain character-count window cut "CYP2B6" down to "YP2B6", silently dropping
+    its leading letter. Searches at most ``margin`` extra characters beyond the window
+    before falling back to walking all the way to the nearest word boundary regardless
+    (never mid-word) -- ``section_text`` is already whitespace-collapsed to single spaces
+    by ``fetch_label_interactions_section``, so a plain space search is sufficient."""
+    if start > 0:
+        boundary = text.rfind(" ", max(0, start - margin), start)
+        if boundary == -1:
+            boundary = text.rfind(" ", 0, start)
+        start = boundary + 1 if boundary != -1 else 0
+    if end < len(text):
+        boundary = text.find(" ", end, min(len(text), end + margin))
+        if boundary == -1:
+            boundary = text.find(" ", end)
+        end = boundary if boundary != -1 else len(text)
+    return start, end
 
 
 def find_drug_mention_excerpt(section_text: str, other_drug_name: str) -> str | None:
     """A real excerpt of ``section_text`` (a DRUG INTERACTIONS section
     already fetched by ``fetch_label_interactions_section``) centered on
-    the first word-boundary mention of ``other_drug_name``, trimmed toward
-    sentence boundaries where one falls within the excerpt window -- never
-    the drug's full interactions section (which usually covers many
-    unrelated drug classes and would bury the one relevant sentence in
-    noise), and never paraphrased beyond trimming: every word inside the
-    excerpt is the label's own.
+    the first word-boundary mention of ``other_drug_name``, expanded to
+    clean word boundaries and then trimmed toward sentence boundaries where
+    one falls within the excerpt window -- never the drug's full
+    interactions section (which usually covers many unrelated drug classes
+    and would bury the one relevant sentence in noise), and never
+    paraphrased beyond trimming: every word inside the excerpt is the
+    label's own, and the excerpt never starts or ends mid-word.
+
+    This never decorates the excerpt with "..." to mark where it was cut --
+    a real, observed bug this fixes: that marker does not make a mid-word
+    cut ("...YP2B6 inducers", silently missing the leading "C" of
+    "CYP2B6") any more complete, and a reader (or a downstream Finding
+    Agent) has no way to tell a cosmetic "this excerpt doesn't cover the
+    whole section" marker apart from a real, meaningful ellipsis the label
+    itself might contain. The fix is a clean, word-bounded excerpt, not a
+    cosmetic marker glued onto an incomplete one.
 
     Returns ``None`` when ``other_drug_name`` is not mentioned as a whole
     word anywhere in the section -- the caller (ddi_flag_evidence.py) is
@@ -182,6 +228,7 @@ def find_drug_mention_excerpt(section_text: str, other_drug_name: str) -> str | 
 
     start = max(0, match.start() - _MENTION_EXCERPT_WINDOW)
     end = min(len(section_text), match.end() + _MENTION_EXCERPT_WINDOW)
+    start, end = _expand_to_word_boundaries(section_text, start, end, margin=_MENTION_EXCERPT_BOUNDARY_MARGIN)
     excerpt = section_text[start:end].strip()
 
     first_period = excerpt.find(". ")
@@ -191,9 +238,56 @@ def find_drug_mention_excerpt(section_text: str, other_drug_name: str) -> str | 
     if last_period != -1 and last_period > len(excerpt) - _MENTION_EXCERPT_WINDOW:
         excerpt = excerpt[: last_period + 1]
 
-    prefix = "..." if start > 0 else ""
-    suffix = "..." if end < len(section_text) else ""
-    return sanitize_response_field(f"{prefix}{excerpt}{suffix}", max_length=700)
+    # Generous enough that this excerpt's own construction (window + boundary margin on
+    # both sides) never needs a second, blind truncation here -- sanitize_response_field's
+    # own max_length cut is itself a plain character slice, which would silently reintroduce
+    # the exact mid-word-cut bug this function exists to fix.
+    return sanitize_response_field(excerpt, max_length=450)
+
+
+def find_drug_mention_context(
+    section_text: str,
+    other_drug_name: str,
+    *,
+    window: int = 700,
+    max_mentions: int = 3,
+    max_length: int = 4000,
+) -> str | None:
+    """Wider label context for the Evidence/Finding Agent: the text around
+    each of up to ``max_mentions`` whole-word mentions of ``other_drug_name``
+    (overlapping windows merged, each expanded to clean word boundaries),
+    joined by blank lines. ``find_drug_mention_excerpt`` stays the short,
+    report-facing excerpt; this exists because a ~320-character window
+    usually cuts off the label's own consequence or dose recommendation for
+    the pair, which is exactly what a useful Finding needs. Same honesty
+    rules: label words only, never a "..." marker, never mid-word."""
+    if not isinstance(section_text, str) or not section_text.strip():
+        return None
+    needle = other_drug_name.strip()
+    if not needle:
+        return None
+    pattern = re.compile(r"\b" + re.escape(needle.lower()) + r"\b")
+    spans: list[list[int]] = []
+    for match in pattern.finditer(section_text.lower()):
+        start = max(0, match.start() - window)
+        end = min(len(section_text), match.end() + window)
+        if spans and start <= spans[-1][1]:
+            spans[-1][1] = max(spans[-1][1], end)
+        elif len(spans) < max_mentions:
+            spans.append([start, end])
+        else:
+            break
+    if not spans:
+        return None
+    parts = []
+    for start, end in spans:
+        start, end = _expand_to_word_boundaries(section_text, start, end, margin=_MENTION_EXCERPT_BOUNDARY_MARGIN)
+        parts.append(section_text[start:end].strip())
+    context = "\n\n".join(part for part in parts if part)
+    if len(context) > max_length:
+        cut = context.rfind(" ", 0, max_length)
+        context = context[: cut if cut > 0 else max_length]
+    return sanitize_response_field(context, max_length=max_length + 1) or None
 
 
 def fetch_label_interactions_section(

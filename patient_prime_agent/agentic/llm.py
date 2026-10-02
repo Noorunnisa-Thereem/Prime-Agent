@@ -104,6 +104,125 @@ class TransformersBackend:
         return {"backend": self.name, **self.loader.describe()}
 
 
+class OpenAIBackend:
+    """Generates with a hosted OpenAI chat model -- same interface as
+    :class:`TransformersBackend`, so any caller holding an ``LLMBackend`` can
+    swap one for the other without code changes.
+
+    The API key is passed in by the caller and held only on the SDK client; it
+    is never logged, never included in ``describe()``, and never copied into an
+    error record -- ``last_error`` keeps only the exception's type name,
+    because SDK error messages (e.g. an invalid-key 401) can echo part of the
+    key back.
+    """
+
+    name = "openai"
+
+    # Transient failures worth retrying; anything else (bad key, bad request,
+    # unknown model, ...) fails immediately -- retrying cannot fix it.
+    _RETRYABLE_ERROR_NAMES = frozenset(
+        {"RateLimitError", "APITimeoutError", "APIConnectionError", "InternalServerError"}
+    )
+
+    supports_tools = True
+
+    def __init__(
+        self,
+        api_key: str,
+        model: str = "gpt-5.5",
+        *,
+        reasoning_effort: str | None = "low",
+        max_retries: int = 3,
+        backoff_seconds: float = 1.0,
+        timeout_seconds: float = 60.0,
+        max_output_tokens: int = 2000,
+        client: Any | None = None,
+        sleep: Any | None = None,
+    ):
+        if client is None:
+            from openai import OpenAI  # local import: openai is only needed on this path
+
+            # SDK-level retries off -- retry/backoff is handled below so it is visible and bounded.
+            client = OpenAI(api_key=api_key, timeout=timeout_seconds, max_retries=0)
+        self.client = client
+        self.model = model
+        # Reasoning models (gpt-5.x, o-series) take a reasoning effort and reject
+        # temperature; older chat models (gpt-4o, gpt-4.1) are the reverse.
+        self.reasoning_effort = reasoning_effort if model.startswith(("gpt-5", "o1", "o3", "o4")) else None
+        self.max_retries = max_retries
+        self.backoff_seconds = backoff_seconds
+        self.max_output_tokens = max_output_tokens
+        self._sleep = sleep
+        self.call_count = 0
+        self.retry_count = 0
+        self.last_error: str | None = None
+        self.last_usage: dict[str, int] | None = None
+
+    def generate(self, prompt: str, system: str | None = None, **kwargs: Any) -> str:
+        """Plain text, or -- when ``tool`` (a Responses-API function-tool
+        schema) is passed -- the forced tool call's raw JSON arguments.
+
+        Uses the Responses API (``/v1/responses``): on gpt-5.x, function tools
+        combined with a reasoning effort are rejected by Chat Completions."""
+        import time
+
+        sleep = self._sleep or time.sleep
+        request: dict[str, Any] = {
+            "model": self.model,
+            "instructions": system or ADVISORY_SYSTEM_PROMPT,
+            "input": prompt,
+            # Reasoning tokens count against this budget, so it is set well above
+            # the length of the visible answer itself.
+            "max_output_tokens": kwargs.get("max_output_tokens", self.max_output_tokens),
+        }
+        if self.reasoning_effort:
+            request["reasoning"] = {"effort": self.reasoning_effort}
+        else:
+            request["temperature"] = kwargs.get("temperature", 0.0)
+        tool = kwargs.get("tool")
+        if tool is not None:
+            request["tools"] = [tool]
+            request["tool_choice"] = {"type": "function", "name": tool["name"]}
+
+        attempt = 0
+        while True:
+            self.call_count += 1
+            try:
+                response = self.client.responses.create(**request)
+            except Exception as exc:
+                self.last_error = type(exc).__name__
+                if type(exc).__name__ in self._RETRYABLE_ERROR_NAMES and attempt < self.max_retries:
+                    sleep(self.backoff_seconds * (2 ** attempt))
+                    attempt += 1
+                    self.retry_count += 1
+                    continue
+                raise
+            usage = getattr(response, "usage", None)
+            if usage is not None:
+                details = getattr(usage, "output_tokens_details", None)
+                self.last_usage = {
+                    "input_tokens": int(getattr(usage, "input_tokens", 0) or 0),
+                    "output_tokens": int(getattr(usage, "output_tokens", 0) or 0),
+                    "reasoning_tokens": int(getattr(details, "reasoning_tokens", 0) or 0),
+                }
+            if tool is not None:
+                for item in getattr(response, "output", None) or []:
+                    if getattr(item, "type", None) == "function_call":
+                        return str(getattr(item, "arguments", "") or "")
+                return ""
+            return str(getattr(response, "output_text", "") or "").strip()
+
+    def describe(self) -> dict[str, Any]:
+        return {
+            "backend": self.name,
+            "model": self.model,
+            "reasoning_effort": self.reasoning_effort,
+            "calls": self.call_count,
+            "retries": self.retry_count,
+            "last_error": self.last_error,
+        }
+
+
 @dataclass(slots=True)
 class LanguageModel:
     """Facade the agents talk to.

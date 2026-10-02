@@ -74,13 +74,14 @@ is the deliberately looser, scheme-only check used for Tavily links only.
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 from typing import Any, Callable
 
 from ..agentic.settings import parse_env_file
 from . import dailymed_lookup, memory_store, pubmed_lookup, trials_lookup
 from .guardrails import sanitize_response_field, validate_query_term
-from .http_client import DEFAULT_CACHE_DIR, build_envelope, fetch_json
+from .http_client import DEFAULT_CACHE_DIR, build_envelope, fetch_json, fetch_text
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _ENV_FILE_PATH = _PROJECT_ROOT / ".env"
@@ -243,6 +244,12 @@ def search_tavily(
             "search_depth": "basic",
             "max_results": int(max_results),
             "include_answer": False,
+            # The underlying page's real content, not just the search-result snippet --
+            # a search snippet is itself a kind of title/teaser (the same problem a bare
+            # PubMed title or ClinicalTrials.gov brief_title has), so a Finding built only
+            # from it risks restating what the page is about rather than what it actually
+            # says. Tavily includes this at no extra cost when requested.
+            "include_raw_content": True,
         }
         fetch_result = fetch_json(TAVILY_SEARCH_URL, cache_dir=cache_dir, refresh=refresh, json_body=body)
 
@@ -287,8 +294,124 @@ def _tavily_record(entry: dict[str, Any]) -> dict[str, Any]:
         "title": sanitize_response_field(entry.get("title")) or None,
         "url": _validate_general_url(entry.get("url")),
         "content_snippet": sanitize_response_field(entry.get("content"), max_length=400) or None,
+        # The underlying page's real text (see search_tavily's include_raw_content) --
+        # None when Tavily didn't return one (not every page can be fetched/parsed
+        # server-side); callers prefer this over content_snippet when present, since a
+        # snippet is itself a teaser, not necessarily the page's own stated finding.
+        # Tavily's own bundled extraction, when it returns one -- NOT used for Finding
+        # generation any more (see fetch_general_page_text below): it is absent often
+        # enough in practice that a caller relying on it alone ends up silently falling
+        # back to the bare title/snippet, which is exactly the bug fetch_general_page_text
+        # fixes by independently fetching the result's own URL instead. Kept here only as
+        # raw provenance/audit data.
+        "raw_content": sanitize_response_field(entry.get("raw_content"), max_length=2000) or None,
         "score": entry.get("score") if isinstance(entry.get("score"), (int, float)) else None,
     }
+
+
+PAGE_FETCH_RESOURCE_NAME = "General web page fetch"
+
+# Turns common block-level closing tags (and <br>) into a sentence boundary before the
+# rest of the markup is stripped -- see fetch_general_page_text's own docstring for why:
+# these carry no punctuation of their own, so without this a page's navigation menu and
+# its real article text merge into a single run-on "sentence" with no boundary between
+# them for pubmed_lookup.find_combination_excerpt to use.
+_BLOCK_BOUNDARY_RE = re.compile(r"</(?:p|div|li|h[1-6]|tr|section|article|header|footer|nav)\s*>|<br\s*/?>", re.IGNORECASE)
+_REPEATED_SENTENCE_PUNCTUATION_RE = re.compile(r"[.!?]\s*(?:[.!?]\s*)+")
+
+
+def fetch_general_page_text(
+    url: str,
+    *,
+    cache_dir: Path = DEFAULT_CACHE_DIR,
+    refresh: bool = False,
+    memory_path: Path = memory_store.DEFAULT_STORE_PATH,
+    max_length: int = 4000,
+) -> dict[str, Any]:
+    """Independently fetch ``url`` (a Tavily search result's own link) and
+    return its real page text -- this is the actual resource a Tavily
+    Finding must be grounded in, not Tavily's own bundled
+    ``include_raw_content`` extraction (``_tavily_record``'s ``raw_content``
+    field), which the live API simply does not return for every result and
+    whose extraction quality this project does not control either way. This
+    gives ``ddi_flag_evidence._tavily_finding_and_url`` a resource it
+    fetched itself, exactly the same way ``dailymed_lookup.
+    fetch_label_interactions_section`` and ``pubmed_lookup.
+    fetch_abstract_sections`` fetch their own sources' real content rather
+    than relying on a search result's title or snippet.
+
+    Returns a standard envelope: ``status="ok"`` with the page's readable
+    text in ``records[0]["page_text"]`` when the fetch succeeded and the
+    body had extractable text; ``status="no_results"`` when the fetch
+    succeeded but there was nothing extractable (an empty body, or a body
+    that is entirely markup/script with no text content); a real error
+    status (``http_client.ERROR_STATUSES``) when the HTTP fetch itself
+    failed. Never raises, and never returns fabricated text -- a caller
+    must treat anything other than ``"ok"`` with a non-empty ``page_text``
+    exactly like a source that returned nothing (see ``_tavily_finding_and_
+    url``, which never falls back to title/snippet when this fails).
+
+    Text extraction is intentionally simple: the same tag-stripping
+    ``sanitize_response_field`` already applies to every other third-party
+    field in this package (strip ``<script>``/``<style>`` blocks and
+    remaining tags, collapse whitespace, length-cap), not a readability or
+    boilerplate-removal algorithm -- so navigation/footer text can still be
+    mixed into ``page_text``. To keep that boilerplate from merging into one
+    giant run-on "sentence" with the real content (a real, observed second
+    bug: raw HTML block elements such as ``<p>``/``<div>``/``<li>`` carry no
+    sentence-ending punctuation of their own, so naive tag-stripping alone
+    leaves no boundary between a page's navigation menu and its actual
+    article text), block-level closing tags are first turned into sentence
+    boundaries before the remaining markup is stripped -- a deliberately
+    simple heuristic, not a layout-aware readability algorithm, but one that
+    lets ``pubmed_lookup.find_combination_excerpt`` actually land on the
+    real matching sentence instead of a boilerplate-prefixed blob. The
+    caller still requires an explicit combination-language match
+    (``find_combination_excerpt``) before trusting any of this as a
+    Finding, exactly as it does for every other source, so boilerplate that
+    fails that check simply yields no Finding from this source -- never a
+    fabricated one.
+    """
+    validated_url = _validate_general_url(url)
+    if not validated_url:
+        return build_envelope(
+            resource=PAGE_FETCH_RESOURCE_NAME,
+            endpoint="",
+            query={"url": url},
+            fetch_result={"error": "invalid or unsafe URL", "retrieved_at": None, "from_cache": False, "http_status": None},
+            records=[],
+        )
+
+    def _live_fetch() -> dict[str, Any]:
+        fetch_result = fetch_text(validated_url, cache_dir=cache_dir, refresh=refresh)
+        query = {"url": validated_url}
+        if fetch_result.get("error") is not None:
+            return build_envelope(resource=PAGE_FETCH_RESOURCE_NAME, endpoint=validated_url, query=query, fetch_result=fetch_result, records=[])
+
+        with_sentence_boundaries = _BLOCK_BOUNDARY_RE.sub(". ", fetch_result.get("body") or "")
+        page_text = sanitize_response_field(with_sentence_boundaries, max_length=max_length)
+        # A block tag inserted right after text that already ended in its own punctuation
+        # (e.g. "...levels significantly.</p>") would otherwise leave a doubled "..".
+        page_text = _REPEATED_SENTENCE_PUNCTUATION_RE.sub(".", page_text)
+        if not page_text:
+            return build_envelope(resource=PAGE_FETCH_RESOURCE_NAME, endpoint=validated_url, query=query, fetch_result=fetch_result, records=[])
+
+        return build_envelope(
+            resource=PAGE_FETCH_RESOURCE_NAME,
+            endpoint=validated_url,
+            query=query,
+            fetch_result=fetch_result,
+            records=[{"url": validated_url, "page_text": page_text}],
+        )
+
+    return memory_store.recall_or_compute(
+        PAGE_FETCH_RESOURCE_NAME,
+        validated_url,
+        _live_fetch,
+        store_path=memory_path,
+        refresh=refresh,
+        remember_statuses=_REMEMBER_STATUSES,
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -31,6 +31,7 @@ substitute when nothing fresh is on record.
 
 from __future__ import annotations
 
+import threading
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -38,6 +39,16 @@ from typing import Any, Callable
 from ..core.utils import atomic_write_json, ensure_dir, read_json, utc_now_iso
 
 DEFAULT_STORE_PATH = Path("reports") / "external_lookup" / "memory" / "memory_store.json"
+
+# ddi_flag_evidence.py now fires a pair's PubMed/ClinicalTrials.gov/Tavily lookups
+# concurrently (ThreadPoolExecutor, up to 3 workers), so `remember` below -- a full
+# read-modify-write of the single shared store file -- can now run from more than one
+# thread at the same time. Without this lock, two threads that each read the store
+# before either had written would both write back a version missing the other's new
+# key, silently dropping one of the two cache entries (not a data-corruption risk --
+# `atomic_write_json` still writes a complete, valid file either way -- but a real
+# lost-update race that would quietly erode cache effectiveness run over run).
+_STORE_WRITE_LOCK = threading.Lock()
 
 # How long a stored finding is considered fresh enough to recall without
 # re-verifying live. 30 days matches this task's requirement -- long enough
@@ -112,14 +123,15 @@ def remember(
     -- the caller already has the live result in hand and must not fail
     the lookup just because remembering it for next time didn't work."""
     try:
-        store = _load_store(store_path)
-        store[_make_key(source, term)] = {
-            "result": result,
-            "stored_at": utc_now_iso(),
-            "retrieval_date": result.get("retrieved_at"),
-        }
-        ensure_dir(store_path.parent)
-        atomic_write_json(store_path, store)
+        with _STORE_WRITE_LOCK:
+            store = _load_store(store_path)
+            store[_make_key(source, term)] = {
+                "result": result,
+                "stored_at": utc_now_iso(),
+                "retrieval_date": result.get("retrieved_at"),
+            }
+            ensure_dir(store_path.parent)
+            atomic_write_json(store_path, store)
     except Exception:
         return
 
