@@ -12,3 +12,7 @@ reports/external_evidence/.cache/
 # Long-term memory store for external_lookup (memory_store.py, 30-day TTL) --
 # real findings, but re-fetchable from the live APIs, not a deliverable.
 reports/external_lookup/memory/
+
+# Local GGUF model weights (468 MB, exceeds GitHub 100 MB limit)
+reports/external_lookup/.gguf_models/
+*.gguf

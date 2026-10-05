@@ -1242,22 +1242,3 @@ def test_build_report_excludes_skipped_clinicaltrials_from_the_fallback_gate(mon
     for entry in report["by_drug"]:
         assert entry["clinicaltrials_gov"]["status"] == "skipped"
         assert entry["web_search_fallback"] is not None, "pubmed+dailymed no_results alone must still trigger the fallback"
-
-
-def test_find_drug_mention_context_covers_every_mention_with_wider_text():
-    filler = "Unrelated interaction text about other drug classes. " * 30
-    section = (
-        "Strong CYP3A4 inducers (e.g., carbamazepine) decreased exposure of the subject drug. "
-        + filler
-        + "Dosage: when carbamazepine is added, double the dose; reduce it if carbamazepine is withdrawn."
-    )
-    context = dailymed_lookup.find_drug_mention_context(section, "carbamazepine", window=200)
-    assert "decreased exposure" in context
-    assert "double the dose" in context  # second, distant mention is included too
-    assert "..." not in context
-    assert len(context) > len(dailymed_lookup.find_drug_mention_excerpt(section, "carbamazepine"))
-
-
-def test_find_drug_mention_context_rejects_absent_or_substring_only_drug():
-    assert dailymed_lookup.find_drug_mention_context("Mentions lamotrigineXR only.", "lamotrigine") is None
-    assert dailymed_lookup.find_drug_mention_context("", "lamotrigine") is None

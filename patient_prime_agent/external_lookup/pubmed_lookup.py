@@ -413,7 +413,51 @@ def pick_results_or_conclusion_text(sections: dict[str, str]) -> str | None:
     return None
 
 
-def describes_genuine_combination(sections: dict[str, str]) -> bool:
+_BACKGROUND_LABELS = frozenset(
+    {"BACKGROUND", "INTRODUCTION", "OBJECTIVE", "OBJECTIVES", "PURPOSE", "AIM", "AIMS", "CONTEXT", "RATIONALE"}
+)
+
+
+def _names_both(sentence: str, drug_a: str, drug_b: str) -> bool:
+    lowered = sentence.lower()
+    return all(re.search(r"\b" + re.escape(name.lower()) + r"\b", lowered) for name in (drug_a, drug_b))
+
+
+def _joined_directly(text: str, drug_a: str, drug_b: str) -> bool:
+    """"Drug A plus Drug B", "Drug A/Drug B", "Drug A + Drug B", "Drug A with Drug B". Never a
+    bare "and": "aripiprazole and haloperidol were given to separate groups" names two
+    drugs studied side by side, not together (a real case this rejected)."""
+    a, b = re.escape(drug_a.lower()), re.escape(drug_b.lower())
+    joiner = r"\s*(?:\+|/|-|\bplus\b|\bwith\b)\s*"
+    return bool(re.search(rf"\b{a}\b{joiner}\b{b}\b|\b{b}\b{joiner}\b{a}\b", text.lower()))
+
+
+def describes_genuine_combination(sections: dict[str, str], drug_a: str | None = None, drug_b: str | None = None) -> bool:
+    """With the pair's drug names (SKILL.md Part 4's co-occurrence check):
+    both drugs must be named together in the title, Methods, Results or
+    Conclusion -- never only in Background/Objective text, which describes
+    prior literature -- and the abstract must describe them genuinely given
+    together (combination wording, or the two names joined directly as in
+    "Drug A plus Drug B"). Rejects a review that merely lists both among many
+    agents, and a comparator design (Drug A *vs.* Drug B). Without names it
+    falls back to the phrase-only check below."""
+    if drug_a and drug_b:
+        evidence = {k: v for k, v in sections.items() if v and k.upper() not in _BACKGROUND_LABELS}
+        sentences = [s for text in evidence.values() for s in re.split(r"(?<=[.!?])\s+", text)]
+        together = [s for s in sentences if _names_both(s, drug_a, drug_b)]
+        if not together:
+            return False
+        evidence_text = " ".join(evidence.values()).lower()
+        if any(_joined_directly(s, drug_a, drug_b) for s in together):
+            return not (
+                any(p in evidence_text for p in _COMPARATOR_PHRASES)
+                and not any(p in evidence_text for p in _COMBINATION_PHRASES)
+            )
+        return any(phrase in evidence_text for phrase in _COMBINATION_PHRASES)
+    return _describes_combination_by_phrases(sections)
+
+
+def _describes_combination_by_phrases(sections: dict[str, str]) -> bool:
     """True when this abstract's own text describes ``drug_a`` and
     ``drug_b`` genuinely administered or evaluated *together* -- not merely
     two drugs that both appear somewhere in the same paper.

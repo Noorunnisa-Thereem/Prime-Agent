@@ -175,27 +175,16 @@ verbatim -- never paraphrased or cleaned up into prose the source doesn't
 itself contain (the same rule the original 16-pair version of this module
 already applied).
 
-Evidence/Finding Agent (opt-in, disabled by default)
-------------------------------------------------------
-``_pair_finding`` hands the winning candidate's own text to
-``path_d.ddi.finding_agent.FindingAgent`` after classification, not before
--- Positive/Negative Impact, ``evidence_labels``, and ``hyperlink_url`` are
-decided exactly as described above regardless of whether this agent is
-enabled. When enabled (``PRIME_AGENT_DDI_FINDING_AGENT=1`` -- a dedicated
-flag, independent of this project's existing ``PRIME_AGENT_ENABLE_LLM``;
-see ``finding_agent.py``'s own docstring for why), the agent reads that
-same candidate text and SKILL.md's own Part 6 ("Finding-text generation")
-and returns a concise, pair-specific Finding sentence instead of the raw
-verbatim text -- grounded in, never beyond, what that candidate's text
-already said. Disabled (the default), it returns that text unchanged, so
-the Finding is byte-identical to the pipeline's behaviour before this
-agent existed.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
+import threading
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from itertools import combinations
@@ -215,26 +204,237 @@ DEFAULT_OUTPUT_PATH = Path("reports") / "drug_interaction_flags" / "Flag_Sheet_L
 
 _TAVILY_EVIDENCE_LABEL = "General web search (Tavily)"
 
-# Explicit keyword/fragment lists -- see the module docstring's "Positive
-# vs. Negative Impact classification" section. Deliberately matched in
-# breadth and style to each other: both are a mix of a few exact phrases
-# and short word-fragments that catch multiple real inflections (e.g.
-# "tolerat" catches "tolerated"/"tolerating", "tolerab" catches
-# "tolerable"/"tolerability") -- an earlier version of this list was much
-# narrower on the positive side (8 mostly-exact phrases vs. 14 broad
-# fragments on the negative side), which meant a real positive-sounding
-# title almost never matched while an incidental negative-sounding word
-# anywhere in an unrelated title often did. Checked positive-first (see
-# _classify_text) -- unchanged from before -- so a title naming both an
-# efficacy word and a risk word (the reference report's own worked example:
-# "...may increase lamotrigine levels, and the combination can be
-# effective...") still resolves Positive, matching that precedent; this is
-# a known, accepted tradeoff, not an oversight.
+DEFAULT_GENETICS_PATH = Path("reports") / "genetics" / "genetics_clinical_summary.json"
+_PGX_ENZYME_ROLES = ("substrate", "inhibitor", "inducer")
+# SKILL.md Part 3: PGx is patient-specific context beside a pair, never a pair verdict.
+PGX_CONTEXT_STATUS = "predicted"
+
+
+def evidence_status(primary_evidence_label: str) -> str:
+    """SKILL.md Part 5 tag for the source a Finding came from: ``curated`` (label,
+    Flockhart table, pharmacodynamic rule) or ``inferred`` (literature, trial registry,
+    general web search -- Tavily is never ``curated``). PGx is not a Finding source
+    here; its context lines carry their own ``predicted`` tag (``PGX_CONTEXT_STATUS``)."""
+    if primary_evidence_label.startswith(("Curated DDI", "Pharmacodynamic interaction reference", "DailyMed label")):
+        return "curated"
+    return "inferred"
+
+
+# Other names for the same drug. Without these the exactly-two-drugs rule only sees the exact
+# screened name: a real mouse study "...fluoxetine on the anticonvulsant action of VALPROATE and
+# ethosuximide" slipped through as a two-drug pair because the screened name is "valproic acid".
+_DRUG_ALIASES: dict[str, tuple[str, ...]] = {
+    "valproic acid": ("valproate", "sodium valproate", "valproate sodium", "divalproex", "divalproex sodium"),
+    "lithium": ("lithium carbonate",),
+}
+# Standard literature abbreviations, matched case-sensitively and only as whole words.
+_DRUG_ABBREVIATIONS: dict[str, str] = {
+    "VPA": "valproic acid", "CBZ": "carbamazepine", "LTG": "lamotrigine", "LEV": "levetiracetam",
+    "OXC": "oxcarbazepine", "PHT": "phenytoin", "ETX": "ethosuximide", "FXT": "fluoxetine", "FLX": "fluoxetine",
+    "ATX": "atomoxetine", "MPH": "methylphenidate",
+}
+
+
+def _canonical_drug(name: str) -> str:
+    name = name.strip().lower()
+    for canonical, aliases in _DRUG_ALIASES.items():
+        if name == canonical or name in aliases:
+            return canonical
+    return name
+
+
+def known_drug_names(medications: list[Medication], genetics: dict[str, Any] | None) -> frozenset[str]:
+    """Drug names the exactly-two-drugs rule can recognise in a source's text: every
+    screened drug plus every drug on the patient's PGx panel, with their alternate names. A
+    third drug outside this set is not detected -- there is no general drug dictionary in
+    this codebase."""
+    names = {name.lower() for m in medications for name in (_display_name(m), m.normalized_name) if name}
+    names |= set(_pgx_rows_by_drug(genetics or {}))
+    names = {n.strip() for n in names if n and n.strip()}
+    for canonical, aliases in _DRUG_ALIASES.items():
+        if canonical in names:
+            names.update(aliases)
+    return frozenset(names)
+
+
+def _third_drug_in(text: str | None, drug_a: str, drug_b: str, known_drugs: frozenset[str] | None) -> str | None:
+    """SKILL.md Part 4 "Exactly-two-drugs rule": the first known drug other than the
+    pair named in ``text``, or None. Word-bounded, so one drug name inside another
+    (e.g. a racemate's name inside its enantiomer's) never matches on its own; the
+    pair's own alternate names and abbreviations are never a third drug."""
+    if not text or not known_drugs:
+        return None
+    lowered = text.lower()
+    pair = {_canonical_drug(drug_a), _canonical_drug(drug_b)}
+    for name in sorted(known_drugs):
+        if _canonical_drug(name) not in pair and re.search(r"\b" + re.escape(name) + r"\b", lowered):
+            return name
+    known_canonical = {_canonical_drug(n) for n in known_drugs}
+    for abbreviation, canonical in _DRUG_ABBREVIATIONS.items():
+        if canonical in known_canonical and canonical not in pair and re.search(r"\b" + abbreviation + r"\b", text):
+            return canonical
+    return None
+
+
+def _other_substance_in(text: str | None, drug_a: str, drug_b: str, known_drugs: frozenset[str] | None) -> str | None:
+    """SKILL.md Part 4 "Pair-identity rule", applied to a generated Finding: the first substance
+    named in ``text`` that is not one of the pair's own -- a known third drug, or a word that
+    contains / is contained in a pair drug's name (a racemate for its enantiomer, a prodrug,
+    another salt). Such a name means the Finding carries an outcome from a related substance."""
+    if not text:
+        return None
+    other = _third_drug_in(text, drug_a, drug_b, known_drugs)
+    if other:
+        return other
+    pair_names = {n for d in (drug_a, drug_b) for n in (_canonical_drug(d), d.strip().lower()) if n}
+    pair_names |= {alias for d in (drug_a, drug_b) for alias in _DRUG_ALIASES.get(_canonical_drug(d), ())}
+    for token in set(re.findall(r"[a-z][a-z-]{5,}", text.lower())):
+        if token in pair_names:
+            continue
+        for name in pair_names:
+            if len(name) >= 6 and (name in token or token in name):
+                return token
+    return None
+
+
+# Why a candidate source was NOT used for a pair, counted per run so that "the checks are
+# actually firing" can be verified from the report rather than taken on trust.
+_REJECTION_COUNTS: Counter[str] = Counter()
+_REJECTION_LOCK = threading.Lock()
+
+
+def _reject(source: str, reason: str) -> None:
+    with _REJECTION_LOCK:
+        _REJECTION_COUNTS[f"{source}:{reason}"] += 1
+
+
+_ANIMAL_TERMS = re.compile(
+    r"\b(?:rats?|mice|mouse|murine|rodents?|hamsters?|guinea pigs?|rabbits?|canine|beagles?|porcine|piglets?|monkeys?|"
+    r"macaques?|zebrafish|drosophila|in[- ]vitro|cell lines?|cell cultures?|cultured (?:cells|neurons)|sh-sy5y|hek ?293|"
+    r"animal models?|preclinical|wistar|sprague[- ]dawley|c57bl)\b",
+    re.IGNORECASE,
+)
+_HUMAN_STUDY_MARKERS = re.compile(
+    r"\b(?:healthy (?:volunteers|subjects|participants)|case report|case series|were enrolled|patients (?:were|received|with)|"
+    r"participants (?:were|received)|double-blind|randomi[sz]ed (?:controlled|placebo|clinical)|clinical trial|"
+    r"children and adolescents|adults? (?:with|aged))\b",
+    re.IGNORECASE,
+)
+
+
+def _non_human_evidence(text: str | None) -> bool:
+    """SKILL.md Part 4 "Human-evidence-only rule": an animal or cell/in-vitro study does not
+    count for a pair. True when the study text names an animal or cell system and carries no
+    marker of human subjects. Heuristic: a study using animals AND humans passes."""
+    return bool(text) and bool(_ANIMAL_TERMS.search(text)) and not _HUMAN_STUDY_MARKERS.search(text)
+
+
+def _inferred_source_rejection(text: str, reading: str, drug_a: str, drug_b: str, known_drugs: frozenset[str] | None) -> str | None:
+    """Hard gates for a literature/trial/web candidate, applied to both the short text and the
+    fuller text the agent reads: human evidence only, exactly two drugs."""
+    for candidate in (text, reading):
+        if _non_human_evidence(candidate):
+            return "animal_or_cell_study"
+        if drug_a and drug_b and _third_drug_in(candidate, drug_a, drug_b, known_drugs):
+            return "third_drug"
+    return None
+
+
+def _pgx_rows_by_drug(genetics: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+    """The patient's significant PGx rows, keyed by lower-cased drug name, each
+    with its gene symbol parsed from ``genetic_basis`` ("GSK3B (AG)" -> "GSK3B")."""
+    rows: dict[str, list[dict[str, Any]]] = {}
+    for entries in (genetics.get("findings_by_therapeutic_class") or {}).values():
+        for row in entries or []:
+            if not isinstance(row, dict) or not row.get("significant"):
+                continue
+            drug = str(row.get("drug") or "").strip().lower()
+            gene = str(row.get("genetic_basis") or "").split("(")[0].strip()
+            if drug and gene:
+                rows.setdefault(drug, []).append({**row, "gene": gene})
+    return rows
+
+
+def pgx_source_note(genetics: dict[str, Any] | None, path: Path = DEFAULT_GENETICS_PATH) -> dict[str, Any]:
+    """Where this report's PGx findings come from, stated from the PGx file's own metadata
+    (item: the report must say whether PGx is patient-specific or pooled with external sources)."""
+    genetics = genetics or {}
+    patient = genetics.get("patient") or {}
+    return {
+        "file": str(path).replace("\\", "/"),
+        "document": genetics.get("report_type"),
+        "report_date": patient.get("report_date"),
+        "loci_analyzed": patient.get("variants_analyzed"),
+        "drugs_covered": patient.get("drugs_covered"),
+        "origin": "patient-specific: this patient's own PGx panel (genotype cross-referenced against the PGx source report's gene-drug annotations)",
+        "pooled_with_external_sources": False,
+        "traceability": "Each finding keeps the PMID/PMCID citation the PGx report attaches to it, shown in its context line. "
+        "CPIC and ClinVar are not pooled into this section (see the Pharmacogenomics section).",
+        "role": "context only -- PGx never decides a pair's Positive or Negative Impact (SKILL.md Part 3)",
+    }
+
+
+def _pgx_context(
+    display_a: str, display_b: str, normalized_a: str, normalized_b: str, rows_by_drug: dict[str, list[dict[str, Any]]]
+) -> dict[str, Any] | None:
+    """SKILL.md Part 3: this patient's PGx findings shown beside a pair -- as context, never
+    a verdict -- and only when the two drugs' findings are genuinely linked: both name the
+    same gene, or one drug's gene is an enzyme the curated reference lists the other drug as
+    a substrate/inhibitor/inducer of. Unlinked findings, or a pair where only one drug has a
+    row, return None. Every finding keeps its own genotype, effect and citation."""
+    rows_a = rows_by_drug.get(display_a.lower(), [])
+    rows_b = rows_by_drug.get(display_b.lower(), [])
+    if not rows_a or not rows_b:
+        return None
+
+    linked: list[tuple[str, dict[str, Any]]] = []
+    reasons: list[str] = []
+    shared_genes = sorted({r["gene"] for r in rows_a} & {r["gene"] for r in rows_b})
+    for gene in shared_genes:
+        linked += [(display_a, r) for r in rows_a if r["gene"] == gene] + [(display_b, r) for r in rows_b if r["gene"] == gene]
+    if shared_genes:
+        reasons.append(f"both drugs carry a finding for the shared gene {', '.join(shared_genes)}")
+    for subject, rows, other, other_norm in ((display_a, rows_a, display_b, normalized_b), (display_b, rows_b, display_a, normalized_a)):
+        enzymes = {
+            rel.get("enzyme"): rel.get("role")
+            for rel in reference_data.curated_cyp_relationships(other_norm)
+            if rel.get("role") in _PGX_ENZYME_ROLES
+        }
+        for row in rows:
+            if row["gene"] in enzymes and row["gene"] not in shared_genes:
+                linked.append((subject, row))
+                reasons.append(f"the curated reference lists {other} as a {enzymes[row['gene']]} of {row['gene']}")
+    if not linked:
+        return None
+
+    seen: set[tuple[str, str, str]] = set()
+    findings = []
+    for drug, row in linked:
+        key = (drug, str(row.get("genetic_basis")), str(row.get("predicted_effect")))
+        if key in seen:
+            continue
+        seen.add(key)
+        findings.append(
+            {
+                "drug": drug,
+                "gene": row["gene"],
+                "genotype": row.get("genetic_basis"),
+                "predicted_effect": row.get("predicted_effect"),
+                "citation": row.get("citation"),
+            }
+        )
+    return {"status": PGX_CONTEXT_STATUS, "link": "; ".join(reasons), "findings": findings}
+
+
+
 _POSITIVE_KEYWORDS: tuple[str, ...] = (
     "well tolerated", "well-tolerated", "generally safe", "safe and effective",
     "additive seizure control", "compatible", "favorable outcome", "favorable",
     "effective", "efficacy", "tolerat", "tolerab", "improv", "benefit",
     "successful", "manageable",
+    # Comparative/response wording a real efficacy result uses (audit of real report text:
+    # "Response to treatment was significantly better in ..." resolved nothing).
+    "significantly better", "superior to", "remission",
 )
 # Deliberately NOT positive keywords: "no significant interaction" / "no clinically
 # significant [interaction]" -- removed (a real fix, not an oversight). A source stating
@@ -247,6 +447,16 @@ _POSITIVE_KEYWORDS: tuple[str, ...] = (
 _NEGATIVE_KEYWORDS: tuple[str, ...] = (
     "decrease", "decreas", "reduc", "increase", "increas", "risk", "toxicity", "adverse",
     "caution", "contraindicat", "impair", "danger", "worsen", "overdose",
+    # Interaction outcomes the original list missed (audit of real report text: a case report
+    # of "subtherapeutic levels" and a warning to monitor for serotonin syndrome both resolved
+    # nothing). All name a harm or a failure of therapy, never a neutral change.
+    "toxic", "subtherapeutic", "supratherapeutic", "serotonin syndrome", "serotonin-syndrome",
+    "qt prolong", "qtc prolong", "prolonged qt", "respiratory depression", "sedation", "sedative",
+    # "potentiate" (not "potentiat"): must not match "long-term potentiation". Deficits are
+    # listed by kind: a bare "deficit" would flag every "attention-deficit" (ADHD) abstract.
+    "potentiate", "elevat", "accelerat", "memory deficit", "cognitive deficit", "motor deficit",
+    "deficits induced", "bleeding", "not recommended",
+    "should be avoided", "avoid concomitant", "avoid coadministration", "avoid the combination",
 )
 
 
@@ -347,26 +557,129 @@ def _is_retracted(text: str | None) -> bool:
     return isinstance(text, str) and "retracted" in text.lower()
 
 
-def _classify_text(text: str | None) -> str | None:
-    """Positive/Negative/None (unclassifiable) for one piece of real
-    evidence text -- a PubMed title, a Flockhart curated-mechanism
-    statement, or a pharmacodynamic-rule's expected-consequence summary.
-    Used uniformly across all three pair-level sources (see
-    _pair_finding): a Flockhart or pharmacodynamic-rule finding is
-    evaluated on its own text, exactly like a PubMed title, never assumed
-    Negative purely because of which source produced it. See the module
-    docstring for why an unmatched text resolves nothing (the caller falls
-    through to the next candidate rather than guessing). Does not itself
-    check for a retracted citation -- see _is_retracted, which the caller
-    checks first."""
+# Phrases checked before single keywords, so "reduced seizure frequency" (a benefit) is never
+# also counted as the risk word "reduc", and "no significant interaction" is read as a whole.
+_BENEFIT_PHRASE = (
+    r"(?:reduc|decreas|lower|improv)\w*\s+(?:[\w-]+\s+){0,3}?(?:risk|frequency|severity|incidence|occurrence|number"
+    r"|symptoms?|seizures?|attacks?|nausea|vomiting|depressi\w*|anxiety|pain|relapse|irritability|aggression|mania)"
+)
+_NO_INTERACTION_PHRASE = (
+    r"no\s+(?:clinically\s+)?(?:significant|meaningful|relevant|important)\s+(?:pharmacokinetic\s+|drug[- ]drug\s+)?interaction"
+    r"|did\s+not\s+significantly\s+(?:affect|alter|change)|(?:was|were)\s+not\s+significantly\s+(?:affected|altered|changed)"
+    r"|no\s+(?:dose|dosage)\s+adjustment|(?:does|do)\s+not\s+require\s+(?:a\s+)?(?:dose|dosage)\s+adjustment"
+)
+_INTERACTION_PHRASE = r"(?:clinically\s+)?significant\s+(?:pharmacokinetic\s+|drug[- ]drug\s+)?interaction"
+# A stated "no difference / no change / no effect" -- the affirmative no-interaction outcome
+# (SKILL.md Part 6-style evaluated statement), never mere silence.
+_NO_DIFFERENCE_PHRASE = (
+    r"no\s+(?:clinically\s+)?(?:significant|meaningful|relevant|important)\s+(?:differences?|changes?|effects?|alterations?|impacts?)"
+    r"|not\s+significantly\s+different|did\s+not\s+differ\s+significantly|no\s+evidence\s+of\s+(?:an?\s+)?interaction"
+)
+# SKILL.md Part 2: a stated mechanism of interaction -- an enzyme or transporter being inhibited
+# or induced -- is itself a documented interaction. Deliberately specific: a bare "inhibitor"
+# would also match every class name ("selective serotonin reuptake inhibitor").
+_MECHANISM_PHRASE = (
+    r"(?:inhibit|induc)\w*\s+(?:of\s+)?(?:cyp\s?\w*|p450|cytochrome|ugt\w*|p-?gp|p-glycoprotein|the\s+metabolism|metabolism)"
+    r"|(?:strong|moderate|potent|weak|prototype)\s+(?:cyp\s?\w+\s+)?(?:inhibitors?|inducers?)"
+    r"|cyp\s?\w+\s+(?:inhibitors?|inducers?)"
+    r"|enzyme\s+(?:induction|inhibition)"
+)
+# Pharmacokinetic quantity changed: unambiguous because the object is a drug level, not an
+# outcome -- "increased plasma concentrations", "exposure ... could increase".
+_PK_QUANTITY = r"(?:concentrations?|levels?|exposure|auc|cmax|clearance|half-life|plasma|serum)"
+_PK_CHANGE_PHRASE = (
+    r"(?:increas|decreas|reduc|elevat|rais|lower|rose|fell)\w*\s+(?:[\w-]+\s+){0,3}?" + _PK_QUANTITY +
+    r"|" + _PK_QUANTITY + r"\s+(?:of\s+[\w-]+\s+)?(?:could|may|might|can|will|was|were|is|are)?\s*(?:increas|decreas|reduc|elevat|rais|lower)\w*"
+)
+# A stated dosing consequence of the combination ("dosage adjustment ... may be necessary").
+_DOSE_CHANGE_PHRASE = (
+    r"(?:dos(?:e|age)\s+(?:adjustment|reduction|increase|modification|change)|(?:increase|decrease|reduce|adjust)\s+(?:the\s+)?dos(?:e|age))"
+    r"[^.;]{0,90}?(?:may|might|should|will|must)\s+(?:be\s+)?(?:necessary|required|needed|recommended|considered)"
+)
+_NEGATION_WORDS = re.compile(
+    r"\b(?:no|not|non|without|never|neither|nor|lack|absence|failed|unlikely|cannot)\b|n't\b"
+)
+_KEYWORD_PATTERN = re.compile(
+    "(?P<nointeraction>" + _NO_INTERACTION_PHRASE + "|" + _NO_DIFFERENCE_PHRASE + ")"
+    "|(?P<benefit>" + _BENEFIT_PHRASE + ")"
+    "|(?P<pk>" + _PK_CHANGE_PHRASE + ")"
+    "|(?P<mech>" + _MECHANISM_PHRASE + ")"
+    "|(?P<dose>" + _DOSE_CHANGE_PHRASE + ")"
+    "|(?P<interaction>" + _INTERACTION_PHRASE + ")"
+    "|(?P<pos>" + "|".join(re.escape(k) for k in sorted(_POSITIVE_KEYWORDS, key=len, reverse=True)) + ")"
+    "|(?P<neg>" + "|".join(re.escape(k) for k in sorted(_NEGATIVE_KEYWORDS, key=len, reverse=True)) + ")"
+)
+
+
+# Warning words whose negation only says a concern was not raised -- not an outcome.
+_SILENCE_WORDS = frozenset({"risk", "caution", "danger", "contraindicat"})
+
+
+def _is_negated(lowered: str, start: int) -> bool:
+    """True when a negation word sits within the 4 words before ``start``, in
+    the same clause -- "was **not** well tolerated", "did **not** increase"."""
+    window = lowered[max(0, start - 80) : start]
+    for boundary in ".;:,":
+        window = window.rsplit(boundary, 1)[-1]
+    return bool(_NEGATION_WORDS.search(" ".join(window.split()[-4:])))
+
+
+def _sentence_verdict(sentence: str, allow_positive: bool) -> str | None:
+    """"positive" / "negative" / "mixed" / None for one sentence."""
+    lowered = sentence.lower()
+    pos = neg = 0
+    for match in _KEYWORD_PATTERN.finditer(lowered):
+        kind = match.lastgroup
+        negated = _is_negated(lowered, match.start())
+        if kind == "nointeraction":
+            pos += 1  # already a negated phrase ("no significant interaction")
+        elif kind == "benefit":
+            if negated:
+                neg += 1  # "did not improve symptoms"
+            else:
+                pos += 1
+        elif kind in ("interaction", "neg", "pk", "mech", "dose"):
+            if not negated:
+                neg += 1
+            elif kind == "interaction" or match.group(0) not in _SILENCE_WORDS:
+                pos += 1  # "no significant interaction", "did not increase", "no adverse events"
+            # else: "without caution", "no risk" -- the source just doesn't raise a concern.
+            # That is silence, which SKILL.md Part 4 says is never evidence the pair is fine.
+        elif kind == "pos":
+            if negated:
+                neg += 1  # "not well tolerated", "no improvement", "no benefit"
+            else:
+                pos += 1
+    if not allow_positive:
+        return "negative" if neg else None
+    if pos and neg:
+        return "mixed"
+    return "positive" if pos else "negative" if neg else None
+
+
+def _classify_text(text: str | None, *, allow_positive: bool = True) -> str | None:
+    """Positive / Negative / None (unresolved) for one source's own evidence
+    text, following SKILL.md Part 4.
+
+    - **Negation-aware**: "no significant interaction was observed" and "a
+      significant interaction was observed" classify oppositely; "not well
+      tolerated" is never read as "well tolerated".
+    - **Conclusion-weighted, not conclusion-only**: each sentence gets its own
+      verdict. The pair resolves only when the sentences that take a clear side
+      agree -- a Conclusion contradicted by its own Results resolves nothing.
+    - **Curated sources** (a label, the Flockhart table, a pharmacodynamic rule)
+      pass ``allow_positive=False``: they only ever state known risks, so they
+      can establish Negative but never Positive (Part 4 tier 2). A real bug this
+      fixes: a label line ending "...monitor clinical response and tolerability"
+      used to classify Positive purely on the word "tolerab".
+
+    Unresolved text makes the caller fall through to the next source rather
+    than guess. Does not check for retraction -- see ``_is_retracted``."""
     if not isinstance(text, str) or not text.strip():
         return None
-    lowered = text.lower()
-    if any(keyword in lowered for keyword in _POSITIVE_KEYWORDS):
-        return "positive"
-    if any(keyword in lowered for keyword in _NEGATIVE_KEYWORDS):
-        return "negative"
-    return None
+    sentences = [s for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
+    verdicts = {_sentence_verdict(s, allow_positive) for s in sentences} - {None, "mixed"}
+    return verdicts.pop() if len(verdicts) == 1 else None
 
 
 def _pubmed_finding_and_url(
@@ -375,6 +688,9 @@ def _pubmed_finding_and_url(
     cache_dir: Path,
     refresh: bool,
     memory_path: Path,
+    display_a: str | None = None,
+    display_b: str | None = None,
+    known_drugs: frozenset[str] | None = None,
 ) -> tuple[str | None, str | None]:
     """The pair's PubMed-sourced Finding text and URL -- the paper's own
     Results/Conclusions text (``pubmed_lookup.fetch_abstract_sections`` +
@@ -413,17 +729,27 @@ def _pubmed_finding_and_url(
             sections = dict(abstract_result["records"][0].get("sections") or {})
             if title_text:
                 sections.setdefault("TITLE", title_text)
-            if not pubmed_lookup.describes_genuine_combination(sections):
+            if not pubmed_lookup.describes_genuine_combination(sections, display_a, display_b):
+                _reject("pubmed", "not_studied_together")
+                return None, None
+            # The study itself (title, Methods, Results, Conclusion -- not Background, which
+            # describes prior work) must be human evidence (Part 4 human-evidence-only rule)
+            # and involve only this pair (exactly-two-drugs rule).
+            study_text = " ".join(v for k, v in sections.items() if v and k.upper() not in pubmed_lookup._BACKGROUND_LABELS)
+            if _non_human_evidence(study_text):
+                _reject("pubmed", "animal_or_cell_study")
+                return None, None
+            if display_a and display_b and _third_drug_in(study_text, display_a, display_b, known_drugs):
+                _reject("pubmed", "third_drug")
                 return None, None
             finding_text = pubmed_lookup.pick_results_or_conclusion_text({k: v for k, v in sections.items() if k != "TITLE"})
             if finding_text:
                 return finding_text, url
 
-    # No abstract available -- the title alone still must not describe an explicit
-    # comparator-only design before being trusted as a (lower-confidence) Finding.
-    if title_text and not pubmed_lookup.describes_genuine_combination({"TITLE": title_text}):
-        return None, None
-    return title_text, url
+    # No abstract, or no Results/Conclusion in it: SKILL.md Part 4 -- a title is never enough
+    # on its own (it states what a paper set out to do, not what it found).
+    _reject("pubmed", "no_usable_abstract")
+    return None, None
 
 
 def _trials_finding_and_url(
@@ -448,8 +774,6 @@ def _trials_finding_and_url(
     if trials_result.get("status") != "ok" or not trials_result.get("records"):
         return None, None
     record = trials_result["records"][0]
-    title = record.get("brief_title")
-    title_text = title if isinstance(title, str) and title.strip() else None
     url = record.get("url")
 
     nct_id = record.get("nct_id")
@@ -459,11 +783,14 @@ def _trials_finding_and_url(
         )
         if outcome_result.get("status") == "ok" and outcome_result.get("records"):
             outcome_record = outcome_result["records"][0]
-            text = outcome_record.get("summary") or outcome_record.get("note")
-            if text:
-                return text, (outcome_record.get("url") or url)
+            # Only posted results are an outcome. A "results not posted" note, or the
+            # trial's title, says what the trial set out to do -- SKILL.md Part 4: never
+            # enough on its own to resolve a pair.
+            if outcome_record.get("summary"):
+                return outcome_record["summary"], (outcome_record.get("url") or url)
 
-    return title_text, url
+    _reject("trials", "no_posted_results")
+    return None, None
 
 
 def _tavily_finding_and_url(
@@ -472,6 +799,9 @@ def _tavily_finding_and_url(
     cache_dir: Path,
     refresh: bool,
     memory_path: Path,
+    display_a: str | None = None,
+    display_b: str | None = None,
+    known_drugs: frozenset[str] | None = None,
 ) -> tuple[str | None, str | None]:
     """``tavily_envelope`` is ``search_tools.search_tavily``'s own unified
     envelope shape (``{"status", "result": {"records": [...]}, ...}``), not
@@ -522,14 +852,36 @@ def _tavily_finding_and_url(
 
     page_result = search_tools.fetch_general_page_text(url, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
     if page_result.get("status") != "ok" or not page_result.get("records"):
+        _reject("tavily", "page_unreadable")
         return None, None
 
     page_text = page_result["records"][0].get("page_text")
     if not page_text:
+        _reject("tavily", "page_unreadable")
         return None, None
 
     excerpt = pubmed_lookup.find_combination_excerpt(page_text, max_sentences=2)
     if not excerpt:
+        _reject("tavily", "no_combination_text")
+        return None, None
+    # SKILL.md Part 4: a title is never enough -- and a page's own title (or its navigation
+    # text) often sits at the top of the fetched page text, where the combination phrase
+    # search can land on it. Real case: "Caution in co-administration of aripiprazole and
+    # lithium ... - MedCrave online --> --> About Us . Paper Submission ." was published
+    # as a Finding. Drop the title, reject page chrome, and require a real sentence left.
+    title = str(record.get("title") or "").strip()
+    remainder = excerpt
+    for piece in {title, title.split(" - ")[0].strip(), title.split(" | ")[0].strip()}:
+        if len(piece) > 15:
+            remainder = re.sub(re.escape(piece), " ", remainder, flags=re.IGNORECASE)
+    if "-->" in remainder or len(remainder.split()) < 8:
+        _reject("tavily", "page_title_or_navigation_only")
+        return None, None
+    # Exactly-two-drugs rule: the page's title names what the study is about. A real case: an
+    # excerpt that only said "FXT, antiepileptic drugs ... VPA" came from a page titled "Effects
+    # of fluoxetine on the anticonvulsant action of valproate and ethosuximide".
+    if display_a and display_b and _third_drug_in(title, display_a, display_b, known_drugs):
+        _reject("tavily", "third_drug")
         return None, None
 
     return excerpt, url
@@ -622,6 +974,7 @@ def _fetch_pubmed_candidate(
     cache_dir: Path,
     refresh: bool,
     memory_path: Path,
+    known_drugs: frozenset[str] | None = None,
 ) -> tuple[dict[str, Any], str | None, str | None]:
     """One pair's PubMed lookup + its own finding/url extraction, bundled so
     ``build_report`` can run it on a worker thread alongside the
@@ -630,7 +983,10 @@ def _fetch_pubmed_candidate(
     sequential, confirmed via live process inspection: a single TCP
     connection open at a time for the whole pipeline run)."""
     pubmed_result = pubmed_lookup.search_pubmed_drug_pair(display_a, display_b, cache_dir=cache_dir, memory_path=memory_path, refresh=refresh)
-    pubmed_title, pubmed_url = _pubmed_finding_and_url(pubmed_result, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+    pubmed_title, pubmed_url = _pubmed_finding_and_url(
+        pubmed_result, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path, display_a=display_a, display_b=display_b,
+        known_drugs=known_drugs,
+    )
     return pubmed_result, pubmed_title, pubmed_url
 
 
@@ -656,11 +1012,15 @@ def _fetch_tavily_candidate(
     cache_dir: Path,
     refresh: bool,
     memory_path: Path,
+    known_drugs: frozenset[str] | None = None,
 ) -> tuple[dict[str, Any], str | None, str | None]:
     tavily_result = search_tools.search_tavily(
         f"{display_a} AND {display_b} drug interaction", cache_dir=cache_dir, memory_path=memory_path, refresh=refresh
     )
-    tavily_title, tavily_url = _tavily_finding_and_url(tavily_result, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+    tavily_title, tavily_url = _tavily_finding_and_url(
+        tavily_result, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path,
+        display_a=display_a, display_b=display_b, known_drugs=known_drugs,
+    )
     return tavily_result, tavily_title, tavily_url
 
 
@@ -725,6 +1085,19 @@ def _dailymed_mention_result(
     }
 
 
+class _PairVerdict(tuple):
+    """``(impact, finding, evidence_labels, hyperlink_url, primary_evidence_label)`` -- unpacks as
+    exactly that 5-tuple. ``details`` carries the agent's mechanism / direction / consequence,
+    recommendation, only those its source states (empty otherwise). ``evidence_type`` is the
+    agent's SKILL.md Step 5 type ("conflict" when reliable sources disagree, in which case
+    ``conflict`` lists what each source found); an ``impact`` of ``"none"`` means the only evidence
+    was combination-treatment efficacy, which is not an interaction verdict."""
+
+    details: dict[str, str] | None = None
+    evidence_type: str | None = None
+    conflict: list[dict[str, Any]] | None = None
+
+
 def _pair_finding(
     flockhart: dict[str, Any],
     pd_rules: list[dict[str, Any]],
@@ -741,79 +1114,36 @@ def _pair_finding(
     display_b: str = "Drug B",
     finding_agent: FindingAgent | None = None,
     agent_contexts: dict[str, str | None] | None = None,
-) -> tuple[str, str, list[str], str | None, str] | None:
-    """(impact, finding, evidence_labels, hyperlink_url, primary_evidence_label) for
-    one pair, or ``None`` if the pair is unresolved -- either no source
-    returned anything, or every source that did return something failed to
-    resolve clearly to Positive or Negative (SKILL.md Part 4: there is no
-    third bucket; unresolved is dropped exactly like no-evidence, never
-    shown with a guessed or default verdict). A DailyMed "not mentioned"
-    result never counts as a finding here -- only a real ``mentioned: True``
-    does (see module docstring).
+    known_drugs: frozenset[str] | None = None,
+) -> _PairVerdict | None:
+    """The pair's verdict -- ``(impact, finding, evidence_labels, hyperlink_url,
+    primary_evidence_label)`` -- or ``None`` when no source resolves it (the pair is excluded;
+    SKILL.md Part 4 has no third bucket). A DailyMed "not mentioned" result is never a finding.
 
-    ``display_a``/``display_b``/``finding_agent`` are consulted for every
-    candidate that reaches classification (see below), not only the one
-    ultimately returned -- the Evidence/Finding Agent
-    (``path_d.ddi.finding_agent.FindingAgent``) reads that candidate's own
-    already-extracted text and SKILL.md's governing Finding-generation rules
-    to determine what the resource actually found about this exact pair.
-    ``impact`` is still decided purely by ``_classify_text`` -- the agent
-    never redefines Positive/Negative classification -- but the agent CAN
-    reject a candidate's usability as evidence: when it returns an explicit
-    ``reason == "llm_reported_insufficient_evidence"`` (the resource does
-    not genuinely concern this pair, or only restates background/cited-
-    reference material -- see ``FindingAgent``), that candidate is skipped
-    entirely, exactly like a retracted one, and the next candidate in
-    priority order is tried instead. A model failure, a disabled agent, or
-    any other non-explicit fallback reason is NOT treated this way -- the
-    candidate still resolves the pair with its original deterministic text,
-    exactly as before this agent existed (see ``FindingAgentOutcome.reason``
-    in finding_agent.py for the full set of reasons and which of them fall
-    through vs. which keep today's behavior). By default (``finding_agent``
-    disabled) every candidate's ``reason`` is ``"llm_disabled"``, never the
-    insufficient-evidence one, so the Finding is byte-identical to the
-    pre-agent pipeline.
+    Candidates are tried in priority order (Flockhart, pharmacodynamic rules, DailyMed, PubMed,
+    ClinicalTrials.gov, Tavily). Retracted sources are skipped, and a literature/trial/web
+    candidate must pass the human-evidence-only and exactly-two-drugs gates (Part 4) first.
 
-    Candidates are gathered in priority order (Flockhart, pharmacodynamic
-    rules, DailyMed mention, PubMed, ClinicalTrials.gov, Tavily -- see the
-    module docstring for the reasoning). ``evidence_labels`` lists every
-    source that returned something real, in that same order, regardless of
-    which one ultimately resolves the pair. The Finding text, ``impact``,
-    and ``hyperlink_url`` all come from the FIRST candidate, in priority
-    order, whose own text classifies clearly as Positive or Negative
-    (``_classify_text``) -- that candidate's own label is returned
-    separately as ``primary_evidence_label``, since it is **not**
-    guaranteed to be ``evidence_labels[0]``: a higher-priority candidate
-    that is retracted (``_is_retracted``) or whose text does not classify
-    clearly is skipped (not forced into a verdict) but still appears in
-    ``evidence_labels``, so the candidate that actually supplied the
-    Finding/url can be a lower-priority one than ``evidence_labels[0]``
-    names. A caller that needs to show the Finding's real source (e.g. a
-    hyperlink's link text) must use ``primary_evidence_label``, never
-    ``evidence_labels[0]`` -- an earlier version of this function assumed
-    they were always the same, which mislabeled a real ClinicalTrials.gov/
-    Tavily/PubMed link with whatever higher-priority source's label
-    happened to be first, even when that source contributed no url at all."""
-    # (candidate_id, evidence_label, text, url), priority order. ``text`` is what Impact is
-    # classified from and what is published if the agent is off or rejects its own output;
-    # ``agent_contexts[candidate_id]``, when given, is the fuller view of the same source the
-    # agent reads instead (see _pubmed_agent_context and friends).
-    candidates: list[tuple[str, str, str, str | None]] = []
+    **Agent mode** (``finding_agent`` given and enabled): the Finding Agent reads each surviving
+    candidate and decides the Impact and writes the 1-2 sentence Finding from that candidate's
+    own evidence (SKILL.md Part 6). Keyword classification is never consulted, and if the agent
+    cannot answer for a candidate (an API error, or its answer fails a guardrail) that candidate
+    is skipped -- raw source text is never published, and no keyword verdict stands in for the
+    agent. A ``NO_FINDING`` answer skips the candidate exactly like a source that returned nothing.
+
+    **Legacy mode** (no agent): the earlier keyword classifier (``_classify_text``) with the
+    source's own text as the Finding. Kept only for offline runs and tests; the report states
+    which mode produced it (``classification_method``).
+
+    ``evidence_labels`` lists every source that returned something real, in priority order, whether
+    or not it resolved the pair; ``primary_evidence_label`` is the one that did."""
+    candidates: list[tuple[str, str, str, str | None]] = []  # (candidate_id, label, text, url)
 
     if flockhart.get("mechanism_found"):
         candidates.append(("flockhart", f"Curated DDI ({reference_data.FLOCKHART_SOURCE})", flockhart["statement"], None))
     if pd_rules:
-        # Mechanism + consequence, not consequence alone -- states which property of each
-        # drug class creates the risk, not just the risk itself (e.g. "Additive central
-        # nervous system depression from combined GABAergic/sedative agents. Increased
-        # sedation, dizziness, impaired coordination, cognitive slowing." rather than just
-        # the second sentence). Both fields are already real, curated, hand-written text
-        # (pharmacodynamic_rules.RULES) -- this never adds a classification-biasing prefix
-        # (an earlier version prepended "Pharmacodynamic interaction risk: ", which
-        # reintroduced the exact bug this fix removes: the word "risk" alone was enough to
-        # classify Negative regardless of what the rule's own text said) -- mechanism text
-        # itself contains no positive/negative keyword, confirmed against every real rule in
-        # pharmacodynamic_rules.RULES.
+        # Mechanism + consequence, both real hand-written text (pharmacodynamic_rules.RULES);
+        # no classification-biasing prefix is ever added.
         summary = "; ".join(f"{rule['mechanism']} {rule['expected_consequence']}" for rule in pd_rules)
         candidates.append(("pharmacodynamic", "Pharmacodynamic interaction reference", summary, None))
     if dailymed_mention_a.get("mentioned"):
@@ -830,44 +1160,98 @@ def _pair_finding(
     if not candidates:
         return None
 
-    evidence_labels = [label for _id, label, _text, _url in candidates]
+    evidence_labels = [label for _cid, label, _text, _url in candidates]
     agent_contexts = agent_contexts or {}
+    use_agent = finding_agent is not None and finding_agent_enabled()
+
+    # Agent mode reads every non-web candidate that survives the gates (so two reliable sources that
+    # disagree are both seen) and general web search only when none of them resolved the pair.
+    accepted: list[tuple[str, str, str | None, Any]] = []  # (candidate_id, label, url, outcome)
+    efficacy_only: list[tuple[str, str, str | None, Any]] = []
 
     for candidate_id, label, text, url in candidates:
-        # A retracted citation's stated conclusion can't be trusted either way (see
-        # _is_retracted) -- checked before classification, not folded into _classify_text's
-        # own keyword check, so it is skipped exactly like ambiguous text: try the next
-        # candidate rather than forcing a verdict from it.
+        if candidate_id == "tavily" and accepted:
+            continue  # general web evidence never overrides or contradicts a stronger source
+        # A retracted citation's stated conclusion can't be trusted either way (_is_retracted).
         if _is_retracted(text):
+            _reject(candidate_id, "retracted")
             continue
-        keyword_impact = _classify_text(text)
-        # With the agent off, an unclassifiable snippet resolves nothing (unchanged). With it on,
-        # the agent still gets to read it: a snippet like "no dosage adjustment is necessary"
-        # contains no classifier keyword at all, yet is exactly the explicit no-interaction
-        # statement SKILL.md Part 6 Step 5 counts as Positive.
-        if keyword_impact is None and not finding_agent_enabled():
+        status = evidence_status(label)
+        reading = agent_contexts.get(candidate_id) or text
+        if status == "inferred":
+            gate = _inferred_source_rejection(text, reading, display_a, display_b, known_drugs)
+            if gate:
+                _reject(candidate_id, gate)
+                continue
+
+        if use_agent:
+            outcome = finding_agent.generate_finding(
+                display_a, display_b, label, reading, fallback_text=text,
+                allow_recommendation=candidate_id != "tavily",  # general web evidence never supplies advice
+                other_drug_check=lambda finding: _other_substance_in(finding, display_a, display_b, known_drugs),
+            )
+            if outcome.reason == "llm_reported_insufficient_evidence":
+                _reject(candidate_id, "agent_no_finding")
+                continue
+            if not outcome.used_llm or outcome.impact not in ("positive", "negative", "none"):
+                _reject(candidate_id, f"agent_unusable:{outcome.reason}")
+                continue
+            if outcome.evidence_type == "combination_efficacy":
+                # The combination treated a condition; nothing about an interaction (SKILL.md Step 5).
+                _reject(candidate_id, "combination_efficacy_only")
+                efficacy_only.append((candidate_id, label, url, outcome))
+                continue
+            if outcome.impact not in ("positive", "negative"):
+                _reject(candidate_id, "agent_unusable:no_interaction_verdict")
+                continue
+            accepted.append((candidate_id, label, url, outcome))
             continue
-        agent = finding_agent or FindingAgent()
-        resource_text = agent_contexts.get(candidate_id) or text
-        outcome = agent.generate_finding(display_a, display_b, label, resource_text, fallback_text=text)
-        if outcome.reason == "llm_reported_insufficient_evidence":
-            # The agent explicitly determined this resource does not genuinely concern this
-            # pair (or only restates background/cited-reference material) -- this candidate
-            # does not resolve the pair, exactly like a retracted one. Any other fallback
-            # reason (disabled, model error, empty output, ...) is NOT this path -- those
-            # keep today's behavior and fall through to `return` below with the original text.
-            continue
-        # The agent's Impact comes from the same evidence as its Finding, so the two can't
-        # disagree (a real bug: "tolerability" in a snippet filed a 50-67% exposure drop under
-        # Positive). The keyword verdict is used only when the agent produced no Finding.
-        impact = outcome.impact if outcome.used_llm and outcome.impact in ("positive", "negative") else keyword_impact
+
+        # Legacy keyword mode. Curated sources state known risks, so they can establish Negative
+        # but not Positive on keywords alone.
+        impact = _classify_text(text, allow_positive=status != "curated")
         if impact is None:
             continue
-        return impact, outcome.text, evidence_labels, url, label
+        return _PairVerdict((impact, text, evidence_labels, url, label))
 
-    # No candidate's own text resolved clearly to Positive or Negative -- unresolved, per
-    # the module docstring, not guessed either way.
-    return None
+    if not accepted:
+        if efficacy_only:
+            _cid, label, url, outcome = efficacy_only[0]
+            verdict = _PairVerdict(("none", outcome.text, evidence_labels, url, label))
+            verdict.details = outcome.details
+            verdict.evidence_type = "combination_efficacy"
+            return verdict
+        return None
+
+    _cid, label, url, outcome = accepted[0]
+    verdict = _PairVerdict((outcome.impact, outcome.text, evidence_labels, url, label))
+    verdict.details = outcome.details
+    verdict.evidence_type = outcome.evidence_type
+
+    # Reliable sources that genuinely disagree (one: no interaction; another: a pharmacokinetic or
+    # pharmacodynamic interaction) are both kept -- never a silent pick of one (SKILL.md Part 4).
+    no_effect = next((a for a in accepted if a[3].evidence_type == "no_interaction"), None)
+    interaction = next((a for a in accepted if a[3].evidence_type in ("pharmacokinetic", "pharmacodynamic") and a[3].impact == "negative"), None)
+    if no_effect and interaction:
+        def _short(source_label: str) -> str:
+            for key, name in (("DailyMed", "DailyMed label"), ("PubMed", "PubMed study"), ("ClinicalTrials", "ClinicalTrials.gov record"), ("Curated", "Curated reference")):
+                if key in source_label:
+                    return name
+            return source_label
+
+        first, second = (no_effect, interaction)
+        verdict = _PairVerdict((
+            "negative",
+            f"Sources disagree. {_short(first[1])}: {first[3].text} {_short(second[1])}: {second[3].text}",
+            evidence_labels, accepted[0][2], accepted[0][1],
+        ))
+        verdict.evidence_type = "conflict"
+        verdict.details = None
+        verdict.conflict = [
+            {"source": src[1], "evidence_type": src[3].evidence_type, "impact": src[3].impact, "finding": src[3].text, "url": src[2]}
+            for src in (first, second)
+        ]
+    return verdict
 
 
 def _tally_source_hits(pairs_out: list[dict[str, Any]]) -> dict[str, int]:
@@ -901,16 +1285,16 @@ def build_report(
     cache_dir: Path = DEFAULT_CACHE_DIR,
     memory_path: Path = memory_store.DEFAULT_STORE_PATH,
     refresh: bool = False,
+    genetics: dict[str, Any] | None = None,
     finding_agent: FindingAgent | None = None,
 ) -> dict[str, Any]:
-    """``finding_agent`` defaults to a disabled :class:`FindingAgent`
-    (``PRIME_AGENT_DDI_FINDING_AGENT`` unset -- see that module's docstring
-    for why this is independent of ``PRIME_AGENT_ENABLE_LLM``), in which
-    case every pair's Finding text is exactly what it already was before
-    that agent existed. Passing an explicitly-enabled instance lets a
-    winning candidate's Finding sentence be composed by the model per
-    SKILL.md Part 6 instead -- Positive/Negative Impact, evidence_labels,
-    and hyperlink_url are unaffected either way (see ``_pair_finding``).
+    """``genetics`` is the patient's PGx panel summary (``reports/genetics/
+    genetics_clinical_summary.json``), used only as patient-specific *context* beside a linked
+    pair (SKILL.md Part 3) -- never to classify. ``finding_agent`` (when given and enabled) writes
+    each Finding and decides its Impact from the pair's own evidence; without it the legacy keyword
+    classifier runs, and the report says so in ``classification_method``. An enabled agent that
+    cannot be built, or that fails for a large share of calls, raises -- the report is never
+    silently produced by a different classifier.
 
     Per pair, the PubMed/ClinicalTrials.gov/Tavily lookups (each its own
     network round trip, previously issued one after another) run
@@ -923,8 +1307,16 @@ def build_report(
     fanning out across many pairs at once would. DailyMed is unaffected --
     it is already fetched once per unique drug, outside this per-pair loop,
     not once per pair."""
-    finding_agent = finding_agent or FindingAgent()
+    use_agent = finding_agent is not None and finding_agent_enabled()
+    if use_agent and finding_agent.backend is None:
+        from .path_d.ddi.finding_agent import build_backend
+
+        finding_agent.backend = build_backend()  # raises on a missing key / unknown provider; no silent keyword fallback
+    with _REJECTION_LOCK:
+        _REJECTION_COUNTS.clear()
+    pgx_rows = _pgx_rows_by_drug(genetics or {})
     medications = _screening_medications(clinical_notes or {})
+    known_drugs = known_drug_names(medications, genetics)
     pairs = _unique_pairs(medications)
 
     # DailyMed label pointer once per unique drug (unchanged) -- and, new, each
@@ -939,6 +1331,8 @@ def build_report(
     )
 
     pairs_out: list[dict[str, Any]] = []
+    efficacy_only_pairs: list[dict[str, Any]] = []
+    seen_pairs: set[frozenset[str]] = set()
     dropped = 0
     # 3 workers, one per concurrently-fired source (PubMed/ClinicalTrials.gov/Tavily) for
     # the pair currently being processed -- not one worker per pair; pairs are still handled
@@ -953,9 +1347,13 @@ def build_report(
             # The 4 live sources -- all 4 always called for every pair, none conditional on
             # what any of the others returned (see module docstring). The 3 network-bound
             # ones are fired together and awaited below, rather than one after another.
-            pubmed_future = source_executor.submit(_fetch_pubmed_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+            pubmed_future = source_executor.submit(
+                _fetch_pubmed_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path, known_drugs=known_drugs
+            )
             trials_future = source_executor.submit(_fetch_trials_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
-            tavily_future = source_executor.submit(_fetch_tavily_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path)
+            tavily_future = source_executor.submit(
+                _fetch_tavily_candidate, display_a, display_b, cache_dir=cache_dir, refresh=refresh, memory_path=memory_path, known_drugs=known_drugs
+            )
 
             pubmed_result, pubmed_title, pubmed_url = pubmed_future.result()
             trials_result, trials_title, trials_url = trials_future.result()
@@ -965,7 +1363,7 @@ def build_report(
             mention_b = _dailymed_mention_result(display_b, interactions_sections_by_drug.get(drug_b.normalized_name, {}), display_a)
 
             agent_contexts = None
-            if finding_agent_enabled():
+            if use_agent:
                 agent_contexts = {
                     "dailymed_a": _dailymed_agent_context(display_a, interactions_sections_by_drug.get(drug_a.normalized_name, {}), display_b),
                     "dailymed_b": _dailymed_agent_context(display_b, interactions_sections_by_drug.get(drug_b.normalized_name, {}), display_a),
@@ -973,14 +1371,28 @@ def build_report(
                     "trials": _trials_agent_context(trials_result, display_a, display_b, cache_dir=cache_dir, memory_path=memory_path) if trials_title else None,
                     "tavily": _tavily_agent_context(tavily_url, cache_dir=cache_dir, memory_path=memory_path) if tavily_title else None,
                 }
-
             finding = _pair_finding(
                 flockhart, pd_rules, mention_a, mention_b, pubmed_title, pubmed_url, trials_title, trials_url, tavily_title, tavily_url,
-                display_a=display_a, display_b=display_b, finding_agent=finding_agent, agent_contexts=agent_contexts,
+                display_a=display_a, display_b=display_b, finding_agent=finding_agent if use_agent else None,
+                agent_contexts=agent_contexts, known_drugs=known_drugs,
             )
             if finding is None:
                 dropped += 1
                 continue
+            if finding[0] == "none":  # combination-treatment efficacy only: not an interaction finding
+                dropped += 1
+                efficacy_only_pairs.append(
+                    {
+                        "drug_a": display_a, "drug_b": display_b, "finding": finding[1], "source": finding[4],
+                        "evidence_status": evidence_status(finding[4]), "hyperlink_url": finding[3],
+                        "note": "Combination-treatment efficacy evidence, not an interaction finding; the pair is unresolved as a DDI.",
+                    }
+                )
+                continue
+            pair_key = frozenset({drug_a.normalized_name, drug_b.normalized_name})
+            if pair_key in seen_pairs:  # defensive: a pair is counted once, whichever order it was screened in
+                continue
+            seen_pairs.add(pair_key)
 
             impact, finding_text, evidence_labels, hyperlink_url, primary_evidence_label = finding
             pairs_out.append(
@@ -992,6 +1404,16 @@ def build_report(
                     "evidence_labels": evidence_labels,
                     "hyperlink_url": hyperlink_url,
                     "primary_evidence_label": primary_evidence_label,
+                    "evidence_status": evidence_status(primary_evidence_label),
+                    # Each listed source with its own SKILL.md Part 5 tag, so e.g. a general web
+                    # search listed beside a curated label is never read as curated itself.
+                    "evidence_sources": [{"label": label, "status": evidence_status(label)} for label in evidence_labels],
+                    "evidence_details": dict(getattr(finding, "details", None) or {}),
+                    # SKILL.md Step 5: pharmacokinetic / pharmacodynamic / adverse_effect / no_interaction / mixed
+                    # (or "conflict" when reliable sources disagree, with each source's own finding below).
+                    "evidence_type": getattr(finding, "evidence_type", None),
+                    "evidence_conflict": list(getattr(finding, "conflict", None) or []),
+                    "pgx_context": _pgx_context(display_a, display_b, drug_a.normalized_name, drug_b.normalized_name, pgx_rows),
                     "flockhart": flockhart,
                     "pharmacodynamic_rules": pd_rules,
                     "pubmed_combined_query": pubmed_result,
@@ -1004,13 +1426,39 @@ def build_report(
                 }
             )
 
+    agent_stats = dict(finding_agent.stats) if use_agent else {}
+    if use_agent:
+        calls = sum(v for k, v in agent_stats.items() if k in ("accepted", "no_finding", "error") or k.startswith("rejected:"))
+        if calls and agent_stats.get("error", 0) > 0.25 * calls:
+            raise RuntimeError(
+                f"The Finding Agent failed on {agent_stats['error']} of {calls} calls ({finding_agent.last_error_type}); "
+                "not writing a report that would silently exclude those pairs."
+            )
+        backend_info = finding_agent.backend.describe() if hasattr(finding_agent.backend, "describe") else {}
+        classification_method = (
+            f"finding_agent ({backend_info.get('backend', '?')}/{backend_info.get('model', '?')}): the agent decides each pair's "
+            "Impact and writes its Finding from that pair's own evidence (SKILL.md Part 6)"
+        )
+    else:
+        classification_method = "keyword_legacy: Finding Agent not enabled -- Impact by keyword matching on the source's own text"
+    with _REJECTION_LOCK:
+        rejection_counts = dict(sorted(_REJECTION_COUNTS.items()))
+
     return {
         "report_type": "Drug Interaction Flag Sheet -- Live Multi-Source Evidence",
         "generated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "screening_drugs": [m.source_name for m in medications],
         "pairs_checked": len(pairs),
         "pairs_with_evidence": len(pairs_out),
+        "unique_pairs_with_evidence": len(seen_pairs),
+        "counting_basis": "unique unordered drug pairs: A+B and B+A are one pair, counted once (the per-drug sections of the "
+        "rendered report may show a pair under both of its drugs for readability; the totals never double-count it)",
         "pairs_dropped_unresolved": dropped,
+        "combination_efficacy_only": efficacy_only_pairs,
+        "classification_method": classification_method,
+        "finding_agent_stats": agent_stats,
+        "source_rejection_counts": rejection_counts,
+        "pgx_source": pgx_source_note(genetics),
         "source_hit_counts": _tally_source_hits(pairs_out),
         "pairs": pairs_out,
         "limitations": [
@@ -1040,10 +1488,11 @@ def build_report(
             f"{reference_data.FLOCKHART_SOURCE} ({reference_data.FLOCKHART_VERSION}) curated CYP-pathway data "
             "covers only a small hand-curated set of drugs; a pair outside that set relies on the other five "
             "sources, not a gap in this report.",
-            "Positive/Negative classification is derived from keyword matching on publication titles, which can "
-            "misread comparative-effectiveness study titles (where multiple drugs are studied together) as a "
-            "verdict about one specific pair. This is a known limitation of title-only keyword classification, "
-            "not a per-pair clinical conclusion.",
+            "Positive/Negative Impact and the Finding come from the Finding Agent reading each pair's own source "
+            "evidence (see classification_method); a title, snippet or keyword hit alone never decides a pair. "
+            "Animal/cell studies, comparator-only studies, retracted papers and studies involving a third drug are "
+            "excluded (source_rejection_counts shows how many of each). Patient PGx findings are shown as context "
+            "only and never classify a pair.",
         ],
     }
 
@@ -1051,8 +1500,15 @@ def build_report(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Fetch live multi-source evidence for the expanded Drug Interaction Flag Sheet screening pairs")
     parser.add_argument("--clinical-notes", type=Path, default=DEFAULT_CLINICAL_NOTES_PATH)
+    parser.add_argument("--genetics", type=Path, default=DEFAULT_GENETICS_PATH, help="Patient PGx panel summary (SKILL.md Part 4 tier 1)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
     parser.add_argument("--refresh", action="store_true", help="Bypass the 30-day memory-store cache and re-query every live source")
+    parser.add_argument(
+        "--legacy-keyword-classifier",
+        action="store_true",
+        help="Offline/testing only: classify by keyword matching instead of the Finding Agent. By default the "
+        "Finding Agent is REQUIRED -- a missing API key is an error, never a silent fall-back to keywords.",
+    )
     parser.add_argument(
         "--dedupe-existing",
         action="store_true",
@@ -1081,7 +1537,16 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Rewrote {args.output} with duplicates removed.")
         return 0
 
-    report = build_report(clinical_notes=_load_json(args.clinical_notes), refresh=args.refresh)
+    agent: FindingAgent | None = None
+    if not args.legacy_keyword_classifier:
+        os.environ["PRIME_AGENT_DDI_FINDING_AGENT"] = "1"
+        agent = FindingAgent()
+    try:
+        report = build_report(clinical_notes=_load_json(args.clinical_notes), refresh=args.refresh, genetics=_load_json(args.genetics), finding_agent=agent)
+    except (RuntimeError, ValueError) as exc:
+        print(f"ERROR: {exc}")
+        print("No report was written. Fix the cause (e.g. set OPENAI_API_KEY) or pass --legacy-keyword-classifier for an offline keyword run.")
+        return 1
     ensure_dir(args.output.parent)
     args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     counts = report["source_hit_counts"]
@@ -1094,6 +1559,10 @@ def main(argv: list[str] | None = None) -> int:
         f"Per-source hit counts: PubMed={counts['pubmed']} DailyMed={counts['dailymed']} "
         f"ClinicalTrials.gov={counts['clinicaltrials']} Tavily={counts['tavily']}"
     )
+    print(f"Classification: {report['classification_method']}")
+    if report["finding_agent_stats"]:
+        print(f"Finding Agent outcomes: {report['finding_agent_stats']}")
+    print(f"Sources rejected (reason counts): {report['source_rejection_counts']}")
     return 0
 
 

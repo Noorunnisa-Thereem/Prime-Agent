@@ -59,6 +59,8 @@ from __future__ import annotations
 import json
 import os
 import re
+from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -75,9 +77,26 @@ _TRUE_TOKENS = {"1", "true", "yes", "on"}
 
 _OPENAI_EFFORT_ENV = "PRIME_AGENT_OPENAI_REASONING_EFFORT"
 
-_DEFAULT_PROVIDER = "gguf"
+_DEFAULT_PROVIDER = "openai"
 _DEFAULT_OPENAI_MODEL = "gpt-5.5"
 _DEFAULT_OPENAI_EFFORT = "low"
+
+# SKILL.md Part 6 Step 4's optional elements. Each is returned only when the source states it
+# (an empty string otherwise) and is dropped here unless its wording is found in the source.
+DETAIL_FIELDS = ("mechanism", "direction", "consequence")
+
+# SKILL.md Part 6 Step 5: what kind of evidence the source gives for the pair. "combination_efficacy"
+# (the combination treated a condition, nothing about an interaction) is not interaction evidence.
+EVIDENCE_TYPES = ("pharmacokinetic", "pharmacodynamic", "adverse_effect", "no_interaction", "mixed", "combination_efficacy")
+# Impact each evidence type may carry ("none" only for combination efficacy, which is not an interaction verdict).
+_IMPACT_FOR_TYPE: dict[str, tuple[str, ...]] = {
+    "pharmacokinetic": ("negative",),
+    "pharmacodynamic": ("positive", "negative"),
+    "adverse_effect": ("negative",),
+    "no_interaction": ("positive",),
+    "mixed": ("negative",),
+    "combination_efficacy": ("none",),
+}
 
 # Structured answer channel for tool-capable backends: the model must pick a status from a
 # fixed enum instead of typing a sentinel, so "no finding" can never come back malformed.
@@ -92,11 +111,14 @@ FINDING_TOOL: dict[str, Any] = {
     "parameters": {
         "type": "object",
         "additionalProperties": False,
-        "required": ["status", "finding", "impact"],
+        "required": ["status", "finding", "impact", "evidence_type", *DETAIL_FIELDS],
         "properties": {
             "status": {"type": "string", "enum": ["finding", "no_finding"]},
             "finding": {"type": "string"},
             "impact": {"type": "string", "enum": ["positive", "negative", "none"]},
+            "evidence_type": {"type": "string", "enum": [*EVIDENCE_TYPES, "none"]},
+            # Step 4's four optional elements: empty string unless THIS source states it.
+            **{name: {"type": "string"} for name in DETAIL_FIELDS},
         },
     },
 }
@@ -106,10 +128,17 @@ _ENV_FILE_PATH = _PROJECT_ROOT / ".env"
 SKILL_PATH = _PROJECT_ROOT / "skills" / "patient_prime_agent" / "ddi-therapeutic-response" / "SKILL.md"
 _PART6_HEADING = "## Part 6"
 
-MAX_FINDING_LENGTH = 800  # room for SKILL.md Step 4's 2-3 sentence Finding
-_CORRECTION_ATTEMPTS = 1
+MAX_FINDING_LENGTH = 450  # SKILL.md Step 4: one or two sentences
+MAX_FINDING_SENTENCES = 2
+_MIN_GROUNDING = 0.5  # share of a Finding's content words that must appear in its source
+_CORRECTION_ATTEMPTS = 2
 _CORRECTABLE_REASONS = frozenset(
-    {"output_dropped_hedge", "output_too_long", "output_contains_truncation_artifact", "output_malformed"}
+    {
+        "output_dropped_hedge", "output_too_long", "output_contains_truncation_artifact", "output_malformed",
+        "output_too_many_sentences", "output_missing_pair_names", "output_unsupported_number", "output_ungrounded",
+        "output_inconsistent_impact", "output_names_other_drug", "output_unsupported_recommendation",
+        "output_no_interaction_unsupported", "output_unstated_subject",
+    }
 )
 _MAX_LLM_INPUT_CHARS = 6000  # a full abstract or a label's multi-mention context fits
 _MAX_NEW_TOKENS = 150
@@ -119,7 +148,10 @@ _TRUNCATION_ARTIFACT_MARKERS: tuple[str, ...] = ("...", "…")
 
 # Post-hoc hedge check only (never used to generate text).
 _HEDGE_MARKERS: tuple[str, ...] = (
-    "may", "might", "could", "can", "possible", "possibly", "potential", "potentially", "likely", "apparently", "consider", "considering",
+    # Adverbs/modals only: "potential" and "possible" are not listed because they are usually plain
+    # adjectives in label prose ("Potential drug interactions ... were assessed") and demanding
+    # them in the Finding wrongly rejected an accurate "does not influence" statement.
+    "may", "might", "could", "can", "possibly", "potentially", "likely", "apparently", "consider", "considering",
 )
 _HEDGE_PHRASES: tuple[str, ...] = (
     "is associated with", "was associated with", "are associated with", "were associated with",
@@ -145,6 +177,10 @@ class FindingAgentOutcome:
     used_llm: bool
     reason: str | None = None
     impact: str | None = None
+    # Mechanism / direction / consequence, only those the source states.
+    details: dict[str, str] | None = None
+    # SKILL.md Part 6 Step 5 evidence type (None when the backend cannot return one).
+    evidence_type: str | None = None
 
 
 def _env_value(name: str) -> str | None:
@@ -203,6 +239,27 @@ def build_system_prompt(part6: str, structured: bool = False) -> str:
     return f"You are the Evidence/Finding Agent specified below. Follow that specification exactly. {answer}\n\n{part6}"
 
 
+def _parse_tool_details(raw: str) -> dict[str, str]:
+    """The optional Step 4 elements of a submit_finding call, as given (unverified)."""
+    try:
+        args = json.loads(raw)
+    except (TypeError, ValueError):
+        return {}
+    if not isinstance(args, dict):
+        return {}
+    return {name: args[name].strip() for name in DETAIL_FIELDS if isinstance(args.get(name), str) and args[name].strip()}
+
+
+def _parse_tool_type(raw: str) -> str | None:
+    """The evidence_type of a submit_finding call, as given (unverified)."""
+    try:
+        args = json.loads(raw)
+    except (TypeError, ValueError):
+        return None
+    value = args.get("evidence_type") if isinstance(args, dict) else None
+    return value if isinstance(value, str) else None
+
+
 def _parse_tool_answer(raw: str) -> tuple[str, str | None] | None:
     """Map a submit_finding call to (text, impact): the Finding text and its
     impact, or the literal NO_FINDING token; ``None`` when unparseable."""
@@ -230,6 +287,83 @@ def build_user_prompt(drug_a: str, drug_b: str, source_label: str, resource_text
 
 def _contains_truncation_artifact(text: str) -> bool:
     return any(marker in text for marker in _TRUNCATION_ARTIFACT_MARKERS)
+
+
+_STOPWORDS = frozenset(
+    "that this with from were been have has had will would could should which their there these those than then also into "
+    "when while where what such more most only other both each over under about after before between during within without "
+    "because however study studies drug drugs patients patient label source".split()
+)
+
+
+def _content_stems(text: str) -> list[str]:
+    """Lower-cased 5-letter stems of the content words in ``text`` ("increases" and
+    "increased" share a stem, so faithful rewording is not mistaken for invention)."""
+    return [w[:5] for w in re.findall(r"[a-z][a-z0-9-]{3,}", text.lower()) if w not in _STOPWORDS]
+
+
+def _grounding(statement: str, source: str, ignore: tuple[str, ...] = ()) -> float:
+    """Share of the statement's content words whose stem appears in the source.
+    Low means the statement contains words the source never used."""
+    skip = {w[:5] for name in ignore for w in re.findall(r"[a-z][a-z0-9-]{3,}", name.lower())}
+    stems = [s for s in _content_stems(statement) if s not in skip]
+    if not stems:
+        return 1.0
+    haystack = source.lower()
+    return sum(1 for s in stems if s in haystack) / len(stems)
+
+
+def _numbers(text: str) -> set[str]:
+    return set(re.findall(r"\d+(?:\.\d+)?", text.replace(",", "")))
+
+
+def _sentence_count(text: str) -> int:
+    masked = re.sub(r"\b(e\.g|i\.e|vs|approx|etc|al|Fig|no)\.", lambda m: m.group(0).replace(".", ""), text, flags=re.IGNORECASE)
+    return len([s for s in re.split(r"(?<=[.!?])\s+(?=[A-Z0-9\"(])", masked.strip()) if s])
+
+
+def _names_pair(text: str, drug_a: str, drug_b: str) -> bool:
+    """Both drugs named -- by full name or a 6-letter stem, so a salt or alternate name
+    ("valproate" for "valproic acid") still counts. Naming both is what makes each
+    Finding specific to its own pair."""
+    lowered = text.lower()
+    return all(re.search(r"\b" + re.escape(name.strip().lower()[:6]), lowered) for name in (drug_a, drug_b) if name and name.strip())
+
+
+# Advice language: a dose change, a recommendation, a monitoring or avoidance instruction.
+_RECOMMENDATION_RE = re.compile(
+    r"\b(?:recommend\w*|advis\w*|should|consider(?:ing)?|dos(?:e|age) (?:adjustment|increase|reduction|change|modification)s?|"
+    r"(?:increas|reduc|decreas|lower|adjust)\w* (?:the |its |their )?(?:\w+ )?dos(?:e|age)|(?:close|careful|regular) monitoring|"
+    r"monitor (?:for|the|closely)|avoid\w*|discontinu\w*|titrat\w*)\b",
+    re.IGNORECASE,
+)
+_NO_EFFECT_RE = re.compile(
+    r"\b(?:no|not|neither|nor|without|unaffected|nothing)\b[^.]{0,90}?\b(?:affect|influence|alter|chang|interact|differ|effect|adjust|inhibit|induc|signific|impact)",
+    re.IGNORECASE,
+)
+
+
+def _advice_sentences(text: str) -> list[str]:
+    return [sentence for sentence in re.split(r"(?<=[.!?])\s+", text) if _RECOMMENDATION_RE.search(sentence)]
+
+
+def _self_effect_drug(finding: str, source: str, drug_a: str, drug_b: str) -> str | None:
+    """A drug said to change *itself* (``X may increase X epoxide levels``) is the signature of a
+    label table cell whose acting drug the source leaves out; the model then assigned it the
+    wrong subject. Returned unless the source itself speaks of an own / auto-induced effect."""
+    if re.search(r"\b(?:own|auto-?induc\w*|itself|self)\b", source, re.IGNORECASE):
+        return None
+    for drug in (drug_a, drug_b):
+        name = re.escape(drug.strip().lower())
+        if re.search(rf"\b{name}\b (?:(?:may|might|can|could|will|also|further) )*(?:increas|decreas|rais|reduc|elevat|lower)\w*[^.;]{{0,25}}\b{name}\b", finding.lower()):
+            return drug
+    return None
+
+
+def _states_no_effect(source: str) -> bool:
+    """The source itself says there is no effect / no interaction / no adjustment (an explicit
+    negative statement), as opposed to merely being silent."""
+    return bool(_NO_EFFECT_RE.search(source))
 
 
 def _is_structurally_complete(text: str) -> bool:
@@ -343,38 +477,92 @@ class FindingAgent:
         self.max_output_length = max_output_length
         self.backend = backend
         self.last_error_type: str | None = None
+        # Outcome counts for the run (accepted / no_finding / error / rejected:<guardrail> ...).
+        self.stats: Counter[str] = Counter()
 
-    def _check(self, raw_output: Any, structured: bool, resource_text: str, drug_a: str, drug_b: str) -> tuple[str | None, str, str | None]:
-        """(reason, finding, impact): reason is None when the answer is accepted,
-        ``NO_FINDING_TOKEN`` for an explicit insufficient-evidence answer, or the
-        name of the guardrail that rejected it."""
+    def _check(
+        self,
+        raw_output: Any,
+        structured: bool,
+        resource_text: str,
+        drug_a: str,
+        drug_b: str,
+        allow_recommendation: bool = True,
+        other_drug_check: Callable[[str], str | None] | None = None,
+    ) -> tuple[str | None, str, str | None, dict[str, str], str | None]:
+        """(reason, finding, impact, details, evidence_type): reason is None when the answer is
+        accepted, ``NO_FINDING_TOKEN`` for an explicit insufficient-evidence answer, or the name of
+        the guardrail that rejected it."""
         impact: str | None = None
+        evidence_type: str | None = None
+        details_raw: dict[str, str] = {}
+        self._detail = None
         if structured:
+            details_raw = _parse_tool_details(raw_output)
+            evidence_type = _parse_tool_type(raw_output)
             parsed = _parse_tool_answer(raw_output)
             if parsed is None:
-                return "output_malformed", "", None
+                return "output_malformed", "", None, {}, None
             raw_output, impact = parsed
         cleaned = (raw_output or "").strip()
         if cleaned == NO_FINDING_TOKEN:
-            return NO_FINDING_TOKEN, "", None
+            return NO_FINDING_TOKEN, "", None, {}, None
         if NO_FINDING_TOKEN in cleaned:
             # Token present but not as the whole answer -- ambiguous; never publish it.
-            return "output_malformed_no_finding", cleaned, None
-        if structured and impact not in ("positive", "negative"):
-            return "output_malformed", cleaned, None
+            return "output_malformed_no_finding", cleaned, None, {}, None
+        if structured:
+            if evidence_type not in EVIDENCE_TYPES:
+                return "output_malformed", cleaned, impact, {}, evidence_type
+            if impact not in ("positive", "negative", "none"):
+                return "output_malformed", cleaned, impact, {}, evidence_type
+            if impact not in _IMPACT_FOR_TYPE[evidence_type]:
+                # e.g. an efficacy-only trial filed Positive, or "no interaction" filed Negative
+                return "output_inconsistent_impact", cleaned, impact, {}, evidence_type
 
         finding = sanitize_response_field(cleaned, max_length=self.max_output_length + 1)
         if not finding:
-            return "output_empty", "", None
+            return "output_empty", "", None, {}, None
+
+        def reject(reason: str) -> tuple[str, str, str | None, dict[str, str], str | None]:
+            return reason, finding, impact, {}, evidence_type
+
         if len(finding) > self.max_output_length:
-            return "output_too_long", finding, impact
+            return reject("output_too_long")
         if _contains_truncation_artifact(finding):
-            return "output_contains_truncation_artifact", finding, impact
+            return reject("output_contains_truncation_artifact")
         if not _is_structurally_complete(finding):
-            return "output_malformed", finding, impact
+            return reject("output_malformed")
         if not _hedge_preserved(resource_text, finding, drug_a, drug_b):
-            return "output_dropped_hedge", finding, impact
-        return None, finding, impact
+            return reject("output_dropped_hedge")
+        if _sentence_count(finding) > MAX_FINDING_SENTENCES:
+            return reject("output_too_many_sentences")
+        if not _names_pair(finding, drug_a, drug_b):
+            return reject("output_missing_pair_names")
+        if other_drug_check is not None:
+            offender = other_drug_check(finding)
+            if offender:
+                self._detail = offender
+                return reject("output_names_other_drug")
+        if not _numbers(finding) <= _numbers(resource_text):
+            return reject("output_unsupported_number")
+        # An efficacy-only Finding must say what it is (the agent's own labelling, not source wording).
+        labelling = ("combination treatment efficacy evidence interaction finding",) if evidence_type == "combination_efficacy" else ()
+        if _grounding(finding, resource_text, ignore=(drug_a, drug_b, *labelling)) < _MIN_GROUNDING:
+            return reject("output_ungrounded")
+        if _self_effect_drug(finding, resource_text, drug_a, drug_b):
+            return reject("output_unstated_subject")
+        advice = _advice_sentences(finding)
+        if advice and (
+            not allow_recommendation
+            or any(_grounding(sentence, resource_text, ignore=(drug_a, drug_b)) < 0.7 for sentence in advice)
+        ):
+            return reject("output_unsupported_recommendation")
+        if evidence_type == "no_interaction" and not _states_no_effect(_pair_relevant_text(resource_text, drug_a, drug_b)):
+            return reject("output_no_interaction_unsupported")
+        # Each optional element survives only if its wording is found in the source -- a
+        # mechanism, direction or consequence is never taken on the model's word.
+        details = {name: text for name, text in details_raw.items() if _grounding(text, resource_text) >= 0.7}
+        return None, finding, impact, details, evidence_type
 
     def _correction_note(self, reason: str, previous: str, resource_text: str, drug_a: str, drug_b: str) -> str:
         if reason == "output_dropped_hedge":
@@ -385,8 +573,44 @@ class FindingAgent:
                 "hedged:\n" + "\n".join(f"- {s}" for s in hedged) + "\nIf they describe this pair's result, keep their "
                 "hedging word-for-word in degree (Step 6); state only what they support."
             )
-        elif reason == "output_too_long":
-            problem = f"It is {len(previous)} characters; the limit is {self.max_output_length}. Keep the same facts in 2-3 shorter sentences."
+        elif reason in ("output_too_long", "output_too_many_sentences"):
+            problem = (
+                f"It is {len(previous)} characters / {_sentence_count(previous)} sentences; the limit is "
+                f"{self.max_output_length} characters and {MAX_FINDING_SENTENCES} sentences. Keep only the most important "
+                "facts the source states."
+            )
+        elif reason == "output_missing_pair_names":
+            problem = f"It must name both drugs of the pair ({drug_a} and {drug_b}) so the Finding is specific to this pair."
+        elif reason == "output_unsupported_number":
+            problem = "It contains a number that does not appear in the source text. Use only figures the source states."
+        elif reason == "output_ungrounded":
+            problem = "It uses wording the source does not support. State only what the source itself says, in its own terms."
+        elif reason == "output_inconsistent_impact":
+            problem = (
+                "Its impact does not fit its evidence_type. no_interaction is Positive; pharmacokinetic, adverse_effect and mixed are "
+                "Negative; combination_efficacy (the combination only treated a condition, nothing about an interaction) has impact none."
+            )
+        elif reason == "output_names_other_drug":
+            problem = (
+                f"It names {getattr(self, '_detail', None) or 'a drug'}, which is not one of the two drugs of this pair. Describe only "
+                "this pair's own substances. If the source measured the outcome with a related compound, say 'a related compound' "
+                "without naming it, and never merge that outcome with this pair's own."
+            )
+        elif reason == "output_unstated_subject":
+            problem = (
+                "It says a drug changes its own levels, which usually means a source table cell left the acting drug unstated and the "
+                "wrong subject was assigned. Never assign a subject the source does not state -- omit that statement."
+            )
+        elif reason == "output_unsupported_recommendation":
+            problem = (
+                "It contains advice (a recommendation, dose change, monitoring or avoidance) that the source does not explicitly give for this "
+                "pair, or the source is general web evidence, which never supplies advice. Remove the advice; state only what the source states."
+            )
+        elif reason == "output_no_interaction_unsupported":
+            problem = (
+                "It claims no interaction, but the source never explicitly states no effect / no interaction / no adjustment for this pair. "
+                "Silence is not evidence of no interaction -- answer status=no_finding unless the source says so explicitly."
+            )
         else:
             problem = "It is not complete, well-formed sentences (balanced parentheses, a final full stop, no '...')."
         return (
@@ -401,6 +625,9 @@ class FindingAgent:
         source_label: str,
         resource_text: str | None,
         fallback_text: str,
+        *,
+        allow_recommendation: bool = True,
+        other_drug_check: Callable[[str], str | None] | None = None,
     ) -> FindingAgentOutcome:
         if not isinstance(resource_text, str) or not resource_text.strip():
             return FindingAgentOutcome(fallback_text, False, "empty_resource_text")
@@ -428,16 +655,23 @@ class FindingAgent:
             except Exception as exc:  # noqa: BLE001 - API/model failure: keep the original text
                 # Type name only -- SDK error messages can echo part of an API key.
                 self.last_error_type = type(exc).__name__
+                self.stats["error"] += 1
                 return FindingAgentOutcome(fallback_text, False, "llm_error")
 
-            reason, finding, impact = self._check(raw_output, structured, resource_text, drug_a, drug_b)
+            reason, finding, impact, details, evidence_type = self._check(
+                raw_output, structured, resource_text, drug_a, drug_b, allow_recommendation, other_drug_check
+            )
             if reason is None:
-                return FindingAgentOutcome(finding, True, None, impact)
+                self.stats["accepted"] += 1
+                return FindingAgentOutcome(finding, True, None, impact, details or None, evidence_type)
             if reason == NO_FINDING_TOKEN:
+                self.stats["no_finding"] += 1
                 return FindingAgentOutcome(fallback_text, False, "llm_reported_insufficient_evidence")
             if reason not in _CORRECTABLE_REASONS or attempt == _CORRECTION_ATTEMPTS:
                 break
             # One guided retry: a rejected Finding otherwise falls back to the raw snippet,
             # which is usually worse than a corrected Finding (and carries only a keyword Impact).
+            self.stats["correction_retry"] += 1
             prompt = base_prompt + self._correction_note(reason, finding, resource_text, drug_a, drug_b)
+        self.stats[f"rejected:{reason}"] += 1
         return FindingAgentOutcome(fallback_text, False, reason)

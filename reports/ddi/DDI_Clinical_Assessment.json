@@ -1,7 +1,7 @@
 {
   "report_type": "Drug-Drug Interaction & Therapy Evidence Assessment",
   "patient_id": "SYN-100482",
-  "generated_at": "2026-09-18T14:47:43",
+  "generated_at": "2026-10-05T14:49:32",
   "medication_reconciliation": {
     "normalized_medications": [
       {
@@ -141,17 +141,37 @@
           "source_reference": "genetics_clinical_summary.json:findings_by_therapeutic_class",
           "evidence_level": "moderate",
           "patient_specific": true
+        },
+        {
+          "modality": "clinical",
+          "direction": "unresolved",
+          "statement": "Patient-reported CNS effects on this regimen: Daytime drowsiness, Dizziness/lightheadedness, Unsteady gait (ataxia) (regimen-level; not attributed to a specific drug).",
+          "source_reference": "clinical notes: clinical_inference.medication_response.persistent_side_effects",
+          "evidence_level": "observed",
+          "patient_specific": true
         }
       ],
       "severity": "minor",
       "severity_rationale": [],
-      "patient_specific_interpretation": "No resolved pharmacokinetic or pharmacodynamic interaction mechanism was identified between Lamotrigine and Levetiracetam (Keppra) in the available curated and rule-based sources. Predicted-model coverage (SuperCYPsPred) remains unresolved; absence of data does not establish absence of risk.",
+      "patient_specific_interpretation": "No resolved pharmacokinetic or pharmacodynamic interaction mechanism was identified between Lamotrigine and Levetiracetam (Keppra) in the available curated and rule-based sources. Predicted-model coverage (SuperCYPsPred) remains unresolved; absence of data does not establish absence of risk. The clinical notes record Daytime drowsiness, Dizziness/lightheadedness, Unsteady gait (ataxia) on this regimen; whether the two drugs have an additive CNS effect is unresolved (no curated source documents or excludes it) and is flagged for clinician review.",
       "monitoring": [
+        "Continue seizure frequency, duration, and clustering tracking.",
         "Review the priority safety flags in the Pharmacogenomics section before adding or changing an interacting medication."
       ],
       "limitations": [
         "Predicted (SuperCYPsPred) pharmacokinetic evidence is not available locally for this pair."
-      ]
+      ],
+      "pharmacodynamic_followup": {
+        "question": "Additive central-nervous-system effects of the two drugs",
+        "status": "unresolved",
+        "patient_reported_effects": [
+          "Daytime drowsiness",
+          "Dizziness/lightheadedness",
+          "Unsteady gait (ataxia)"
+        ],
+        "source": "clinical notes: clinical_inference.medication_response.persistent_side_effects",
+        "why_unresolved": "The curated pharmacodynamic rule base has no antiepileptic + antiepileptic rule, and no curated source in this assessment documents or excludes an additive CNS interaction for this pair. The reported effects are regimen-level and are not attributed to either drug."
+      }
     }
   ],
   "proposed_pair_assessments": [],

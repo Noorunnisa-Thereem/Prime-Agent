@@ -144,6 +144,7 @@ def build_report(
             pgx_evidence_by_drug,
             regimen_wide_evidence,
             external_pubmed_pair=_external_pubmed_for_pair(pair),
+            regimen_side_effects=list(medication_response.get("persistent_side_effects") or []),
         )
         for pair in pairs
     ]

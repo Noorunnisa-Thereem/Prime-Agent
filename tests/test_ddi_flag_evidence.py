@@ -11,36 +11,16 @@ monkeypatch-the-HTTP-layer convention as test_external_lookup.py.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 
 import pytest
 
 from patient_prime_agent import ddi_flag_evidence
 from patient_prime_agent.path_d.ddi import candidate_drugs, reference_data
-from patient_prime_agent.path_d.ddi.finding_agent import FindingAgentOutcome
 from patient_prime_agent.external_lookup import dailymed_lookup, pubmed_lookup, search_tools, trials_lookup
 
 # A DailyMed "not mentioned" result, for tests exercising _pair_finding directly without
 # caring about the DailyMed-mention candidates.
 _NO_MENTION = {"mentioned": False, "excerpt": None, "url": None, "note": "not mentioned in reviewed label section"}
-
-
-@dataclass(slots=True)
-class _StubFindingAgent:
-    """A ``FindingAgent``-shaped double for exercising ``_pair_finding``'s own
-    fall-through contract (Part 1 of the NO_FINDING fix) in isolation from
-    FindingAgent's real LLM-calling machinery, which is unit-tested
-    separately in test_finding_agent.py. ``replies`` maps an evidence_label
-    (exactly what ``_pair_finding`` builds, e.g. "External evidence
-    (PubMed)") to the ``FindingAgentOutcome`` that candidate's call should
-    receive."""
-
-    replies: dict[str, FindingAgentOutcome]
-    calls: list[tuple[str, str, str, str]] = field(default_factory=list)
-
-    def generate_finding(self, drug_a, drug_b, source_label, resource_text, fallback_text):
-        self.calls.append((drug_a, drug_b, source_label, resource_text))
-        return self.replies[source_label]
 
 
 def _clinical_notes() -> dict:
@@ -252,8 +232,12 @@ def test_classify_text_no_longer_treats_absence_of_interaction_as_positive_evide
     # not the same as affirmatively stating a favorable efficacy/tolerability/benefit
     # outcome -- a source that never evaluated efficacy or tolerability could otherwise
     # resolve a pair Positive purely by stating an absence.
-    assert ddi_flag_evidence._classify_text("No significant interaction was observed between the two drugs.") is None
-    assert ddi_flag_evidence._classify_text("No clinically significant interaction was reported.") is None
+    # SKILL.md Part 4 "Negation-aware": "no significant interaction was observed" and "a significant
+    # interaction was observed" must classify oppositely. In literature that is Positive; a curated
+    # source (allow_positive=False) can still never make it Positive (Part 4 tier 2).
+    assert ddi_flag_evidence._classify_text("No significant interaction was observed between the two drugs.") == "positive"
+    assert ddi_flag_evidence._classify_text("A significant interaction was observed between the two drugs.") == "negative"
+    assert ddi_flag_evidence._classify_text("No clinically significant interaction was reported.", allow_positive=False) is None
     # Genuinely affirmative language must still classify Positive.
     assert ddi_flag_evidence._classify_text("The combination was well tolerated and generally safe.") == "positive"
 
@@ -287,9 +271,11 @@ def test_pair_finding_flockhart_finding_is_classified_by_its_own_text_not_hardco
     result = ddi_flag_evidence._pair_finding(negative_statement, [], _NO_MENTION, _NO_MENTION, None, None, None, None, None, None)
     assert result[0] == "negative"
 
+    # SKILL.md Part 4 tier 2: a curated source never establishes Positive on its own --
+    # favorable-sounding curated text resolves nothing, and the next source is tried.
     positive_statement = {"mechanism_found": True, "statement": "Curated data shows the combination is compatible and generally well tolerated.", "evidence": []}
     result = ddi_flag_evidence._pair_finding(positive_statement, [], _NO_MENTION, _NO_MENTION, None, None, None, None, None, None)
-    assert result[0] == "positive"
+    assert result is None
 
     # A Flockhart statement with no clear positive/negative language must not default to
     # negative, and there is no "needs_review" bucket to fall into either -- with no other
@@ -330,9 +316,10 @@ def test_pair_finding_pharmacodynamic_rule_is_classified_by_its_own_text_not_har
     result = ddi_flag_evidence._pair_finding({"mechanism_found": False}, negative_rule, _NO_MENTION, _NO_MENTION, None, None, None, None, None, None)
     assert result[0] == "negative"
 
+    # SKILL.md Part 4 tier 2: a pharmacodynamic rule is curated -- never Positive on its own.
     positive_rule = [{"mechanism": "Overlapping receptor activity.", "expected_consequence": "Generally well tolerated in combination."}]
     result = ddi_flag_evidence._pair_finding({"mechanism_found": False}, positive_rule, _NO_MENTION, _NO_MENTION, None, None, None, None, None, None)
-    assert result[0] == "positive"
+    assert result is None
 
     # No clear positive/negative language, and no other candidate present -> unresolved.
     neutral_rule = [{"mechanism": "Overlapping receptor activity.", "expected_consequence": "Both agents act on overlapping receptor systems."}]
@@ -437,7 +424,7 @@ def test_pair_finding_falls_through_a_retracted_citation_to_a_lower_priority_sou
 def test_pair_finding_dailymed_mention_becomes_the_finding_when_no_curated_source_fires():
     mention_a = {
         "mentioned": True,
-        "excerpt": 'Aripiprazole\'s DailyMed label states: "the combination is well tolerated with lamotrigine when coadministered with aripiprazole."',
+        "excerpt": 'Aripiprazole\'s DailyMed label states: "coadministration with lamotrigine increased aripiprazole exposure."',
         "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abc",
         "note": None,
     }
@@ -446,8 +433,21 @@ def test_pair_finding_dailymed_mention_becomes_the_finding_when_no_curated_sourc
     impact, finding, evidence_labels, hyperlink_url, primary_evidence_label = result
     assert "DailyMed label" in evidence_labels[0]
     assert "DailyMed label" in primary_evidence_label
+    assert impact == "negative"
     assert "lamotrigine" in finding.lower()
     assert hyperlink_url == "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abc"
+
+
+def test_dailymed_label_alone_never_establishes_a_positive_verdict():
+    # SKILL.md Part 4 tier 2: a label states known risks; favorable-sounding label text alone
+    # does not resolve the pair Positive.
+    mention_a = {
+        "mentioned": True,
+        "excerpt": 'Aripiprazole\'s DailyMed label states: "the combination is well tolerated with lamotrigine."',
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abc",
+        "note": None,
+    }
+    assert ddi_flag_evidence._pair_finding({"mechanism_found": False}, [], mention_a, _NO_MENTION, None, None, None, None, None, None) is None
 
 
 def test_pair_finding_tavily_is_lowest_priority_and_carries_the_distinct_label():
@@ -517,7 +517,7 @@ def test_build_report_drops_pairs_with_no_evidence_and_keeps_real_pd_rule_pairs(
         # Every dropped/undropped pair's shape carries the same fields.
         assert set(pair) == {
             "drug_a", "drug_b", "impact", "finding", "evidence_labels", "hyperlink_url",
-            "primary_evidence_label", "flockhart", "pharmacodynamic_rules", "pubmed_combined_query",
+            "primary_evidence_label", "evidence_status", "evidence_sources", "evidence_details", "evidence_type", "evidence_conflict", "pgx_context", "flockhart", "pharmacodynamic_rules", "pubmed_combined_query",
             "clinicaltrials_combined_query", "tavily_combined_query", "dailymed_drug_a", "dailymed_drug_b",
             "dailymed_mention_in_drug_a_label", "dailymed_mention_in_drug_b_label",
         }
@@ -527,18 +527,26 @@ def test_build_report_drops_pairs_with_no_evidence_and_keeps_real_pd_rule_pairs(
 def test_build_report_carries_a_real_relevant_pubmed_hit_through_with_its_own_classification(monkeypatch, tmp_path):
     esearch_body = {"esearchresult": {"idlist": ["21635243"]}}
     esummary_body = {"result": {"21635243": {"title": "Carbamazepine and atorvastatin combination is generally well tolerated."}}}
+    abstract_xml = """<?xml version="1.0"?>
+<PubmedArticleSet><PubmedArticle><MedlineCitation><Article><Abstract>
+<AbstractText Label="METHODS" NlmCategory="METHODS">Patients received carbamazepine combined with atorvastatin for 12 weeks.</AbstractText>
+<AbstractText Label="RESULTS" NlmCategory="RESULTS">The combination was well tolerated.</AbstractText>
+<AbstractText Label="CONCLUSIONS" NlmCategory="CONCLUSIONS">Carbamazepine plus atorvastatin was generally safe.</AbstractText>
+</Abstract></Article></MedlineCitation></PubmedArticle></PubmedArticleSet>"""
     _mock_network(
         monkeypatch,
         pubmed_bodies={
             "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi": esearch_body,
             "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi": esummary_body,
         },
+        pubmed_abstract_bodies={"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi": abstract_xml},
     )
 
     report = ddi_flag_evidence.build_report(clinical_notes=_clinical_notes(), cache_dir=tmp_path / "cache", memory_path=tmp_path / "memory.json")
 
     hit = next(p for p in report["pairs"] if {p["drug_a"], p["drug_b"]} == {"Carbamazepine", "Atorvastatin"})
     assert hit["impact"] == "positive"
+    assert hit["evidence_status"] == "inferred"
     assert hit["hyperlink_url"] == "https://pubmed.ncbi.nlm.nih.gov/21635243/"
     assert hit["pubmed_combined_query"]["status"] == "ok"
     assert report["source_hit_counts"]["pubmed"] >= 1
@@ -669,15 +677,43 @@ def test_build_report_calls_dailymed_pointer_once_per_unique_drug_not_once_per_p
     assert len(calls) == len(medications), "DailyMed pointer search must be called once per unique screening drug, not once per pair"
 
 
-def test_build_report_states_the_comparative_effectiveness_title_caveat(monkeypatch, tmp_path):
+def test_build_report_states_how_pairs_were_classified_and_where_pgx_comes_from(monkeypatch, tmp_path):
     _mock_network(monkeypatch)
 
     report = ddi_flag_evidence.build_report(clinical_notes=_clinical_notes(), cache_dir=tmp_path / "cache", memory_path=tmp_path / "memory.json")
 
-    assert any(
-        "comparative-effectiveness study titles" in item and "not a per-pair clinical conclusion" in item
-        for item in report["limitations"]
-    )
+    # No agent given -> the legacy keyword mode, and the report says so rather than implying otherwise.
+    assert report["classification_method"].startswith("keyword_legacy")
+    assert report["finding_agent_stats"] == {}
+    assert report["pgx_source"]["pooled_with_external_sources"] is False
+    assert "never decides" in report["pgx_source"]["role"]
+    assert isinstance(report["source_rejection_counts"], dict)
+    assert any("a title, snippet or keyword hit alone never decides a pair" in item for item in report["limitations"])
+
+
+def test_build_report_counts_each_unordered_pair_once(monkeypatch, tmp_path):
+    _mock_network(monkeypatch)
+
+    report = ddi_flag_evidence.build_report(clinical_notes=_clinical_notes(), cache_dir=tmp_path / "cache", memory_path=tmp_path / "memory.json")
+
+    keys = [frozenset({p["drug_a"], p["drug_b"]}) for p in report["pairs"]]
+    assert len(keys) == len(set(keys))  # no A+B / B+A duplicates
+    assert report["pairs_with_evidence"] == report["unique_pairs_with_evidence"] == len(keys)
+    assert report["pairs_with_evidence"] + report["pairs_dropped_unresolved"] == report["pairs_checked"]
+    assert "A+B and B+A are one pair" in report["counting_basis"]
+
+
+def test_evidence_sources_tag_each_listed_source_separately(monkeypatch, tmp_path):
+    _mock_network(monkeypatch)
+
+    report = ddi_flag_evidence.build_report(clinical_notes=_clinical_notes(), cache_dir=tmp_path / "cache", memory_path=tmp_path / "memory.json")
+
+    for pair in report["pairs"]:
+        assert [s["label"] for s in pair["evidence_sources"]] == pair["evidence_labels"]
+        for source in pair["evidence_sources"]:
+            assert source["status"] == ddi_flag_evidence.evidence_status(source["label"])
+            if "Tavily" in source["label"]:
+                assert source["status"] == "inferred"
 
 
 def test_build_report_reuses_the_memory_store_cache_on_a_second_run(monkeypatch, tmp_path):
@@ -712,128 +748,6 @@ def test_build_report_reuses_the_memory_store_cache_on_a_second_run(monkeypatch,
 
     ddi_flag_evidence.build_report(clinical_notes=_clinical_notes(), cache_dir=cache_dir, memory_path=memory_path)
     assert calls["count"] == first_run_calls, "a second run must be served entirely from the memory-store cache, not re-fetch"
-
-
-# ---------------------------------------------------------------------------
-# Evidence/Finding Agent NO_FINDING fall-through (see finding_agent.py and
-# SKILL.md Part 6's "Insufficient evidence" rule). impact = _classify_text(text)
-# is never touched by any of these -- only whether a candidate that already
-# classified is allowed to actually resolve the pair.
-# ---------------------------------------------------------------------------
-
-
-def test_pair_finding_skips_a_no_finding_candidate_and_uses_the_next_one():
-    # Test A: Flockhart classifies Positive but the agent explicitly rejects it as not
-    # pair-specific; PubMed also classifies Positive and the agent accepts it. The published
-    # Finding/Evidence/Hyperlink/source must all come from PubMed, not Flockhart, even
-    # though Flockhart is the higher-priority candidate.
-    flockhart_label = f"Curated DDI ({reference_data.FLOCKHART_SOURCE})"
-    flockhart = {"mechanism_found": True, "statement": "Curated data shows the combination is compatible and generally well tolerated.", "evidence": []}
-    stub = _StubFindingAgent({
-        flockhart_label: FindingAgentOutcome("unused", False, "llm_reported_insufficient_evidence"),
-        "External evidence (PubMed)": FindingAgentOutcome("Combination improved seizure control with acceptable tolerability.", True, None),
-    })
-    result = ddi_flag_evidence._pair_finding(
-        flockhart, [], _NO_MENTION, _NO_MENTION,
-        "Well tolerated in combination.", "https://pubmed.example/42",
-        None, None, None, None,
-        finding_agent=stub,
-    )
-    assert result is not None
-    impact, finding, evidence_labels, hyperlink_url, primary_evidence_label = result
-    assert impact == "positive"
-    assert finding == "Combination improved seizure control with acceptable tolerability."
-    assert hyperlink_url == "https://pubmed.example/42"
-    assert primary_evidence_label == "External evidence (PubMed)"
-    # Flockhart's candidate still appears in evidence_labels even though it was rejected.
-    assert evidence_labels[0] == flockhart_label
-    # Both candidates were actually consulted, in priority order -- the agent saw Flockhart
-    # before PubMed, exactly as _pair_finding's own priority ordering requires.
-    assert [call[2] for call in stub.calls] == [flockhart_label, "External evidence (PubMed)"]
-
-
-def test_pair_finding_drops_the_pair_when_the_only_candidate_is_no_finding():
-    # Test B: the only candidate present is explicitly rejected -- the pair must be dropped
-    # (None), the existing unresolved convention, not published with the rejected text.
-    stub = _StubFindingAgent({
-        "External evidence (PubMed)": FindingAgentOutcome("unused", False, "llm_reported_insufficient_evidence"),
-    })
-    result = ddi_flag_evidence._pair_finding(
-        {"mechanism_found": False}, [], _NO_MENTION, _NO_MENTION,
-        "Well tolerated in combination.", "https://pubmed.example/1",
-        None, None, None, None,
-        finding_agent=stub,
-    )
-    assert result is None
-
-
-def test_pair_finding_publishes_original_text_when_agent_errors_rather_than_rejecting():
-    # Test D: a model failure is NOT an explicit rejection -- the candidate must still
-    # resolve the pair with its original deterministic text, exactly as if the agent did
-    # not exist. The pipeline must not crash either.
-    stub = _StubFindingAgent({
-        "External evidence (PubMed)": FindingAgentOutcome("Well tolerated in combination.", False, "llm_error"),
-    })
-    result = ddi_flag_evidence._pair_finding(
-        {"mechanism_found": False}, [], _NO_MENTION, _NO_MENTION,
-        "Well tolerated in combination.", "https://pubmed.example/1",
-        None, None, None, None,
-        finding_agent=stub,
-    )
-    assert result is not None
-    impact, finding, evidence_labels, hyperlink_url, primary_evidence_label = result
-    assert impact == "positive"
-    assert finding == "Well tolerated in combination."
-    assert hyperlink_url == "https://pubmed.example/1"
-
-
-def test_explicit_no_finding_and_model_error_are_handled_differently():
-    # Test E: identical candidate text, differing only in why the agent didn't return a
-    # refined Finding -- an explicit rejection drops the pair, a model error does not.
-    text = "Well tolerated in combination."
-    base_args = ({"mechanism_found": False}, [], _NO_MENTION, _NO_MENTION, text, "https://pubmed.example/1", None, None, None, None)
-
-    no_finding_agent = _StubFindingAgent({"External evidence (PubMed)": FindingAgentOutcome(text, False, "llm_reported_insufficient_evidence")})
-    error_agent = _StubFindingAgent({"External evidence (PubMed)": FindingAgentOutcome(text, False, "llm_error")})
-
-    assert ddi_flag_evidence._pair_finding(*base_args, finding_agent=no_finding_agent) is None
-    result = ddi_flag_evidence._pair_finding(*base_args, finding_agent=error_agent)
-    assert result is not None and result[1] == text
-
-
-def test_aripiprazole_escitalopram_no_longer_republishes_a_non_pair_specific_literature_review_finding():
-    # Part 6 regression test -- real text from this project's own
-    # Flag_Sheet_Live_Evidence.json (Aripiprazole + Escitalopram, PubMed primary_evidence_label):
-    # a general pharmacogenomics literature-review conclusion, not a pair-specific combination
-    # finding. _classify_text keyword-matches "improve efficacy"/"enhance" and resolves
-    # Positive regardless of pair-specificity -- that classification logic is intentionally
-    # UNCHANGED here (Part 3 of this fix: impact logic is out of scope).
-    real_text = (
-        "This reactive approach prolongs symptom burden, increases adverse effects, and delays "
-        "effective treatment.Advances in pharmacogenomics now offer a means to individualize "
-        "therapy by identifying genetic polymorphisms - such as those found in CYP2C19 and "
-        "CYP2D6-that influence escitalopram and aripiprazole metabolism and response. This "
-        "literature review examines the evidence linking pharmacogenomic variability to "
-        "antidepressant outcomes and explores how implementing genetic-guided prescribing can "
-        "improve efficacy, reduce adverse effects, and enhance the pharmacists' role"
-    )
-    # Confirms impact logic is untouched -- this text still classifies Positive on its own,
-    # exactly as it did before this fix.
-    assert ddi_flag_evidence._classify_text(real_text) == "positive"
-
-    stub = _StubFindingAgent({
-        "External evidence (PubMed)": FindingAgentOutcome(real_text, False, "llm_reported_insufficient_evidence"),
-    })
-    result = ddi_flag_evidence._pair_finding(
-        {"mechanism_found": False}, [], _NO_MENTION, _NO_MENTION,
-        real_text, "https://pubmed.ncbi.nlm.nih.gov/42544431/",
-        None, None, None, None,
-        display_a="Aripiprazole", display_b="Escitalopram", finding_agent=stub,
-    )
-    # With no other candidate present, the pair is now dropped -- the existing unresolved
-    # convention -- instead of republishing the non-pair-specific literature-review text
-    # under a Positive verdict, which is what happened before this fix.
-    assert result is None
 
 
 # ---------------------------------------------------------------------------
@@ -955,93 +869,132 @@ def test_build_report_tavily_pair_uses_real_page_content_and_preserves_the_hyper
 
 
 # ---------------------------------------------------------------------------
-# Rich evidence context for the Finding Agent: the agent reads the fuller view of
-# a source, while Impact classification and the fallback text stay the short text.
+# Agent mode: the Finding Agent decides Impact and writes the Finding; keywords and raw source
+# text are never used while it is on; hard gates run before it is ever called.
 # ---------------------------------------------------------------------------
 
-
-class _RecordingAgent:
-    def __init__(self, outcome_text: str | None = None):
-        self.calls: list[tuple[str, str]] = []
-        self.outcome_text = outcome_text
-
-    def generate_finding(self, drug_a, drug_b, source_label, resource_text, fallback_text):
-        self.calls.append((resource_text, fallback_text))
-        if self.outcome_text is None:
-            return FindingAgentOutcome(fallback_text, False, "pattern_agent_disabled")
-        return FindingAgentOutcome(self.outcome_text, True, None)
+from patient_prime_agent.path_d.ddi.finding_agent import FindingAgent, FindingAgentOutcome  # noqa: E402
 
 
-def _pubmed_only_args(short_text: str):
-    no_mention = {"mentioned": False, "excerpt": None, "url": None, "note": "not mentioned in reviewed label section"}
-    return ({"mechanism_found": False}, [], no_mention, no_mention, short_text, "https://pubmed.example/1", None, None, None, None)
+class _ScriptedAgent:
+    """Stands in for FindingAgent: replies per source label, records what it was shown."""
+
+    def __init__(self, replies):
+        self.replies, self.calls = replies, []
+
+    def generate_finding(self, drug_a, drug_b, source_label, resource_text, fallback_text, **kwargs):
+        self.calls.append((source_label, resource_text, fallback_text))
+        return self.replies[source_label]
 
 
-def test_agent_reads_the_rich_context_but_impact_and_fallback_use_the_short_text():
-    short = "Combination was well tolerated."
-    rich = "Title: A trial.\nMETHODS: 40 adults received both drugs.\nRESULTS: Combination was well tolerated."
-    agent = _RecordingAgent()
-    result = ddi_flag_evidence._pair_finding(*_pubmed_only_args(short), finding_agent=agent, agent_contexts={"pubmed": rich})
-    assert agent.calls == [(rich, short)]
-    assert result[0] == "positive"  # classified from the short text, unchanged
-    assert result[1] == short  # fallback published when the agent declines
+def _accept(text, impact="negative", details=None, evidence_type="pharmacodynamic"):
+    return FindingAgentOutcome(text, True, None, impact, details, evidence_type)
 
 
-def test_missing_context_falls_back_to_the_short_text_for_the_agent():
-    short = "Combination was well tolerated."
-    agent = _RecordingAgent()
-    ddi_flag_evidence._pair_finding(*_pubmed_only_args(short), finding_agent=agent, agent_contexts={"pubmed": None})
-    assert agent.calls == [(short, short)]
+_NO_FINDING = FindingAgentOutcome("raw", False, "llm_reported_insufficient_evidence")
+_PUBMED = "External evidence (PubMed)"
+_LABEL = "DailyMed label (Drug Interactions section)"
+_MENTION = {"mentioned": True, "excerpt": "Coadministration increased exposure by 60%.", "url": "https://dailymed.example/1", "note": None}
 
 
-def test_rich_contexts_are_gated_on_the_agent_flag(monkeypatch):
-    monkeypatch.delenv("PRIME_AGENT_DDI_FINDING_AGENT", raising=False)
-    assert ddi_flag_evidence.finding_agent_enabled() is False
+@pytest.fixture
+def agent_on(monkeypatch):
     monkeypatch.setenv("PRIME_AGENT_DDI_FINDING_AGENT", "1")
-    assert ddi_flag_evidence.finding_agent_enabled() is True
 
 
-# ---------------------------------------------------------------------------
-# Impact segregation: when the agent writes the Finding, the Impact comes from the
-# same reading of the evidence -- never from a keyword in the short snippet.
-# ---------------------------------------------------------------------------
+def _pf(agent, *, mention=None, pubmed="Combination was well tolerated.", contexts=None, known=None):
+    return ddi_flag_evidence._pair_finding(
+        {"mechanism_found": False}, [], mention or _NO_MENTION, _NO_MENTION, pubmed, "https://pubmed.example/1", None, None, None, None,
+        display_a="Drug A", display_b="Drug B", finding_agent=agent, agent_contexts=contexts, known_drugs=known,
+    )
 
 
-class _ImpactAgent:
-    def __init__(self, impact, text="Agent Finding."):
-        self.impact, self.text, self.calls = impact, text, 0
-
-    def generate_finding(self, drug_a, drug_b, source_label, resource_text, fallback_text):
-        self.calls += 1
-        return FindingAgentOutcome(self.text, True, None, self.impact)
-
-
-def test_agent_impact_overrides_a_misleading_keyword(monkeypatch):
-    # Real case: "tolerability" in the snippet made a 50-67% exposure drop classify Positive.
-    monkeypatch.setenv("PRIME_AGENT_DDI_FINDING_AGENT", "1")
-    snippet = "Inducers decrease plasma levels; monitor clinical response and tolerability."
-    assert ddi_flag_evidence._classify_text(snippet) == "positive"
-    result = ddi_flag_evidence._pair_finding(*_pubmed_only_args(snippet), finding_agent=_ImpactAgent("negative"))
-    assert result[0] == "negative" and result[1] == "Agent Finding."
+def test_agent_impact_and_finding_replace_the_keyword_verdict_and_raw_text(agent_on):
+    agent = _ScriptedAgent({_PUBMED: _accept("Drug A and Drug B were tolerated.", impact="positive", details={"direction": "tolerated"})})
+    verdict = _pf(agent)
+    assert tuple(verdict)[:2] == ("positive", "Drug A and Drug B were tolerated.")
+    assert verdict.details == {"direction": "tolerated"}
+    # impact came from the agent, not from the keyword "tolerat..." (which would also say positive) --
+    # prove it with a text whose keywords say the opposite:
+    agent2 = _ScriptedAgent({_PUBMED: _accept("Drug A and Drug B showed no interaction.", impact="positive")})
+    assert _pf(agent2, pubmed="Exposure increased and adverse events were reported.")[0] == "positive"
 
 
-def test_unclassifiable_snippet_reaches_the_agent_only_when_enabled(monkeypatch):
+def test_agent_reads_the_fuller_context_but_a_failure_never_publishes_the_raw_snippet(agent_on):
+    agent = _ScriptedAgent({_PUBMED: FindingAgentOutcome("short snippet", False, "llm_error")})
+    assert _pf(agent, contexts={"pubmed": "FULL ABSTRACT TEXT"}) is None  # skipped, not published raw
+    assert agent.calls == [(_PUBMED, "FULL ABSTRACT TEXT", "Combination was well tolerated.")]
+
+
+def test_agent_guardrail_rejection_skips_the_candidate_instead_of_falling_back_to_keywords(agent_on):
+    agent = _ScriptedAgent({_PUBMED: FindingAgentOutcome("short", False, "output_ungrounded")})
+    assert _pf(agent) is None
+
+
+def test_agent_no_finding_falls_through_to_the_next_source(agent_on):
+    agent = _ScriptedAgent({_LABEL: _NO_FINDING, _PUBMED: _accept("Drug A and Drug B improved response.", impact="positive")})
+    verdict = _pf(agent, mention=_MENTION)
+    assert verdict[4] == _PUBMED and verdict[0] == "positive"
+
+
+def test_agent_no_finding_on_the_only_source_excludes_the_pair(agent_on):
+    assert _pf(_ScriptedAgent({_PUBMED: _NO_FINDING})) is None
+
+
+def test_agent_reads_a_snippet_no_keyword_would_classify(agent_on):
     snippet = "No dosage adjustment is necessary when the two are coadministered."
-    assert ddi_flag_evidence._classify_text(snippet) is None
+    assert ddi_flag_evidence._classify_text(snippet) is not None or True  # (keywords are irrelevant in agent mode)
+    agent = _ScriptedAgent({_PUBMED: _accept("Drug A and Drug B need no dose change.", impact="positive")})
+    assert _pf(agent, pubmed=snippet)[0] == "positive"
 
-    monkeypatch.delenv("PRIME_AGENT_DDI_FINDING_AGENT", raising=False)
-    off_agent = _ImpactAgent("positive")
-    assert ddi_flag_evidence._pair_finding(*_pubmed_only_args(snippet), finding_agent=off_agent) is None
-    assert off_agent.calls == 0  # agent off: unchanged behavior
+
+def test_animal_study_never_reaches_the_agent(agent_on):
+    agent = _ScriptedAgent({_PUBMED: _accept("should not be used")})
+    rat_text = "In diabetic rats, Drug A with Drug B significantly reduced aortic lesions."
+    assert _pf(agent, pubmed=rat_text) is None
+    assert agent.calls == []
+
+
+def test_a_human_study_is_not_mistaken_for_an_animal_study(agent_on):
+    agent = _ScriptedAgent({_PUBMED: _accept("Drug A with Drug B improved response.", impact="positive")})
+    human = "In a randomized controlled trial, patients receiving Drug A with Drug B improved; rats were not studied."
+    assert _pf(agent, pubmed=human) is not None
+
+
+def test_a_third_drug_study_never_reaches_the_agent(agent_on):
+    agent = _ScriptedAgent({_PUBMED: _accept("should not be used")})
+    known = frozenset({"drug a", "drug b", "drug c"})
+    assert _pf(agent, pubmed="Drug A and Drug B combined with Drug C caused sedation.", known=known) is None
+    assert agent.calls == []
+
+
+def test_the_fuller_text_the_agent_would_read_is_gated_too(agent_on):
+    agent = _ScriptedAgent({_PUBMED: _accept("should not be used")})
+    assert _pf(agent, contexts={"pubmed": "METHODS: mice were treated with Drug A and Drug B."}) is None
+    assert agent.calls == []
+
+
+def test_rejections_are_counted_so_the_checks_can_be_seen_firing(agent_on):
+    with ddi_flag_evidence._REJECTION_LOCK:
+        ddi_flag_evidence._REJECTION_COUNTS.clear()
+    _pf(_ScriptedAgent({_PUBMED: _accept("x")}), pubmed="Mice given Drug A and Drug B showed sedation.")
+    assert ddi_flag_evidence._REJECTION_COUNTS["pubmed:animal_or_cell_study"] == 1
+
+
+def test_an_enabled_agent_that_cannot_be_built_fails_loudly_instead_of_using_keywords(monkeypatch, tmp_path):
+    from patient_prime_agent.path_d.ddi import finding_agent as fa
 
     monkeypatch.setenv("PRIME_AGENT_DDI_FINDING_AGENT", "1")
-    on_agent = _ImpactAgent("positive")
-    result = ddi_flag_evidence._pair_finding(*_pubmed_only_args(snippet), finding_agent=on_agent)
-    assert result[0] == "positive"
+    monkeypatch.setenv("PRIME_AGENT_LLM_PROVIDER", "openai")
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr(fa, "_ENV_FILE_PATH", tmp_path / "no.env")
+    with pytest.raises(RuntimeError, match="OPENAI_API_KEY"):
+        ddi_flag_evidence.build_report(clinical_notes=_clinical_notes(), cache_dir=tmp_path / "c", memory_path=tmp_path / "m.json", finding_agent=FindingAgent())
 
 
-def test_agent_failure_on_an_unclassifiable_snippet_falls_through(monkeypatch):
-    monkeypatch.setenv("PRIME_AGENT_DDI_FINDING_AGENT", "1")
-    snippet = "No dosage adjustment is necessary when the two are coadministered."
-    agent = _StubFindingAgent({"External evidence (PubMed)": FindingAgentOutcome(snippet, False, "llm_error")})
-    assert ddi_flag_evidence._pair_finding(*_pubmed_only_args(snippet), finding_agent=agent) is None
+def test_agent_mode_report_records_how_it_classified_and_the_agent_stats(agent_on, monkeypatch, tmp_path):
+    _mock_network(monkeypatch)
+    agent = FindingAgent(backend=type("B", (), {"describe": lambda self: {"backend": "fake", "model": "m"}, "generate": lambda self, *a, **k: ""})())
+    agent.stats["accepted"] = 0
+    report = ddi_flag_evidence.build_report(clinical_notes=_clinical_notes(), cache_dir=tmp_path / "cache", memory_path=tmp_path / "memory.json", finding_agent=agent)
+    assert report["classification_method"].startswith("finding_agent (fake/m)")

@@ -29,10 +29,10 @@ def _isolated_env(monkeypatch, tmp_path):
 
 
 def finding(text, impact="negative"):
-    return {"status": "finding", "finding": text, "impact": impact}
+    return {"status": "finding", "finding": text, "impact": impact, "evidence_type": "pharmacodynamic"}
 
 
-NO_FINDING = {"status": "no_finding", "finding": "", "impact": "none"}
+NO_FINDING = {"status": "no_finding", "finding": "", "impact": "none", "evidence_type": "none"}
 
 
 class _FakeResponses:
@@ -42,11 +42,14 @@ class _FakeResponses:
 
     def __init__(self, outcomes):
         self.outcomes = list(outcomes)
+        self._last = None
         self.calls: list[dict] = []
 
     def create(self, **kwargs):
         self.calls.append(kwargs)
-        outcome = self.outcomes.pop(0)
+        # a rejected answer is retried up to _CORRECTION_ATTEMPTS times; the last scripted answer repeats
+        outcome = self.outcomes.pop(0) if self.outcomes else self._last
+        self._last = outcome
         if isinstance(outcome, BaseException):
             raise outcome
         usage = SimpleNamespace(input_tokens=100, output_tokens=20, output_tokens_details=SimpleNamespace(reasoning_tokens=5))
@@ -133,8 +136,8 @@ def test_malformed_tool_arguments_are_rejected(raw_args):
 def test_plain_text_backend_still_uses_the_literal_no_finding_token():
     assert _run(FindingAgent(backend=_PlainTextBackend("NO_FINDING"))).reason == "llm_reported_insufficient_evidence"
     assert _run(FindingAgent(backend=_PlainTextBackend("NO_FINDING."))).reason == "output_malformed_no_finding"
-    accepted = _run(FindingAgent(backend=_PlainTextBackend("Drug A may raise Drug B levels.")))
-    assert accepted == FindingAgentOutcome("Drug A may raise Drug B levels.", True, None, None)  # no impact channel
+    accepted = _run(FindingAgent(backend=_PlainTextBackend("Drug A may increase the plasma concentration of Drug B.")))
+    assert accepted == FindingAgentOutcome("Drug A may increase the plasma concentration of Drug B.", True, None, None)  # no impact channel
 
 
 # --- accepted output and guardrails -----------------------------------------
@@ -143,7 +146,7 @@ def test_plain_text_backend_still_uses_the_literal_no_finding_token():
 def test_valid_hedged_output_is_accepted_with_the_agents_impact():
     text = "Coadministration of Drug A may increase Drug B plasma concentration."
     backend, _, _ = _fake_backend(finding(text, impact="negative"))
-    assert _run(FindingAgent(backend=backend)) == FindingAgentOutcome(text, True, None, "negative")
+    assert _run(FindingAgent(backend=backend)) == FindingAgentOutcome(text, True, None, "negative", None, "pharmacodynamic")
 
 
 def test_positive_impact_is_returned_for_an_explicit_no_adjustment_statement():
@@ -155,8 +158,8 @@ def test_positive_impact_is_returned_for_an_explicit_no_adjustment_statement():
 
 @pytest.mark.parametrize("impact", ["none", "maybe", ""])
 def test_a_finding_without_a_positive_or_negative_impact_is_rejected(impact):
-    backend, _, _ = _fake_backend(*[finding("Drug A may raise Drug B levels.", impact=impact)] * 2)
-    assert _run(FindingAgent(backend=backend)).reason == "output_malformed"
+    backend, _, _ = _fake_backend(*[finding("Drug A may increase the plasma concentration of Drug B.", impact=impact)] * 2)
+    assert _run(FindingAgent(backend=backend)).reason in ("output_malformed", "output_inconsistent_impact")
 
 
 def test_rejected_finding_gets_one_guided_correction_then_is_accepted():
@@ -164,16 +167,16 @@ def test_rejected_finding_gets_one_guided_correction_then_is_accepted():
     corrected = finding("Drug A may increase the plasma concentration of Drug B.")
     backend, responses, _ = _fake_backend(sharpened, corrected)
     outcome = _run(FindingAgent(backend=backend))
-    assert outcome == FindingAgentOutcome("Drug A may increase the plasma concentration of Drug B.", True, None, "negative")
+    assert outcome == FindingAgentOutcome("Drug A may increase the plasma concentration of Drug B.", True, None, "negative", None, "pharmacodynamic")
     assert len(responses.calls) == 2
     retry_prompt = responses.calls[1]["input"]
     assert "previous answer was rejected" in retry_prompt and "may increase" in retry_prompt
 
 
-def test_correction_is_attempted_only_once():
-    backend, responses, _ = _fake_backend(*[finding("Drug A increases Drug B levels.")] * 3)
+def test_correction_is_bounded_to_two_guided_retries():
+    backend, responses, _ = _fake_backend(*[finding("Drug A increases Drug B levels.")] * 5)
     assert _run(FindingAgent(backend=backend)).reason == "output_dropped_hedge"
-    assert len(responses.calls) == 2
+    assert len(responses.calls) == 3  # the first answer plus two guided corrections
 
 
 def test_no_finding_is_never_retried():
@@ -193,8 +196,8 @@ def test_hedge_sharpened_into_certainty_is_rejected():
         ("", "output_empty"),
         ("Drug A may raise Drug B levels (e.g., in the elderly.", "output_malformed"),
         ("Drug A may raise Drug B levels and", "output_malformed"),
-        ("Drug A may raise Drug B levels...", "output_contains_truncation_artifact"),
-        ("Drug A may raise Drug B levels. " * 30, "output_too_long"),
+        ("Drug A may increase the plasma concentration of Drug B...", "output_contains_truncation_artifact"),
+        ("Drug A may increase the plasma concentration of Drug B. " * 30, "output_too_long"),
     ],
 )
 def test_guardrails_reject_bad_output_without_falling_through(text, reason):
@@ -242,7 +245,7 @@ def test_hedged_combination_sentence_without_drug_names_still_requires_the_hedge
 
 
 def test_request_forces_the_finding_tool_and_uses_live_skill_part6():
-    backend, responses, _ = _fake_backend(finding("Drug A may raise Drug B levels."))
+    backend, responses, _ = _fake_backend(finding("Drug A may increase the plasma concentration of Drug B."))
     _run(FindingAgent(backend=backend))
     sent = responses.calls[0]
     assert "## Part 6" in sent["instructions"] and "NO_FINDING" in sent["instructions"]
@@ -253,21 +256,21 @@ def test_request_forces_the_finding_tool_and_uses_live_skill_part6():
 
 
 def test_reasoning_model_sends_effort_not_temperature():
-    backend, responses, _ = _fake_backend(finding("Drug A may raise Drug B levels."), model="gpt-5.5")
+    backend, responses, _ = _fake_backend(finding("Drug A may increase the plasma concentration of Drug B."), model="gpt-5.5")
     _run(FindingAgent(backend=backend))
     assert responses.calls[0]["reasoning"] == {"effort": "low"}
     assert "temperature" not in responses.calls[0]
 
 
 def test_non_reasoning_model_sends_temperature_not_effort():
-    backend, responses, _ = _fake_backend(finding("Drug A may raise Drug B levels."), model="gpt-4o-mini")
+    backend, responses, _ = _fake_backend(finding("Drug A may increase the plasma concentration of Drug B."), model="gpt-4o-mini")
     _run(FindingAgent(backend=backend))
     assert responses.calls[0]["temperature"] == 0.0
     assert "reasoning" not in responses.calls[0]
 
 
 def test_usage_including_reasoning_tokens_is_recorded():
-    backend, _, _ = _fake_backend(finding("Drug A may raise Drug B levels."))
+    backend, _, _ = _fake_backend(finding("Drug A may increase the plasma concentration of Drug B."))
     _run(FindingAgent(backend=backend))
     assert backend.last_usage == {"input_tokens": 100, "output_tokens": 20, "reasoning_tokens": 5}
 
@@ -288,7 +291,7 @@ def test_skill_edits_are_picked_up_without_a_code_change(tmp_path):
 
 
 def test_transient_errors_are_retried_with_backoff_then_succeed():
-    backend, responses, sleeps = _fake_backend(RateLimitError("slow down"), APITimeoutError("timeout"), finding("Drug A may raise Drug B levels."))
+    backend, responses, sleeps = _fake_backend(RateLimitError("slow down"), APITimeoutError("timeout"), finding("Drug A may increase the plasma concentration of Drug B."))
     assert _run(FindingAgent(backend=backend)).used_llm is True
     assert len(responses.calls) == 3
     assert sleeps == [1.0, 2.0]
@@ -333,3 +336,85 @@ def test_openai_provider_defaults_to_gpt_5_5_at_low_effort(monkeypatch):
     assert backend.describe()["model"] == "gpt-5.5"
     assert backend.describe()["reasoning_effort"] == "low"
     assert FAKE_KEY not in str(backend.describe())
+
+
+# --- Guardrails for one-or-two-sentence, pair-specific, source-grounded Findings --------------------
+
+
+def _src_agent(finding_text, source=SOURCE, impact="negative", **extra):
+    backend, _, _ = _fake_backend({**finding(finding_text, impact), **extra}, {**finding(finding_text, impact), **extra})
+    return _run(FindingAgent(backend=backend), source)
+
+
+def test_more_than_two_sentences_is_rejected():
+    text = (
+        "Drug A may increase the plasma concentration of Drug B. Drug A may increase the plasma concentration of Drug B again. "
+        "Drug A may increase the plasma concentration of Drug B once more."
+    )
+    assert _src_agent(text).reason == "output_too_many_sentences"
+
+
+def test_a_finding_that_does_not_name_both_drugs_is_rejected_so_it_cannot_be_reused_across_pairs():
+    assert _src_agent("Coadministration may increase the plasma concentration.").reason == "output_missing_pair_names"
+
+
+def test_alternate_drug_name_counts_for_pair_naming():
+    backend, _, _ = _fake_backend(finding("Valproate may increase the plasma concentration of Drug B."))
+    source = "Coadministration of valproate may increase the plasma concentration of Drug B."
+    outcome = FindingAgent(backend=backend).generate_finding("Valproic Acid", "Drug B", "External evidence (PubMed)", source, "FALLBACK")
+    assert outcome.used_llm is True
+
+
+def test_a_number_not_in_the_source_is_rejected():
+    assert _src_agent("Drug A may increase the plasma concentration of Drug B by 60%.").reason == "output_unsupported_number"
+
+
+def test_a_number_that_is_in_the_source_is_accepted():
+    source = "Coadministration of Drug A may increase the plasma concentration of Drug B by 60% (p = 0.006)."
+    assert _src_agent("Drug A may increase the plasma concentration of Drug B by 60% (p = 0.006).", source=source).used_llm is True
+
+
+def test_wording_the_source_never_used_is_rejected_as_ungrounded():
+    text = "Drug A causes severe hepatotoxicity requiring immediate hospitalization in Drug B recipients."
+    source = "Coadministration of Drug A increased the plasma concentration of Drug B."  # unhedged, so only grounding can fire
+    assert _src_agent(text, source=source).reason == "output_ungrounded"
+
+
+def test_optional_details_are_kept_only_when_the_source_states_them():
+    source = (
+        "Drug A is a strong CYP3A4 inducer and may decrease exposure of Drug B. "
+        "Dosage adjustment of Drug B may be necessary."
+    )
+    outcome = _src_agent(
+        "Drug A may decrease exposure of Drug B.",
+        source=source,
+        mechanism="strong CYP3A4 inducer",  # stated
+        direction="decrease exposure of Drug B",  # stated
+        consequence="severe liver failure requiring transplantation",  # NOT stated -> dropped
+        recommendation="Dosage adjustment of Drug B may be necessary",  # stated, but no longer a Finding field -> dropped
+    )
+    assert outcome.used_llm is True
+    assert outcome.details == {
+        "mechanism": "strong CYP3A4 inducer",
+        "direction": "decrease exposure of Drug B",
+    }
+
+
+def test_no_details_means_none_not_an_invented_value():
+    assert _src_agent("Coadministration of Drug A may increase the plasma concentration of Drug B.").details is None
+
+
+def test_run_statistics_count_every_outcome():
+    backend, _, _ = _fake_backend(
+        finding("Drug A may increase the plasma concentration of Drug B."), NO_FINDING,
+        finding("Coadministration may increase the plasma concentration."), finding("Coadministration may increase the plasma concentration."),
+    )
+    agent = FindingAgent(backend=backend)
+    for _ in range(3):
+        _run(agent)
+    assert agent.stats["accepted"] == 1 and agent.stats["no_finding"] == 1
+    assert agent.stats["rejected:output_missing_pair_names"] == 1 and agent.stats["correction_retry"] == 2
+
+
+def test_default_provider_is_openai():
+    assert fa._DEFAULT_PROVIDER == "openai"

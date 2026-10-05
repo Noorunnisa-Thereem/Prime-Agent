@@ -214,8 +214,8 @@ def test_summary_card_appears_before_medication_reconciliation():
 
 
 def test_summary_card_header_counts_clinically_relevant_vs_unresolved_from_real_flags(monkeypatch):
-    # 1 pair (no_interaction_detected, both drugs resolved -> green/"clinically relevant")
-    # + 1 therapy (effectiveness_incomplete -> sev-mod -> amber/"unresolved"). The Flag
+    # 1 pair (no_interaction_detected, no Flag Sheet evidence for it -> silence is not safety ->
+    # amber/"unresolved") + 1 therapy (effectiveness_incomplete -> sev-mod -> amber/"unresolved"). The Flag
     # Sheet's own curated pairs are cleared here so this test isolates
     # therapy_assessments + current_pair_assessments counting specifically -- their
     # contribution is covered separately below.
@@ -223,21 +223,79 @@ def test_summary_card_header_counts_clinically_relevant_vs_unresolved_from_real_
     monkeypatch.setattr(report_html, "DDI_RED_FLAGS", [])
     html_fragment = report_html._sec_drug_interactions(_sections_with_pairs_and_therapies([_pair()], [_therapy()]))
 
-    assert "Overall: 1 clinically relevant findings | 1 unresolved finding(s)." in html_fragment
+    assert "Overall: 0 clinically significant | 0 resolved &mdash; no concern | 2 unresolved." in html_fragment
 
 
-def test_pair_row_flag_is_green_when_resolved_and_amber_when_drug_is_uncovered():
-    resolved_row = report_html._ddi_summary_pair_row(
-        _pair(), coverage={"unresolved_drugs": []}, name_map={"Lamotrigine": "lamotrigine", "Levetiracetam (Keppra)": "levetiracetam"}, therapy_by_source_name={}
+_NAMES = {"Lamotrigine": "lamotrigine", "Levetiracetam (Keppra)": "levetiracetam"}
+
+
+def _flag_entry(impact, finding, labels=("DailyMed label (Drug Interactions section)",)):
+    return {"drug_a": "Lamotrigine", "drug_b": "Levetiracetam", "impact": impact, "finding": finding, "evidence_labels": list(labels)}
+
+
+def test_pair_with_no_mechanism_and_no_evidence_is_unresolved_never_no_concern():
+    # "No mechanism found" is silence, not safety (SKILL.md Part 4) -- even when both drugs are
+    # covered by the curated reference.
+    row = report_html._ddi_summary_pair_row(_pair(), coverage={"unresolved_drugs": []}, name_map=_NAMES, therapy_by_source_name={})
+    assert row["flag_css"] == "sev-mod"
+    assert row["flag_label"] == "UNRESOLVED"
+    assert "absence of data does not establish absence of risk" in row["key_finding"]
+
+
+def test_pair_is_resolved_only_when_the_flag_sheet_resolved_it_and_reads_its_finding():
+    flag = report_html._flag_pairs_by_unordered_name(
+        {"pairs": [_flag_entry("positive", "Levetiracetam does not influence the plasma concentration of other AEDs.")]}
     )
-    assert resolved_row["flag_css"] == "sev-low"
-    assert resolved_row["flag_label"] == "NO MAJOR CONCERN"
+    row = report_html._ddi_summary_pair_row(_pair(), coverage={}, name_map=_NAMES, therapy_by_source_name={}, flag_by_pair=flag)
+    assert row["flag_css"] == "sev-low" and row["flag_label"] == "NO MAJOR CONCERN"
+    assert "does not influence the plasma concentration" in row["key_finding"]
+    assert "DailyMed label" in row["evidence_source"]
 
-    uncovered_row = report_html._ddi_summary_pair_row(
-        _pair(), coverage={"unresolved_drugs": ["levetiracetam"]}, name_map={"Lamotrigine": "lamotrigine", "Levetiracetam (Keppra)": "levetiracetam"}, therapy_by_source_name={}
-    )
-    assert uncovered_row["flag_css"] == "sev-mod"
-    assert uncovered_row["flag_label"] == "UNRESOLVED"
+
+def test_pair_is_red_when_the_flag_sheet_found_a_negative_even_with_no_curated_mechanism():
+    flag = report_html._flag_pairs_by_unordered_name({"pairs": [_flag_entry("negative", "Drug A decreases Drug B exposure.")]})
+    row = report_html._ddi_summary_pair_row(_pair(), coverage={}, name_map=_NAMES, therapy_by_source_name={}, flag_by_pair=flag)
+    assert row["flag_css"] == "sev-high" and row["flag_label"] == "RISK IDENTIFIED"
+
+
+def test_the_flag_sheet_lookup_matches_a_pair_in_either_order():
+    flag = report_html._flag_pairs_by_unordered_name({"pairs": [dict(_flag_entry("negative", "x."), drug_a="Levetiracetam", drug_b="Lamotrigine")]})
+    row = report_html._ddi_summary_pair_row(_pair(), coverage={}, name_map=_NAMES, therapy_by_source_name={}, flag_by_pair=flag)
+    assert row["flag_css"] == "sev-high"
+
+
+def test_patient_reported_cns_effects_keep_a_resolved_pk_pair_unresolved_and_say_why():
+    pair = _pair(pharmacodynamic_followup={
+        "status": "unresolved",
+        "patient_reported_effects": ["Daytime drowsiness", "Dizziness/lightheadedness", "Unsteady gait (ataxia)"],
+    })
+    flag = report_html._flag_pairs_by_unordered_name({"pairs": [_flag_entry("positive", "Levetiracetam does not influence lamotrigine plasma concentration.")]})
+    row = report_html._ddi_summary_pair_row(pair, coverage={}, name_map=_NAMES, therapy_by_source_name={}, flag_by_pair=flag)
+    assert row["flag_css"] == "sev-mod" and row["flag_label"] == "UNRESOLVED"
+    assert "does not influence lamotrigine plasma concentration" in row["key_finding"]  # the resolved PK axis is kept
+    assert "Daytime drowsiness" in row["key_finding"] and "not attributed to either drug" in row["key_finding"]
+
+
+def test_the_same_pair_gets_the_same_bucket_in_every_count():
+    # One shared source of truth: the tile/headline counts and the pair row cannot disagree.
+    flag_evidence = {"pairs": [_flag_entry("negative", "Drug A decreases Drug B exposure.")]}
+    sections = _sections_with_pairs_and_therapies([_pair()], [])
+    sections[report_html.SEC_DDI_FLAG_EVIDENCE] = flag_evidence
+    html_fragment = report_html._sec_drug_interactions(sections)
+    assert "Overall: 1 clinically significant | 0 resolved &mdash; no concern | 0 unresolved." in html_fragment
+
+
+def test_coverage_table_no_longer_reuses_the_words_resolved_and_unresolved():
+    ddi = {
+        "source_coverage": {"resolved_drugs": ["lamotrigine"], "unresolved_drugs": ["levetiracetam"], "not_evaluated_drugs": []},
+        "medication_reconciliation": {"normalized_medications": [
+            {"source_name": "Lamotrigine", "normalized_name": "lamotrigine"},
+            {"source_name": "Levetiracetam (Keppra)", "normalized_name": "levetiracetam"},
+        ]},
+    }
+    fragment = report_html._ddi_coverage_action_table(ddi)
+    assert ">Covered<" in fragment and ">Not covered<" in fragment
+    assert ">Resolved<" not in fragment and ">Unresolved<" not in fragment
 
 
 def test_pair_row_flag_is_red_when_a_mechanism_was_actually_detected():
@@ -249,15 +307,27 @@ def test_pair_row_flag_is_red_when_a_mechanism_was_actually_detected():
     assert row["key_finding"] == "Additive CNS depression."
 
 
-def test_pair_row_patient_impact_connects_to_the_worse_linked_therapy():
+def test_pair_row_patient_impact_never_copies_therapy_level_text_onto_a_pair():
     row = report_html._ddi_summary_pair_row(
         _pair(),
         coverage={"unresolved_drugs": []},
         name_map={"Lamotrigine": "lamotrigine", "Levetiracetam (Keppra)": "levetiracetam"},
         therapy_by_source_name={"Lamotrigine": _therapy(clinical_impression="4 supporting, 5 counter. Clinical-notes inference: incomplete seizure suppression.")},
     )
-    assert "incomplete seizure suppression" in row["patient_impact"]
-    assert "not a confirmed drug interaction" in row["patient_impact"]
+    assert "incomplete seizure suppression" not in row["patient_impact"]
+    assert row["patient_impact"] == "No pair-specific patient effect is stated by the sources for this pair."
+
+
+def test_pair_row_patient_impact_uses_only_the_pairs_own_supported_details():
+    flag = report_html._flag_pairs_by_unordered_name({"pairs": [{
+        "drug_a": "Lamotrigine", "drug_b": "Levetiracetam", "impact": "negative", "finding": "x.",
+        "evidence_labels": [], "evidence_details": {"consequence": "Lower lamotrigine exposure.", "recommendation": "Monitor levels."},
+    }]})
+    row = report_html._ddi_summary_pair_row(
+        _pair(), coverage={}, name_map={"Lamotrigine": "lamotrigine", "Levetiracetam (Keppra)": "levetiracetam"},
+        therapy_by_source_name={}, flag_by_pair=flag,
+    )
+    assert row["patient_impact"] == "Lower lamotrigine exposure."
 
 
 def test_pair_row_evidence_source_shows_the_real_combined_pubmed_pair_query():
@@ -358,7 +428,7 @@ def test_summary_card_shows_the_new_finding_level_stat_tiles_matching_the_headli
     assert '<div class="stat"><b>0</b><span>Clinically Significant</span></div>' in html_fragment
     assert '<div class="stat"><b>0</b><span>Resolved — No Concern</span></div>' in html_fragment
     assert '<div class="stat"><b>1</b><span>Unresolved</span></div>' in html_fragment
-    assert "Overall: 0 clinically relevant findings | 1 unresolved finding(s)." in html_fragment
+    assert "Overall: 0 clinically significant | 0 resolved &mdash; no concern | 1 unresolved." in html_fragment
 
 
 def test_summary_card_headline_counts_always_match_the_sum_of_the_stat_tiles():
@@ -374,16 +444,19 @@ def test_summary_card_headline_counts_always_match_the_sum_of_the_stat_tiles():
 
     html_fragment = report_html._sec_drug_interactions(_sections_with_pairs_and_therapies([_pair()], [_therapy(), _therapy(medication={"source_name": "Levetiracetam (Keppra)"}, position="high_caution")]))
 
-    headline_match = _re.search(r"Overall: (\d+) clinically relevant findings \| (\d+) unresolved finding\(s\)\.", html_fragment)
+    headline_match = _re.search(
+        r"Overall: (\d+) clinically significant \| (\d+) resolved &mdash; no concern \| (\d+) unresolved\.", html_fragment
+    )
     assert headline_match, "the headline sentence must be present"
-    headline_relevant, headline_unresolved = int(headline_match.group(1)), int(headline_match.group(2))
+    headline_significant, headline_resolved, headline_unresolved = (int(g) for g in headline_match.groups())
 
     tile_values = [int(v) for v in _re.findall(r'<div class="stat"><b>(\d+)</b><span>(?:Clinically Significant|Resolved — No Concern|Unresolved)</span></div>', html_fragment)]
     assert len(tile_values) == 3, "expected exactly the 3 finding-bucket tiles (plus the separate Total Findings Assessed tile)"
     clinically_significant, resolved_no_concern, unresolved = tile_values
 
-    assert headline_relevant == clinically_significant + resolved_no_concern
-    assert headline_unresolved == unresolved
+    # The headline names the very same three buckets the tiles show -- no merged "clinically
+    # relevant" figure that could read as a different number from the tiles beside it.
+    assert (headline_significant, headline_resolved, headline_unresolved) == (clinically_significant, resolved_no_concern, unresolved)
 
     total_tile_match = _re.search(r'<div class="stat"><b>(\d+)</b><span>Total Findings Assessed</span></div>', html_fragment)
     assert total_tile_match
@@ -492,14 +565,14 @@ def test_flag_sheet_card_renders_one_section_per_drug_with_a_two_column_table():
     assert "Needs Review" not in html_fragment, "there is no third column -- every pair reaching this layer is already resolved"
 
 
-def test_flag_sheet_card_shows_each_pair_from_both_drugs_own_point_of_view():
+def test_flag_sheet_card_lists_each_pair_once_not_under_both_drugs():
     flag_evidence = _flag_evidence([_flag_pair("Lamotrigine", "Levetiracetam", "positive", "Well tolerated combination.")])
     html_fragment = report_html._ddi_flag_sheet_card(flag_evidence)
 
     lamotrigine_section = html_fragment.split("LAMOTRIGINE</div>", 1)[1].split("</table>", 1)[0]
     levetiracetam_section = html_fragment.split("LEVETIRACETAM</div>", 1)[1].split("</table>", 1)[0]
     assert "Lamotrigine + Levetiracetam</div>" in lamotrigine_section
-    assert "Levetiracetam + Lamotrigine</div>" in levetiracetam_section
+    assert "Lamotrigine</div>" not in levetiracetam_section and "Levetiracetam + Lamotrigine" not in html_fragment
 
 
 def test_flag_sheet_card_places_a_pair_in_exactly_one_impact_column():

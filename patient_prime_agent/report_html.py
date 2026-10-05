@@ -1577,45 +1577,79 @@ def _pair_evidence_source_items(pair: dict[str, Any]) -> list[dict[str, Any]]:
     return [e for e in (pair.get("evidence") or []) if e.get("direction") != "unresolved" or e.get("modality") == "literature"]
 
 
+def _flag_pairs_by_unordered_name(flag_evidence: dict[str, Any] | None) -> dict[frozenset[str], dict[str, Any]]:
+    """The Flag Sheet's resolved pairs keyed by the unordered pair of lower-cased drug names --
+    the one shared place where a pair's resolution lives, so every table that states a pair's
+    status reads it from here instead of computing its own."""
+    return {
+        frozenset({str(p.get("drug_a") or "").strip().lower(), str(p.get("drug_b") or "").strip().lower()}): p
+        for p in (flag_evidence or {}).get("pairs") or []
+    }
+
+
+_UNRESOLVED_PAIR_FINDING = (
+    "No curated source documents an interaction or its absence for this pair; absence of data does not establish "
+    "absence of risk."
+)
+
+
 def _ddi_summary_pair_row(
     pair: dict[str, Any],
     coverage: dict[str, Any],
     name_map: dict[str, str],
     therapy_by_source_name: dict[str, dict[str, Any]],
+    flag_by_pair: dict[frozenset[str], dict[str, Any]] | None = None,
 ) -> dict[str, str]:
     status = pair.get("status")
+    norm_a = str(name_map.get(pair.get("drug_a")) or pair.get("drug_a") or "").strip().lower()
+    norm_b = str(name_map.get(pair.get("drug_b")) or pair.get("drug_b") or "").strip().lower()
+    flag = (flag_by_pair or {}).get(frozenset({norm_a, norm_b}))
+    followup = pair.get("pharmacodynamic_followup") or {}
+    flag_source_text: str | None = None
     if status == "interaction_detected":
         css_class = "sev-high"
         mechanisms = pair.get("mechanisms") or []
         key_finding = _raw_text((mechanisms[0] if mechanisms else {}).get("description")) if mechanisms else "Clinically relevant interaction mechanism identified."
         evidence_items = _pair_evidence_source_items(pair)
     elif status == "no_interaction_detected":
-        drug_a_norm = name_map.get(pair.get("drug_a"))
-        drug_b_norm = name_map.get(pair.get("drug_b"))
-        unresolved = set(coverage.get("unresolved_drugs") or [])
-        css_class = "sev-mod" if (drug_a_norm in unresolved or drug_b_norm in unresolved) else "sev-low"
-        key_finding = "No resolved major DDI identified between these two current medications."
+        # "No mechanism found" is silence, not safety (SKILL.md Part 4): the pair is only
+        # "resolved" when the Flag Sheet's own evidence for this exact pair resolved it, and a
+        # patient-reported effect that no source explains keeps it unresolved. The Flag Sheet is
+        # the single source of truth for the pair's resolution, so this row can never disagree
+        # with the Flag Sheet tables.
         evidence_items = _pair_evidence_source_items(pair)
+        flag_source_text = "; ".join(flag.get("evidence_labels") or []) if flag else None
+        flag_finding = _raw_text(flag.get("finding")) if flag else None
+        if flag and flag.get("impact") == "negative":
+            css_class, key_finding = "sev-high", flag_finding
+        elif followup.get("status") == "unresolved":
+            effects = ", ".join(followup.get("patient_reported_effects") or [])
+            css_class = "sev-mod"
+            key_finding = (
+                f"{flag_finding + ' ' if flag_finding else _UNRESOLVED_PAIR_FINDING + ' '}"
+                f"Pharmacodynamic question unresolved: the clinical notes record {effects} on this regimen, and no curated "
+                "source documents or excludes an additive central-nervous-system interaction for this pair; the effects "
+                "are regimen-level and not attributed to either drug."
+            )
+        elif flag:
+            css_class, key_finding = "sev-low", flag_finding
+        else:
+            css_class, key_finding = "sev-mod", _UNRESOLVED_PAIR_FINDING
     else:  # not_evaluated -- e.g. a proposed-drug pair, not applicable to the current regimen
         css_class = "sev-mod"
         key_finding = "This pair was not evaluated as part of the current regimen."
         evidence_items = []
 
-    worse_therapy: dict[str, Any] | None = None
-    for name in (pair.get("drug_a"), pair.get("drug_b")):
-        candidate = therapy_by_source_name.get(name)
-        if candidate is None:
-            continue
-        candidate_rank = _POSITION_RANK.get(_DDI_POSITION_CLASS.get(str(candidate.get("position") or "").lower(), "sev-neutral"), 0)
-        worse_rank = _POSITION_RANK.get(_DDI_POSITION_CLASS.get(str((worse_therapy or {}).get("position") or "").lower(), "sev-neutral"), -1)
-        if worse_therapy is None or candidate_rank > worse_rank:
-            worse_therapy = candidate
-    patient_impact = (
-        f"{_patient_impact_from_impression(worse_therapy.get('clinical_impression'))} This reflects therapy-level "
-        "effectiveness, not a confirmed drug interaction."
-        if worse_therapy is not None
-        else "No therapy-level effectiveness concern is connected to this pair."
-    )
+    # Patient impact is pair-specific: only what this pair's own sources state (consequence /
+    # consequence) or the patient's recorded effects for it. Therapy-level effectiveness text is
+    # about one drug's response, so it is never copied onto pairs.
+    details = (flag or {}).get("evidence_details") or {}
+    impact_parts = [_raw_text(details[k]) for k in ("consequence",) if details.get(k)]
+    if followup.get("status") == "unresolved":
+        impact_parts.append(
+            "Patient-reported effects on this regimen: " + ", ".join(followup.get("patient_reported_effects") or []) + "."
+        )
+    patient_impact = " ".join(impact_parts) or "No pair-specific patient effect is stated by the sources for this pair."
 
     return {
         "subject": f"{_t(pair.get('drug_a'))} + {_t(pair.get('drug_b'))}",
@@ -1623,7 +1657,7 @@ def _ddi_summary_pair_row(
         "flag_label": _FLAG_LABEL_BY_CLASS[css_class],
         "key_finding": _t(key_finding),
         "patient_impact": _t(patient_impact),
-        "evidence_source": _t(_evidence_source_labels(evidence_items)),
+        "evidence_source": _t(flag_source_text or _evidence_source_labels(evidence_items)),
     }
 
 
@@ -1658,7 +1692,7 @@ def _flag_css_to_bucket(flag_css: str) -> str:
     return "unresolved"  # sev-mod / sev-neutral
 
 
-def _ddi_finding_counts(ddi: dict[str, Any]) -> dict[str, int]:
+def _ddi_finding_counts(ddi: dict[str, Any], flag_by_pair: dict[frozenset[str], dict[str, Any]] | None = None) -> dict[str, int]:
     """Single source of truth for every clinically-significant /
     resolved-no-concern / unresolved count shown anywhere in Section 06's
     summary overview card -- both the headline sentence and the stat tiles
@@ -1700,22 +1734,21 @@ def _ddi_finding_counts(ddi: dict[str, Any]) -> dict[str, int]:
 
     current_pairs = [p for p in _get(ddi, "current_pair_assessments", default=[]) if p.get("pair_context") == "current_current"]
     for pair in current_pairs:
-        row = _ddi_summary_pair_row(pair, coverage, name_map, therapy_by_source_name)
+        row = _ddi_summary_pair_row(pair, coverage, name_map, therapy_by_source_name, flag_by_pair)
         counts[_flag_css_to_bucket(row["flag_css"])] += 1
 
     return counts
 
 
-def _ddi_summary_overview_card(ddi: dict[str, Any]) -> str:
+def _ddi_summary_overview_card(ddi: dict[str, Any], flag_evidence: dict[str, Any] | None = None) -> str:
     therapy_assessments = _get(ddi, "therapy_assessments", default=[])
     therapy_rows = [_ddi_summary_therapy_row(t) for t in therapy_assessments]
 
-    counts = _ddi_finding_counts(ddi)
+    flag_by_pair = _flag_pairs_by_unordered_name(flag_evidence)
+    counts = _ddi_finding_counts(ddi, flag_by_pair)
     total_findings = sum(counts.values())
     if total_findings == 0:
         return ""
-    clinically_relevant = counts["clinically_significant"] + counts["resolved_no_concern"]
-    unresolved = counts["unresolved"]
 
     # Every stat tile comes from the exact same `counts` dict the headline sentence above
     # uses -- see _ddi_finding_counts -- so the two can never show contradictory numbers.
@@ -1742,7 +1775,7 @@ def _ddi_summary_overview_card(ddi: dict[str, Any]) -> str:
     return f"""
   <div class="card" style="margin-bottom:8px">
     <div class="h2">DDI &amp; Patient-Specific Therapy Assessment &mdash; Summary</div>
-    <p class="small" style="margin:2px 0 6px"><b>Overall: {clinically_relevant} clinically relevant findings | {unresolved} unresolved finding(s).</b></p>
+    <p class="small" style="margin:2px 0 6px"><b>Overall: {counts["clinically_significant"]} clinically significant | {counts["resolved_no_concern"]} resolved &mdash; no concern | {counts["unresolved"]} unresolved.</b></p>
     <div class="grid4" style="margin-bottom:8px">{stat_html}</div>
     <table class="datatable"><thead><tr><th>Medication</th><th>Flag</th><th>Key Finding</th><th>Patient Impact</th><th>Evidence Source</th></tr></thead>
     <tbody>{table_rows}</tbody></table>
@@ -1818,11 +1851,11 @@ def _ddi_coverage_action_table(ddi: dict[str, Any]) -> str:
     def _row(source_name: Any) -> str:
         normalized = name_by_source.get(source_name)
         if normalized in resolved:
-            badge_class, label = "sev-low", "Resolved"
-            meaning = f"Curated CYP/pharmacokinetic reference data exists for this drug ({flockhart_source})."
+            badge_class, label = "sev-low", "Covered"
+            meaning = f"Curated CYP/pharmacokinetic reference data exists for this drug ({flockhart_source}). This is reference-data coverage, not a pair's resolution."
         elif normalized in unresolved:
-            badge_class, label = "sev-mod", "Unresolved"
-            meaning = "No curated CYP/pharmacokinetic reference entry for this drug; screening relies on pharmacodynamic rules and pharmacogenomic findings only."
+            badge_class, label = "sev-mod", "Not covered"
+            meaning = "No curated CYP/pharmacokinetic reference entry for this drug; screening relies on pharmacodynamic rules and the pair-specific literature only. This is reference-data coverage, not a pair's resolution."
         elif normalized in not_evaluated:
             badge_class, label = "sev-mod", "Not Evaluated"
             meaning = "Not present in the curated reference or pharmacogenomic findings; no automated interaction evidence is available."
@@ -1886,19 +1919,24 @@ def _ddi_flag_sheet_pairs_by_drug(flag_evidence: dict[str, Any] | None) -> dict[
     (patient_prime_agent.ddi_flag_evidence's output -- already dropped every
     pair with no finding and every pair that didn't resolve clearly to
     Positive or Negative; there is no third "needs review" bucket, see that
-    module's own docstring), indexed by EACH of its two drugs
-    (lowercased) -- so a pair like "Lamotrigine + Levetiracetam" appears
-    once under "lamotrigine" (partner "Levetiracetam") and once under
-    "levetiracetam" (partner "Lamotrigine"), letting each drug's own
-    section show every pair it is actually part of, from that drug's own
+    module's own docstring), indexed by the first drug of the pair
+    (lowercased) -- a pair like "Lamotrigine + Levetiracetam" appears once,
+    under "lamotrigine" (partner "Levetiracetam"), never again under
+    "levetiracetam": A+B and B+A are one pair. Each drug's own section
+    shows the pairs filed under it, from that drug's own
     point of view -- matching the reference layout's per-drug sections."""
     by_drug: dict[str, list[dict[str, Any]]] = {}
+    seen: set[frozenset[str]] = set()
     for pair in _get(flag_evidence or {}, "pairs", default=[]):
         drug_a, drug_b = pair.get("drug_a"), pair.get("drug_b")
         if not drug_a or not drug_b:
             continue
+        # A+B and B+A are one pair: it is listed once, under the first drug of the pair.
+        key = frozenset({str(drug_a).strip().lower(), str(drug_b).strip().lower()})
+        if key in seen:
+            continue
+        seen.add(key)
         by_drug.setdefault(str(drug_a).strip().lower(), []).append({**pair, "_self": drug_a, "_partner": drug_b})
-        by_drug.setdefault(str(drug_b).strip().lower(), []).append({**pair, "_self": drug_b, "_partner": drug_a})
     return by_drug
 
 
@@ -1927,6 +1965,8 @@ def _ddi_flag_sheet_hyperlink_anchor_text(primary_evidence_label: str | None) ->
         return "General web search (Tavily)"
     if "Curated DDI" in label:
         return "Flockhart"
+    if "PGx" in label:
+        return "PubMed (PGx finding citation)"
     return label or "Source"
 
 
@@ -1953,12 +1993,46 @@ def _ddi_flag_sheet_entry_block(entry: dict[str, Any]) -> str:
     if url:
         anchor_text = _ddi_flag_sheet_hyperlink_anchor_text(entry.get("primary_evidence_label"))
         hyperlink_line = f'<div class="flagpair-line"><b>Hyperlink:</b> <a href="{xml_escape(str(url))}">{xml_escape(anchor_text)}</a></div>'
-    evidence_text = "; ".join(entry.get("evidence_labels") or []) or "—"
+    # SKILL.md Part 5: each listed source carries its own evidence-status tag, so a general web
+    # search listed beside a curated label is never read as curated itself.
+    sources = entry.get("evidence_sources") or [{"label": label, "status": None} for label in entry.get("evidence_labels") or []]
+    evidence_text = "; ".join(f"{src['label']} [{src['status']}]" if src.get("status") else str(src["label"]) for src in sources) or "—"
+    detail_lines = "".join(
+        f'<div class="flagpair-line"><b>{name.title()}:</b> {_t(text)}</div>'
+        for name, text in (entry.get("evidence_details") or {}).items()
+        if name != "recommendation"  # no longer part of the Finding format (reports written before that still carry it)
+        if text
+    )
+    # SKILL.md Part 6 Step 5: what kind of evidence this is, so mixed or conflicting evidence is never read as simply good or bad.
+    type_note = {
+        "mixed": "mixed (the source reports both a favorable and an unfavorable result; both are stated above)",
+        "conflict": "conflicting sources (what each source found is stated above; no resolution is implied)",
+    }
+    evidence_type = entry.get("evidence_type")
+    type_line = (
+        f'<div class="flagpair-line"><b>Evidence type:</b> {_t(type_note.get(evidence_type, str(evidence_type).replace("_", " ")))}</div>'
+        if evidence_type
+        else ""
+    )
+    pgx = entry.get("pgx_context")
+    pgx_line = ""
+    if pgx:
+        shown = "; ".join(
+            f"{_raw_text(f.get('drug'))} {_raw_text(f.get('genotype'))}: {_raw_text(f.get('predicted_effect'))} ({_raw_text(f.get('citation'))})"
+            for f in pgx.get("findings") or []
+        )
+        pgx_line = (
+            f'<div class="flagpair-line"><b>Patient PGx context [{_t(pgx.get("status"))}] (not part of this verdict):</b> '
+            f'{_t(pgx.get("link"))}. {_t(shown)}</div>'
+        )
     return f"""
     <div class="flagpair-block">
       <div class="flagpair-title">{_t(entry["_self"])} + {_t(entry["_partner"])}</div>
       <div class="flagpair-line"><b>Findings:</b> {_t(entry.get("finding"))}</div>
+      {detail_lines}
+      {type_line}
       <div class="flagpair-line"><b>Evidence:</b> {_t(evidence_text)}</div>
+      {pgx_line}
       {hyperlink_line}
     </div>"""
 
@@ -2046,14 +2120,54 @@ def _ddi_flag_sheet_card(flag_evidence: dict[str, Any] | None) -> str:
     )
 
     checked = _get(flag_evidence or {}, "pairs_checked", default=0)
-    with_evidence = _get(flag_evidence or {}, "pairs_with_evidence", default=0)
+    with_evidence = _get(flag_evidence or {}, "unique_pairs_with_evidence", default=_get(flag_evidence or {}, "pairs_with_evidence", default=0))
     dropped = _get(flag_evidence or {}, "pairs_dropped_unresolved", default=0)
+    method = _raw_text(_get(flag_evidence or {}, "classification_method", default=""))
+    counting_basis = _raw_text(_get(flag_evidence or {}, "counting_basis", default=""))
+    pgx_source = _get(flag_evidence or {}, "pgx_source", default={}) or {}
+    rejections = _get(flag_evidence or {}, "source_rejection_counts", default={}) or {}
+    pgx_note = (
+        f'<p class="small muted" style="margin-bottom:2px"><b>Where the PGx context comes from:</b> {_t(pgx_source.get("origin"))}'
+        f' ({_t(pgx_source.get("document"))}, {_t(pgx_source.get("report_date"))}; {_t(pgx_source.get("loci_analyzed"))} loci, '
+        f'{_t(pgx_source.get("drugs_covered"))} drugs). Pooled with external sources: '
+        f'{"yes" if pgx_source.get("pooled_with_external_sources") else "no"}. {_t(pgx_source.get("traceability"))} '
+        f'{_t(pgx_source.get("role"))}.</p>'
+        if pgx_source
+        else ""
+    )
+    rejection_note = (
+        '<p class="small muted" style="margin-bottom:2px"><b>Sources excluded by the evidence checks:</b> '
+        + _t("; ".join(f"{key.replace(':', ' - ').replace('_', ' ')}: {n}" for key, n in rejections.items()))
+        + ".</p>"
+        if rejections
+        else ""
+    )
+
+    efficacy_items = _get(flag_evidence or {}, "combination_efficacy_only", default=[]) or []
+    efficacy_block = (
+        '<div class="h2" style="margin-top:10px">Combination-treatment efficacy evidence (not interaction findings)</div>'
+        '<p class="small muted" style="margin-bottom:2px">These pairs were studied together as a treatment, but the source says nothing about an '
+        'interaction between the drugs, so they are unresolved as drug-drug interactions.</p>'
+        + "".join(
+            f'<div class="flagpair-block"><div class="flagpair-title">{_t(i.get("drug_a"))} + {_t(i.get("drug_b"))}</div>'
+            f'<div class="flagpair-line"><b>Findings:</b> {_t(i.get("finding"))}</div>'
+            f'<div class="flagpair-line"><b>Evidence:</b> {_t(i.get("source"))} [{_t(i.get("evidence_status"))}]</div></div>'
+            for i in efficacy_items
+        )
+        if efficacy_items
+        else ""
+    )
 
     return f"""
   <div class="h2" style="margin-top:10px">Drug Interaction Flag Sheet &mdash; Extracted Drug List</div>
-  <p class="small muted" style="margin-bottom:2px"><b>Positive Impact</b> = curated/literature evidence explicitly describes a favorable or well-tolerated combination; <b>Negative Impact</b> = a real curated pharmacokinetic mechanism, a pharmacodynamic-risk rule, or literature language explicitly describing a risk. A pair with no evidence, or whose evidence never clearly resolved either way, is not listed here at all -- it is never guessed into either column (see Known Limitations).</p>
-  <p class="small muted" style="margin-bottom:2px">Screened {_t(len(drug_display_by_normalized))} drug(s) across {_t(checked)} unique pairs; {_t(with_evidence)} pair(s) resolved clearly to Positive or Negative and are shown below. {_t(dropped)} pair(s) had no evidence, or evidence that did not clearly resolve either way, and are not listed here -- never shown as a negative/no-concern finding (see Known Limitations).</p>
+  <p class="small muted" style="margin-bottom:2px"><b>Positive Impact</b> = the pair's own evidence explicitly states no clinically meaningful interaction (or a beneficial pharmacodynamic interaction); <b>Negative Impact</b> = the pair's own evidence documents a pharmacokinetic mechanism, a pharmacodynamic risk, an adverse-effect signal, or mixed or conflicting evidence (kept Negative, with every part stated). Evidence that only shows the combination treated a condition is not an interaction finding and is listed separately below. Patient PGx findings are shown as context only and never decide either column. A pair with no evidence, or whose evidence never clearly resolved either way, is not listed here at all -- it is never guessed into either column (see Known Limitations).</p>
+  <p class="small muted" style="margin-bottom:2px"><b>How pairs were classified:</b> {_t(method)}.</p>
+  <p class="small muted" style="margin-bottom:2px"><b>Counting:</b> {_t(counting_basis)}.</p>
+  {pgx_note}
+  {rejection_note}
+  <p class="small muted" style="margin-bottom:2px">Screened {_t(len(drug_display_by_normalized))} drug(s) across {_t(checked)} unique pairs; {_t(with_evidence)} unique pair(s) resolved clearly to Positive or Negative and are shown below. {_t(dropped)} pair(s) had no evidence, or evidence that did not clearly resolve either way, and are not listed here -- never shown as a negative/no-concern finding (see Known Limitations).</p>
   {sections}
+  {efficacy_block}
   {_ddi_flag_sheet_known_limitations_block(flag_evidence)}
 """
 
@@ -2106,7 +2220,7 @@ def _sec_drug_interactions(sections: dict[str, Any]) -> str:
     return f"""
 <section class="section">
   {_section_head(6, "Drug Interactions", sub)}
-  {_ddi_summary_overview_card(ddi)}
+  {_ddi_summary_overview_card(ddi, flag_evidence)}
   <div class="card">
     <div class="h2">Medication Reconciliation</div>
     <table class="datatable"><thead><tr><th>Drug</th><th>Dose</th><th>Flags</th></tr></thead>

@@ -42,6 +42,15 @@ _MONITORING_BY_MODALITY = {
     "pharmacogenomic": "Review the priority safety flags in the Pharmacogenomics section before adding or changing an interacting medication.",
 }
 
+# Words that mark a recorded side effect as a central-nervous-system effect.
+_CNS_EFFECT_TERMS = ("dizz", "lightheaded", "ataxi", "unsteady", "drows", "somnol", "sedat", "diplop", "confus")
+
+
+def cns_effects_in(effects: list[str] | None) -> list[str]:
+    """The recorded side effects that are central-nervous-system effects, as written in the source."""
+    return [e for e in (effects or []) if isinstance(e, str) and any(term in e.lower() for term in _CNS_EFFECT_TERMS)]
+
+
 _UNRESOLVED_DDI_NOTE = (
     "{drug} was not resolved against a live drug-drug interaction knowledge base in the "
     "available sources; only curated reference pharmacology and this patient's own "
@@ -56,6 +65,7 @@ def build_pair_assessment(
     pgx_evidence_by_drug: dict[str, list[dict[str, Any]]],
     regimen_wide_evidence: list[dict[str, Any]] | None = None,
     external_pubmed_pair: dict[str, Any] | None = None,
+    regimen_side_effects: list[str] | None = None,
 ) -> dict[str, Any]:
     """``external_pubmed_pair`` is a single, real PubMed envelope from a query combining
     BOTH drug names (e.g. "Lamotrigine AND Levetiracetam" -- see
@@ -170,9 +180,49 @@ def build_pair_assessment(
             "absence of risk."
         )
 
+    # A recorded CNS effect on a regimen of two CNS-active drugs is a pharmacodynamic question the
+    # curated rule base cannot answer (its CNS-depression rule covers a sedative plus an
+    # antiepileptic only). Say so explicitly instead of letting "no rule fired" read as "no
+    # concern": the effects are regimen-level and not attributed to either drug, and nothing here
+    # asserts an interaction that no source documents.
+    pharmacodynamic_followup: dict[str, Any] | None = None
+    cns_effects = cns_effects_in(regimen_side_effects)
+    if (
+        pair_context == "current_current"
+        and status == "no_interaction_detected"
+        and cns_effects
+        and reference_data.drug_class(drug_a.normalized_name) == "antiepileptic"
+        and reference_data.drug_class(drug_b.normalized_name) == "antiepileptic"
+    ):
+        pharmacodynamic_followup = {
+            "question": "Additive central-nervous-system effects of the two drugs",
+            "status": "unresolved",
+            "patient_reported_effects": cns_effects,
+            "source": "clinical notes: clinical_inference.medication_response.persistent_side_effects",
+            "why_unresolved": (
+                "The curated pharmacodynamic rule base has no antiepileptic + antiepileptic rule, and no curated source in this "
+                "assessment documents or excludes an additive CNS interaction for this pair. The reported effects are "
+                "regimen-level and are not attributed to either drug."
+            ),
+        }
+        evidence.append(
+            {
+                "modality": "clinical",
+                "direction": "unresolved",
+                "statement": f"Patient-reported CNS effects on this regimen: {', '.join(cns_effects)} (regimen-level; not attributed to a specific drug).",
+                "source_reference": "clinical notes: clinical_inference.medication_response.persistent_side_effects",
+                "evidence_level": "observed",
+                "patient_specific": True,
+            }
+        )
+        interpretation += (
+            f" The clinical notes record {', '.join(cns_effects)} on this regimen; whether the two drugs have an additive CNS effect "
+            "is unresolved (no curated source documents or excludes it) and is flagged for clinician review."
+        )
+
     monitoring = sorted({_MONITORING_BY_MODALITY[e["modality"]] for e in evidence if e["modality"] in _MONITORING_BY_MODALITY})
 
-    return {
+    result = {
         "drug_a": drug_a.source_name,
         "drug_b": drug_b.source_name,
         "pair_context": pair_context,
@@ -187,6 +237,9 @@ def build_pair_assessment(
             "Predicted (SuperCYPsPred) pharmacokinetic evidence is not available locally for this pair.",
         ],
     }
+    if pharmacodynamic_followup is not None:
+        result["pharmacodynamic_followup"] = pharmacodynamic_followup
+    return result
 
 
 def _external_pubmed_item(pubmed: dict[str, Any] | None) -> dict[str, Any] | None:
