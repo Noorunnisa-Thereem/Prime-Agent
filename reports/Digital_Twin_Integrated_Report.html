@@ -227,7 +227,7 @@ a { color:var(--teal); text-decoration:none; }
   </div>
   
   <div class="h2" style="margin-top:10px">Drug Interaction Flag Sheet &mdash; Extracted Drug List</div>
-  <p class="small muted" style="margin-bottom:2px"><b>Positive Impact</b> = the pair's own evidence explicitly describes a favorable or well-tolerated combination, or explicitly states no clinically meaningful interaction; <b>Negative Impact</b> = the pair's own evidence documents a pharmacokinetic mechanism, a pharmacodynamic risk, or another stated risk. Patient PGx findings are shown as context only and never decide either column. A pair with no evidence, or whose evidence never clearly resolved either way, is not listed here at all -- it is never guessed into either column (see Known Limitations).</p>
+  <p class="small muted" style="margin-bottom:2px"><b>Positive Impact</b> = the pair's own evidence explicitly states no clinically meaningful interaction (or a beneficial pharmacodynamic interaction); <b>Negative Impact</b> = the pair's own evidence documents a pharmacokinetic mechanism, a pharmacodynamic risk, an adverse-effect signal, or mixed or conflicting evidence (kept Negative, with every part stated). Evidence that only shows the combination treated a condition is not an interaction finding and is listed separately below. Patient PGx findings are shown as context only and never decide either column. A pair with no evidence, or whose evidence never clearly resolved either way, is not listed here at all -- it is never guessed into either column (see Known Limitations).</p>
   <p class="small muted" style="margin-bottom:2px"><b>How pairs were classified:</b> finding_agent (openai/gpt-5.5): the agent decides each pair's Impact and writes its Finding from that pair's own evidence (SKILL.md Part 6).</p>
   <p class="small muted" style="margin-bottom:2px"><b>Counting:</b> unique unordered drug pairs: A+B and B+A are one pair, counted once (the per-drug sections of the rendered report may show a pair under both of its drugs for readability; the totals never double-count it).</p>
   <p class="small muted" style="margin-bottom:2px"><b>Where the PGx context comes from:</b> patient-specific: this patient's own PGx panel (genotype cross-referenced against the PGx source report's gene-drug annotations) (Pharmacogenomic (PGx) Clinical Interpretation Report, 2026-09-10; 76 loci, 47 drugs). Pooled with external sources: no. Each finding keeps the PMID/PMCID citation the PGx report attaches to it, shown in its context line. CPIC and ClinVar are not pooled into this section (see the Pharmacogenomics section). context only -- PGx never decides a pair's Positive or Negative Impact (SKILL.md Part 3).</p>
@@ -241,6 +241,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Escitalopram</div>
       <div class="flagpair-line"><b>Findings:</b> Aripiprazole's label states that no dosage adjustment is necessary for CYP2C19 substrates, including escitalopram, when coadministered with aripiprazole.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Escitalopram is listed as a CYP2C19 substrate in the aripiprazole label.</div><div class="flagpair-line"><b>Direction:</b> No clinically important interaction requiring dose adjustment is stated.</div><div class="flagpair-line"><b>Consequence:</b> No dosage adjustment is necessary for escitalopram when coadministered with aripiprazole.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -249,6 +250,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Lamotrigine</div>
       <div class="flagpair-line"><b>Findings:</b> Aripiprazole's label states that no dosage adjustment is necessary for lamotrigine when coadministered with aripiprazole, based on pharmacokinetic interaction information.</div>
       <div class="flagpair-line"><b>Direction:</b> no clinically important interaction/no dosage adjustment necessary</div><div class="flagpair-line"><b>Consequence:</b> no dosage adjustment is necessary for lamotrigine when coadministered with aripiprazole</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -257,6 +259,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Lithium</div>
       <div class="flagpair-line"><b>Findings:</b> Based on pharmacokinetic studies in the aripiprazole label, no dosage adjustment of aripiprazole is required when administered concomitantly with lithium, and no dosage adjustment is necessary for lithium when coadministered with aripiprazole.</div>
       <div class="flagpair-line"><b>Direction:</b> no clinically important interaction requiring dosage adjustment</div><div class="flagpair-line"><b>Consequence:</b> no dosage adjustment is required for aripiprazole or lithium when coadministered</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -265,6 +268,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> The aripiprazole label states that no dosage adjustment is necessary for sertraline when sertraline is coadministered with aripiprazole.</div>
       <div class="flagpair-line"><b>Direction:</b> no dosage adjustment necessary for sertraline</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -273,6 +277,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Venlafaxine</div>
       <div class="flagpair-line"><b>Findings:</b> Aripiprazole's label states that no dosage adjustment is necessary for CYP2D6 substrates, including venlafaxine, when coadministered with aripiprazole.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Venlafaxine is identified as a CYP2D6 substrate in the label's no clinically important interactions section.</div><div class="flagpair-line"><b>Direction:</b> No clinically important interaction requiring dosage adjustment is stated.</div><div class="flagpair-line"><b>Consequence:</b> No dosage adjustment is necessary when venlafaxine is coadministered with aripiprazole.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -281,6 +286,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Carbamazepine</div>
       <div class="flagpair-line"><b>Findings:</b> Concomitant use of aripiprazole and carbamazepine decreased aripiprazole exposure compared with aripiprazole alone. The label recommends increasing the aripiprazole dosage when it is administered with a strong CYP3A4 inducer such as carbamazepine.</div>
       <div class="flagpair-line"><b>Mechanism:</b> carbamazepine is a strong CYP3A4 inducer affecting aripiprazole exposure</div><div class="flagpair-line"><b>Direction:</b> decreased aripiprazole exposure</div><div class="flagpair-line"><b>Consequence:</b> decreased exposure of aripiprazole compared to aripiprazole alone</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -289,6 +295,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Fluoxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Fluoxetine is listed as a strong CYP2D6 inhibitor that increases aripiprazole exposure when used concomitantly with aripiprazole. The label recommends reducing the aripiprazole dosage when aripiprazole is administered with a strong CYP2D6 inhibitor.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Fluoxetine is a strong CYP2D6 inhibitor; aripiprazole exposure is increased with strong CYP2D6 inhibitors.</div><div class="flagpair-line"><b>Direction:</b> Increased aripiprazole exposure compared with aripiprazole alone.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure of aripiprazole.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -297,6 +304,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Oxcarbazepine</div>
       <div class="flagpair-line"><b>Findings:</b> A case report stated that aripiprazole metabolism by CYP2D6 and CYP3A4 can be influenced by concomitant enzyme inducers or inhibitors, and described aripiprazole with oxcarbazepine, a known CYP3A4 inducer, as resulting in subtherapeutic aripiprazole levels and recurrence of manic symptoms in a patient with bipolar I disorder.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Aripiprazole metabolism by CYP2D6 and CYP3A4 can be influenced by concomitant medications that induce or inhibit these enzymes; oxcarbazepine is described as a known inducer of CYP3A4.</div><div class="flagpair-line"><b>Direction:</b> Subtherapeutic levels of aripiprazole were described with concomitant oxcarbazepine.</div><div class="flagpair-line"><b>Consequence:</b> Recurrence of manic symptoms in a patient with bipolar I disorder.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://www.psychiatrist.com/pcc/interaction-oxcarbazepine-aripiprazole-relapse-bipolar-disorder">General web search (Tavily)</a></div>
@@ -305,6 +313,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Aripiprazole + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Paroxetine, listed as a strong CYP2D6 inhibitor, increases aripiprazole exposure when used concomitantly with aripiprazole compared with aripiprazole alone. The label recommends reducing the aripiprazole dosage when aripiprazole is administered with a strong CYP2D6 inhibitor.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Paroxetine is listed as a strong CYP2D6 inhibitor; concomitant use of aripiprazole with strong CYP2D6 inhibitors increased aripiprazole exposure.</div><div class="flagpair-line"><b>Direction:</b> Increased exposure of aripiprazole compared with aripiprazole alone.</div><div class="flagpair-line"><b>Consequence:</b> Increased aripiprazole exposure.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abb8ad7e-7998-4485-a09f-a2892190f4ad">DailyMed</a></div>
@@ -318,6 +327,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Atomoxetine + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Paroxetine may increase atomoxetine exposure because paroxetine is a CYP2D6 inhibitor and atomoxetine is listed as a CYP2D6 substrate. The label recommends decreasing the dosage of a CYP2D6 substrate if needed during concomitant paroxetine use, and increasing it if needed when paroxetine is discontinued.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Paroxetine is a CYP2D6 inhibitor; atomoxetine is listed as a CYP2D6 substrate.</div><div class="flagpair-line"><b>Direction:</b> Paroxetine may increase the exposure of atomoxetine.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure of the CYP2D6 substrate.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; External evidence (PubMed) [inferred]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR7. Atomoxetine HTR7 (GG): efficacy (PMID:30874608); Paroxetine HTR7 (GG): efficacy (PMID:30874608)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e63fe922-b35a-406c-8737-f3f5e6d5a30d">DailyMed</a></div>
@@ -326,6 +336,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Atomoxetine + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Sertraline hydrochloride may increase atomoxetine exposure because sertraline is a CYP2D6 inhibitor and atomoxetine is listed as an example CYP2D6 substrate. The label recommends decreasing the dosage of a CYP2D6 substrate if needed during concomitant sertraline use, and increasing the substrate dosage may be needed if sertraline is discontinued.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Sertraline hydrochloride is a CYP2D6 inhibitor; atomoxetine is listed among CYP2D6 substrates.</div><div class="flagpair-line"><b>Direction:</b> Sertraline hydrochloride may increase the exposure of the CYP2D6 substrate atomoxetine.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure of atomoxetine may occur with concomitant sertraline hydrochloride use.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5e98b93-d8f8-4eed-8a0a-63b347b670ed">DailyMed</a></div>
@@ -339,6 +350,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Atorvastatin + Nortriptyline</div>
       <div class="flagpair-line"><b>Findings:</b> In adults with migraine, atorvastatin added to nortriptyline for 24 weeks significantly reduced migraine attack frequency versus nortriptyline with placebo (P = 0.004) and improved quality of life at follow-up, with constipation the most common adverse effect in the atorvastatin arm. The study reported no effect on headache intensity.</div>
       <div class="flagpair-line"><b>Direction:</b> reduced migraine attack frequency and improved quality of life</div><div class="flagpair-line"><b>Consequence:</b> potential prophylactic benefit for migraine headaches</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> External evidence (PubMed) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene ABCB1. Atorvastatin ABCB1 (GG): toxicity (PMCID:PMC10587173); Nortriptyline ABCB1 (GG): toxicity (PMID:12082591)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://pubmed.ncbi.nlm.nih.gov/35037597/">PubMed</a></div>
@@ -352,6 +364,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Carbamazepine</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine may induce the metabolism of bupropion and may decrease bupropion exposure; the bupropion label notes this was not systematically studied. If bupropion is used concomitantly with a CYP inducer such as carbamazepine, it may be necessary to increase the bupropion dose based on clinical response, without exceeding the maximum recommended dose.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine may induce the metabolism of bupropion.</div><div class="flagpair-line"><b>Direction:</b> May decrease bupropion exposure.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -360,6 +373,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Fluoxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Bupropion inhibits CYP2D6 and can increase exposure of CYP2D6 substrates, including fluoxetine; the label states that dose reduction of these CYP2D6 substrates may be necessary when used concomitantly with bupropion, particularly for drugs with a narrow therapeutic index.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Bupropion and its metabolites are CYP2D6 inhibitors; fluoxetine is listed among drugs metabolized by CYP2D6.</div><div class="flagpair-line"><b>Direction:</b> Can increase concentrations/exposures of CYP2D6 substrates, including fluoxetine.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR2A. Bupropion HTR2A (TT): reduced efficacy (PMID:22947179); Fluoxetine HTR2A (AA): reduced efficacy (PMID:32073889); Fluoxetine HTR2A (TT): toxicity (PMID:16710319)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -368,6 +382,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Haloperidol</div>
       <div class="flagpair-line"><b>Findings:</b> Bupropion inhibits CYP2D6 and can increase exposure of CYP2D6 substrates, including the antipsychotic haloperidol. The label recommends considering dose reduction of CYP2D6 substrates when used concomitantly with bupropion, particularly for drugs with a narrow therapeutic index.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Bupropion and its metabolites are CYP2D6 inhibitors; haloperidol is listed among antipsychotics that are CYP2D6 substrates.</div><div class="flagpair-line"><b>Direction:</b> Bupropion can increase concentrations/exposures of haloperidol.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure of haloperidol as a CYP2D6 substrate.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; External evidence (PubMed) [inferred]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -376,6 +391,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Nortriptyline</div>
       <div class="flagpair-line"><b>Findings:</b> Bupropion inhibits CYP2D6 and can increase concentrations/exposures of CYP2D6 substrates, including nortriptyline. The label recommends considering dose reduction or decreasing the dose of these CYP2D6 substrates when used concomitantly with bupropion, particularly for drugs with a narrow therapeutic index.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Bupropion and its metabolites are CYP2D6 inhibitors; nortriptyline is listed among drugs metabolized by CYP2D6/CYP2D6 substrates.</div><div class="flagpair-line"><b>Direction:</b> Bupropion can increase nortriptyline concentrations/exposures.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure of nortriptyline as a CYP2D6 substrate when coadministered with bupropion.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -384,6 +400,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Bupropion inhibits CYP2D6 and can increase exposure to CYP2D6 substrates, including paroxetine. The label recommends considering dose reduction of CYP2D6 substrates when used concomitantly with bupropion, particularly for drugs with a narrow therapeutic index.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Bupropion and its metabolites are CYP2D6 inhibitors; paroxetine is listed among antidepressants metabolized by CYP2D6.</div><div class="flagpair-line"><b>Direction:</b> Bupropion can increase paroxetine exposure.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure of paroxetine as a CYP2D6 substrate.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR2A. Bupropion HTR2A (TT): reduced efficacy (PMID:22947179); Paroxetine HTR2A (TT): toxicity (PMID:16710319)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -392,6 +409,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Phenytoin is listed as a CYP2B6 inducer that may induce bupropion metabolism and may decrease bupropion exposure, although the label notes this was not systematically studied. If bupropion is used concomitantly with a CYP inducer such as phenytoin, the bupropion dose may need to be increased based on clinical response, without exceeding the maximum recommended dose.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Phenytoin is a CYP2B6/CYP inducer and may induce the metabolism of bupropion.</div><div class="flagpair-line"><b>Direction:</b> May decrease bupropion exposure.</div><div class="flagpair-line"><b>Consequence:</b> Reduced bupropion exposure may require action based on clinical response.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -400,6 +418,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Bupropion inhibits CYP2D6 and can increase exposure to CYP2D6 substrates, including sertraline. The label says dose reduction of these CYP2D6 substrates may be necessary when used concomitantly with bupropion, particularly for drugs with a narrow therapeutic index.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Bupropion and its metabolites are CYP2D6 inhibitors; sertraline is listed among antidepressants that are CYP2D6 substrates.</div><div class="flagpair-line"><b>Direction:</b> Bupropion can increase concentrations/exposures of CYP2D6 substrates, including sertraline.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure to sertraline as a CYP2D6 substrate.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -408,6 +427,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Bupropion + Venlafaxine</div>
       <div class="flagpair-line"><b>Findings:</b> Bupropion inhibits CYP2D6 and can increase exposure of CYP2D6 substrates, including venlafaxine; the label says dose reduction of these CYP2D6 substrates may be necessary when used concomitantly with bupropion, particularly for drugs with a narrow therapeutic index.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Bupropion and its metabolites are CYP2D6 inhibitors; venlafaxine is listed among drugs metabolized by CYP2D6.</div><div class="flagpair-line"><b>Direction:</b> Bupropion can increase concentrations/exposures of venlafaxine as a CYP2D6 substrate.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR2A. Bupropion HTR2A (TT): reduced efficacy (PMID:22947179); Venlafaxine HTR2A (AG): efficacy (PMID:22006095)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f8b3313-0286-499f-9235-02cdc0eb063b">DailyMed</a></div>
@@ -421,6 +441,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Levetiracetam</div>
       <div class="flagpair-line"><b>Findings:</b> Levetiracetam did not influence carbamazepine plasma concentrations, and carbamazepine did not influence levetiracetam pharmacokinetics in placebo-controlled clinical studies evaluating levetiracetam with other antiepileptic drugs.</div>
       <div class="flagpair-line"><b>Direction:</b> no effect on plasma concentration/pharmacokinetics</div><div class="flagpair-line"><b>Consequence:</b> no clinically meaningful pharmacokinetic interaction is indicated by the label data</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=62f3d1c8-ca5b-4760-9fc9-41e4fb4cc926">DailyMed</a></div>
@@ -429,6 +450,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Escitalopram</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine did not significantly affect carbamazepine pharmacokinetics when administered with racemic citalopram, but the escitalopram label says carbamazepine might increase escitalopram clearance if carbamazepine and escitalopram are coadministered. The label recommends considering this possibility because of carbamazepine’s enzyme-inducing properties.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine’s enzyme-inducing properties may increase escitalopram clearance.</div><div class="flagpair-line"><b>Direction:</b> Carbamazepine might increase the clearance of escitalopram.</div><div class="flagpair-line"><b>Consequence:</b> Potential decreased escitalopram exposure/clearance increase if coadministered.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0ef807d2-5d66-40c2-be3e-ff6176a35295">DailyMed</a></div>
@@ -437,6 +459,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Fluoxetine</div>
       <div class="flagpair-line"><b>Findings:</b> General web evidence states that co-administered carbamazepine accelerates hepatic metabolism of fluoxetine and norfluoxetine, reducing fluoxetine plasma concentrations by 50% or more over 2–4 weeks. It identifies potential loss of antidepressant efficacy and recommends close monitoring of psychiatric symptoms and considering a 25–50% fluoxetine dose increase with careful titration.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine accelerates hepatic metabolism of fluoxetine and norfluoxetine via enzyme induction.</div><div class="flagpair-line"><b>Direction:</b> Fluoxetine plasma concentrations are significantly reduced, by 50% or more.</div><div class="flagpair-line"><b>Consequence:</b> Potential loss of antidepressant efficacy, return of depressive symptoms, increased anxiety, or worsening psychiatric condition; fluoxetine levels may increase with serotonergic side effects if carbamazepine is discontinued.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://www.empathia.ai/drug/internal-medicine/fluoxetine-carbamazepine-drug-interaction">General web search (Tavily)</a></div>
@@ -445,6 +468,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Haloperidol</div>
       <div class="flagpair-line"><b>Findings:</b> Coadministration of haloperidol with potent CYP3A4 enzyme inducers, including carbamazepine, may gradually decrease haloperidol plasma concentrations to an extent that efficacy may be reduced.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine is listed as a potent enzyme inducer of CYP3A4; haloperidol exposure may be decreased when coadministered with such inducers.</div><div class="flagpair-line"><b>Direction:</b> May gradually decrease haloperidol plasma concentrations.</div><div class="flagpair-line"><b>Consequence:</b> Haloperidol efficacy may be reduced.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1ad2abd-a9d6-44e3-957b-36a73260f4f5">DailyMed</a></div>
@@ -453,6 +477,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Lamotrigine</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine decreases lamotrigine concentrations by approximately 40% by inducing lamotrigine glucuronidation; the label also states carbamazepine may increase carbamazepine epoxide levels.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine induces lamotrigine glucuronidation.</div><div class="flagpair-line"><b>Direction:</b> Decreased lamotrigine concentrations by approximately 40%; may increase carbamazepine epoxide levels.</div><div class="flagpair-line"><b>Consequence:</b> Decreased lamotrigine exposure/concentrations; possible increased carbamazepine epoxide levels.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=811188be-d231-4b58-8d7a-b01b236fab51">DailyMed</a></div>
@@ -461,6 +486,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Nortriptyline</div>
       <div class="flagpair-line"><b>Findings:</b> Concomitant carbamazepine 500–600 mg/day decreased serum nortriptyline concentrations from a prior mean of 355 ± 49 nM to 140 and 134 nM; after the nortriptyline dose was increased to 150 mg/day, concentrations rose and the depression disappeared. The case report concludes that carbamazepine induces nortriptyline metabolism.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine induces nortriptyline metabolism.</div><div class="flagpair-line"><b>Direction:</b> Serum nortriptyline concentrations decreased during concomitant carbamazepine intake.</div><div class="flagpair-line"><b>Consequence:</b> The patient's depression persisted while serum nortriptyline concentrations were decreased during concomitant carbamazepine intake.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> External evidence (PubMed) [inferred]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://pubmed.ncbi.nlm.nih.gov/8333008/">PubMed</a></div>
@@ -469,6 +495,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Olanzapine</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine therapy (200 mg twice daily) causes an approximately 50% increase in olanzapine clearance, likely because carbamazepine is a potent inducer of CYP1A2 activity. Higher daily doses of carbamazepine may cause an even greater increase in olanzapine clearance.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine is a potent inducer of CYP1A2 activity.</div><div class="flagpair-line"><b>Direction:</b> Approximately 50% increase in olanzapine clearance with carbamazepine 200 mg twice daily; higher daily doses of carbamazepine may cause an even greater increase.</div><div class="flagpair-line"><b>Consequence:</b> Increased clearance of olanzapine.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5ba67321-6988-46ea-97a0-549954e2c405">DailyMed</a></div>
@@ -477,6 +504,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Oxcarbazepine</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine administered concurrently with oxcarbazepine (Oxtellar XR) decreased blood levels of oxcarbazepine's active metabolite MHD. The label recommends monitoring MHD plasma levels during Oxtellar XR titration and says an Oxtellar XR dosage adjustment may be required after starting, changing, or stopping carbamazepine.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine is listed as a strong CYP3A4 inducer or UGT inducer affecting Oxtellar XR.</div><div class="flagpair-line"><b>Direction:</b> Decreased blood levels of oxcarbazepine's active metabolite MHD.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=aa610e56-1d1d-11e1-8bc2-0800200c9a66">DailyMed</a></div>
@@ -485,6 +513,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Perampanel</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine, as a moderate or strong CYP3A4 inducer, decreased perampanel plasma levels by approximately 50% to 67% when used concomitantly. The label recommends increasing perampanel starting doses in the presence of such inducers and closely monitoring clinical response and tolerability when they are introduced or withdrawn, because perampanel dose adjustment may be necessary.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine is included among moderate and strong CYP3A4 inducers that increase clearance of perampanel.</div><div class="flagpair-line"><b>Direction:</b> Decreased perampanel plasma levels by approximately 50% to 67%.</div><div class="flagpair-line"><b>Consequence:</b> Reduced perampanel plasma concentrations; clinical response and tolerability should be monitored.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bc8f7cf2-c19c-4235-859f-9ff1dd21908e">DailyMed</a></div>
@@ -493,6 +522,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine is listed in phenytoin’s label among antiepileptic drugs that may decrease phenytoin serum levels.</div>
       <div class="flagpair-line"><b>Direction:</b> may decrease phenytoin serum levels</div><div class="flagpair-line"><b>Consequence:</b> decreased phenytoin serum levels</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene CYP1A1, GABRA1. Carbamazepine CYP1A1 (CA): toxicity (PMID:21121773); Phenytoin CYP1A1 (CA): toxicity (PMID:21121773); Carbamazepine GABRA1 (GA): reduced efficacy (PMCID:PMC3125053); Phenytoin GABRA1 (GA): reduced efficacy (PMCID:PMC3125053)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=46d5c0d1-a97b-46d9-8cf4-994780673337">DailyMed</a></div>
@@ -501,6 +531,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Quetiapine</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine is listed as a prototype CYP3A4 inducer that decreases quetiapine exposure, and the quetiapine label states dose adjustment will be necessary if quetiapine is co-administered with potent CYP3A4 inducers. For CYP3A4 induction, the label notes that coadministration with phenytoin increased quetiapine oral clearance 5-fold and that increased quetiapine doses up to 5-fold may be needed.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine is a prototype CYP3A4 inducer; quetiapine exposure is decreased by prototype CYP3A4 inducers.</div><div class="flagpair-line"><b>Direction:</b> Decreased quetiapine exposure.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; External evidence (PubMed) [inferred]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f9447739-9e21-4232-950f-174c0496ab66">DailyMed</a></div>
@@ -509,6 +540,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> General web evidence states that carbamazepine coadministered with sertraline accelerates hepatic breakdown of sertraline, reducing sertraline plasma concentrations. It states this may reduce sertraline effectiveness, with possible worsening psychiatric symptoms, and recommends close symptom monitoring and possible sertraline dose increase.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine enzyme induction accelerates hepatic breakdown of sertraline.</div><div class="flagpair-line"><b>Direction:</b> Reduced sertraline plasma concentrations.</div><div class="flagpair-line"><b>Consequence:</b> Reduced therapeutic effectiveness of sertraline with possible worsening depression, anxiety, or other psychiatric symptoms.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://www.empathia.ai/drug/pediatrics/sertraline-carbamazepine-drug-interaction">General web search (Tavily)</a></div>
@@ -517,6 +549,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Carbamazepine + Valproic Acid</div>
       <div class="flagpair-line"><b>Findings:</b> Carbamazepine can increase valproate clearance; the Valproic Acid label states that carbamazepine can double valproate clearance. The label recommends increased monitoring of valproate and concomitant drug concentrations and dosage adjustment when enzyme-inducing drugs such as carbamazepine are introduced or withdrawn.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Carbamazepine is a hepatic enzyme-inducing drug that elevates levels of glucuronosyltransferases and increases valproate clearance.</div><div class="flagpair-line"><b>Direction:</b> Carbamazepine can double the clearance of valproate.</div><div class="flagpair-line"><b>Consequence:</b> Patients receiving polytherapy with antiepilepsy drugs have shorter valproate half-lives and lower concentrations than patients on monotherapy.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene CYP1A1, GABRA1. Carbamazepine CYP1A1 (CA): toxicity (PMID:21121773); Valproic Acid CYP1A1 (CA): toxicity (PMID:21121773); Carbamazepine GABRA1 (GA): reduced efficacy (PMCID:PMC3125053); Valproic Acid GABRA1 (GA): reduced efficacy (PMCID:PMC3125053)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ec41025a-ed7d-48c8-9005-08e3a9417f30">DailyMed</a></div>
@@ -530,6 +563,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Citalopram + Methylphenidate</div>
       <div class="flagpair-line"><b>Findings:</b> In ClinicalTrials.gov trial NCT00794040, add-on citalopram following optimized methylphenidate produced a statistically significant improvement in irritability CGI-I response compared with add-on placebo following optimized methylphenidate (p=0.006).</div>
       <div class="flagpair-line"><b>Direction:</b> statistically significant improvement in irritability CGI-I response</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> ClinicalTrials.gov [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://clinicaltrials.gov/study/NCT00794040">ClinicalTrials.gov</a></div>
@@ -538,6 +572,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Citalopram + Escitalopram</div>
       <div class="flagpair-line"><b>Findings:</b> Citalopram and escitalopram have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]; DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR1B, HTR2A. Citalopram HTR1B (CG): toxicity (PMID:27324805); Escitalopram HTR1B (AC): toxicity (PMCID:PMC3967864); Citalopram HTR2A (TT): toxicity (PMID:16710319); Escitalopram HTR2A (TT): toxicity (PMCID:PMC3967864)</div>
       
@@ -546,6 +581,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Citalopram + Fluoxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Citalopram and fluoxetine have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene GSK3B, HTR2A, SERPINE1, SRP19. Citalopram GSK3B (AG): reduced efficacy (PMID:18195729); Fluoxetine GSK3B (AG): reduced efficacy (PMID:18195729); Citalopram HTR2A (TT): toxicity (PMID:16710319); Fluoxetine HTR2A (AA): reduced efficacy (PMID:32073889); Fluoxetine HTR2A (TT): toxicity (PMID:16710319); Citalopram SERPINE1 (GG): reduced efficacy (PMID:18794724); Fluoxetine SERPINE1 (GG): reduced efficacy (PMID:18794724); Citalopram SRP19 (GG): efficacy (PMID:22795047); Fluoxetine SRP19 (GG): efficacy (PMID:22795047)</div>
       
@@ -554,6 +590,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Citalopram + Lithium</div>
       <div class="flagpair-line"><b>Findings:</b> Concomitant use of citalopram with lithium, an other serotonergic drug listed in the label, increases the risk of serotonin syndrome. The label recommends monitoring for signs and symptoms of serotonin syndrome, particularly during citalopram initiation and dosage increases, and considering discontinuation of citalopram and/or concomitant serotonergic drugs if serotonin syndrome occurs.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Both citalopram and lithium are serotonergic drugs.</div><div class="flagpair-line"><b>Direction:</b> increases the risk of serotonin syndrome</div><div class="flagpair-line"><b>Consequence:</b> serotonin syndrome</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene FKBP5, GSK3B, HTR1B. Citalopram FKBP5 (AG): efficacy (PMCID:PMC2587308); Lithium FKBP5 (TC): toxicity (PMID:21449676); Citalopram GSK3B (AG): reduced efficacy (PMID:18195729); Lithium GSK3B (AG): efficacy (PMID:23021822); Citalopram HTR1B (CG): toxicity (PMID:27324805); Lithium HTR1B (TA): efficacy (PMID:21449676)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f3237467-286d-480d-8c80-b9a97738edaa">DailyMed</a></div>
@@ -562,6 +599,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Citalopram + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Citalopram and paroxetine have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR1B, HTR2A, SRP19. Citalopram HTR1B (CG): toxicity (PMID:27324805); Paroxetine HTR1B (TA): toxicity (PMID:21449676); Citalopram HTR2A (TT): toxicity (PMID:16710319); Paroxetine HTR2A (TT): toxicity (PMID:16710319); Citalopram SRP19 (GG): efficacy (PMID:22795047); Paroxetine SRP19 (GG): efficacy (PMID:22795047)</div>
       
@@ -570,6 +608,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Citalopram + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Citalopram and sertraline have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene SRP19. Citalopram SRP19 (GG): efficacy (PMID:22795047); Sertraline SRP19 (GG): efficacy (PMID:22795047)</div>
       
@@ -583,6 +622,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Duloxetine + Fluoxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Duloxetine exposure is expected to increase when used with fluoxetine, because duloxetine's label states that paroxetine increased duloxetine AUC by about 60% and similar effects would be expected with other potent CYP2D6 inhibitors such as fluoxetine.</div>
       <div class="flagpair-line"><b>Direction:</b> Duloxetine AUC increased by about 60% with paroxetine, and similar effects would be expected with fluoxetine.</div><div class="flagpair-line"><b>Consequence:</b> Increased duloxetine concentration/exposure is expected with potent CYP2D6 inhibitors such as fluoxetine.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR7. Duloxetine HTR7 (GG): efficacy (PMID:30874608); Fluoxetine HTR7 (GG): efficacy (PMID:30874608)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=79bfd6be-a1ff-4786-b4e2-abbd0a3e3932">DailyMed</a></div>
@@ -591,6 +631,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Duloxetine + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Potent CYP2D6 inhibitors may increase duloxetine concentrations; in the label, concomitant use of duloxetine 40 mg once daily with paroxetine 20 mg once daily increased duloxetine AUC by about 60%, with greater degrees of inhibition expected at higher paroxetine doses.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Paroxetine is a potent CYP2D6 inhibitor; duloxetine exposure is affected by CYP2D6 inhibition.</div><div class="flagpair-line"><b>Direction:</b> Duloxetine AUC increased by about 60% with paroxetine 20 mg once daily, with greater inhibition expected at higher paroxetine doses.</div><div class="flagpair-line"><b>Consequence:</b> May increase duloxetine concentrations.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR7. Duloxetine HTR7 (GG): efficacy (PMID:30874608); Paroxetine HTR7 (GG): efficacy (PMID:30874608)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=79bfd6be-a1ff-4786-b4e2-abbd0a3e3932">DailyMed</a></div>
@@ -599,6 +640,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Duloxetine + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> General web evidence says duloxetine and sertraline combination therapy requires close monitoring for signs and symptoms of serotonin syndrome, especially during initiation, dose changes, or addition of other serotonergic medications. It recommends patient education, considering lower starting doses with slow titration if combination therapy is necessary, and frequent monitoring or alternative treatment options.</div>
       <div class="flagpair-line"><b>Direction:</b> requires close monitoring for signs and symptoms of serotonin syndrome</div><div class="flagpair-line"><b>Consequence:</b> serotonin syndrome</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://www.empathia.ai/drug/neurology/duloxetine-sertraline-drug-interaction">General web search (Tavily)</a></div>
@@ -612,6 +654,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Escitalopram + Fluoxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Escitalopram and fluoxetine have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR2A. Escitalopram HTR2A (TT): toxicity (PMCID:PMC3967864); Fluoxetine HTR2A (AA): reduced efficacy (PMID:32073889); Fluoxetine HTR2A (TT): toxicity (PMID:16710319)</div>
       
@@ -620,6 +663,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Escitalopram + Lithium</div>
       <div class="flagpair-line"><b>Findings:</b> Concomitant use of escitalopram with lithium, listed by the label as another serotonergic drug, increases the risk of serotonin syndrome. The label recommends monitoring for signs and symptoms of serotonin syndrome, particularly during escitalopram initiation and dosage increases, and considering discontinuation of escitalopram and/or concomitant serotonergic drugs if serotonin syndrome occurs.</div>
       <div class="flagpair-line"><b>Mechanism:</b> escitalopram and lithium are serotonergic drugs</div><div class="flagpair-line"><b>Direction:</b> increases the risk of serotonin syndrome</div><div class="flagpair-line"><b>Consequence:</b> serotonin syndrome</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR1B. Escitalopram HTR1B (AC): toxicity (PMCID:PMC3967864); Lithium HTR1B (TA): efficacy (PMID:21449676)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0ef807d2-5d66-40c2-be3e-ff6176a35295">DailyMed</a></div>
@@ -628,6 +672,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Escitalopram + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Escitalopram and paroxetine have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation</div><div class="flagpair-line"><b>Consequence:</b> Increased risk of serotonin syndrome, activation, sleep disturbance, and agitation</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene BDNF, HTR1B, HTR2A. Escitalopram BDNF (TC): toxicity (PMID:19641488); Paroxetine BDNF (CT): reduced efficacy (PMID:24577123); Escitalopram HTR1B (AC): toxicity (PMCID:PMC3967864); Paroxetine HTR1B (TA): toxicity (PMID:21449676); Escitalopram HTR2A (TT): toxicity (PMCID:PMC3967864); Paroxetine HTR2A (TT): toxicity (PMID:16710319)</div>
       
@@ -636,6 +681,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Escitalopram + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Escitalopram and sertraline have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]</div>
       
       
@@ -649,6 +695,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Ethosuximide + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Ethosuximide may elevate phenytoin serum levels when concurrently administered. The label recommends periodic serum level determinations of concurrently administered antiepileptic drugs because ethosuximide may interact with them.</div>
       <div class="flagpair-line"><b>Direction:</b> Ethosuximide may elevate phenytoin serum levels.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=19c924c2-f558-4c78-9277-2d7e0df2f505">DailyMed</a></div>
@@ -657,6 +704,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Ethosuximide + Valproic Acid</div>
       <div class="flagpair-line"><b>Findings:</b> Valproic acid has been reported to both increase and decrease ethosuximide levels. The ethosuximide label says periodic serum level determinations of concurrently administered antiepileptic drugs may be necessary.</div>
       <div class="flagpair-line"><b>Direction:</b> Valproic acid has been reported to both increase and decrease ethosuximide levels.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=19c924c2-f558-4c78-9277-2d7e0df2f505">DailyMed</a></div>
@@ -670,6 +718,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Olanzapine</div>
       <div class="flagpair-line"><b>Findings:</b> In ClinicalTrials.gov trial NCT00844857, olanzapine/fluoxetine combination significantly improved the primary CDRS-R total score at Week 8 compared with placebo in patients ages 10–17 with bipolar depression (p=0.003).</div>
       <div class="flagpair-line"><b>Direction:</b> improved CDRS-R total score at Week 8 compared with placebo</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]; ClinicalTrials.gov [inferred]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://clinicaltrials.gov/study/NCT00844857">ClinicalTrials.gov</a></div>
@@ -678,6 +727,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Haloperidol</div>
       <div class="flagpair-line"><b>Findings:</b> Fluoxetine is listed as a combined CYP3A4 and CYP2D6 inhibitor that, when coadministered with haloperidol, can increase haloperidol plasma concentrations. The label states that increased haloperidol concentrations may increase adverse events, including QTc interval prolongation, and recommends monitoring for increased or prolonged haloperidol effects and decreasing the haloperidol injection dose as needed.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Fluoxetine is a combined CYP3A4 and CYP2D6 inhibitor; inhibition of haloperidol metabolism via these routes may increase haloperidol concentrations.</div><div class="flagpair-line"><b>Direction:</b> Increased haloperidol plasma concentrations.</div><div class="flagpair-line"><b>Consequence:</b> May increase adverse events, including QTc interval prolongation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1ad2abd-a9d6-44e3-957b-36a73260f4f5">DailyMed</a></div>
@@ -686,6 +736,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Lithium</div>
       <div class="flagpair-line"><b>Findings:</b> Fluoxetine's label states that concomitant use of serotonergic drugs, including lithium, with fluoxetine increases the risk of serotonin syndrome. It recommends monitoring for signs and symptoms, particularly during treatment initiation and dosage increases, and considering discontinuation of fluoxetine and/or concomitant serotonergic drugs if serotonin syndrome occurs.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Concomitant serotonergic drugs, including lithium, used with fluoxetine</div><div class="flagpair-line"><b>Direction:</b> increases the risk</div><div class="flagpair-line"><b>Consequence:</b> serotonin syndrome</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene GSK3B. Fluoxetine GSK3B (AG): reduced efficacy (PMID:18195729); Lithium GSK3B (AG): efficacy (PMID:23021822)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b8666383-462d-4a21-8f49-1d572da386d1">DailyMed</a></div>
@@ -694,6 +745,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Nortriptyline</div>
       <div class="flagpair-line"><b>Findings:</b> Fluoxetine may inhibit CYP2D6 and increase nortriptyline (a TCA) plasma exposure; the label notes TCA exposure increases may be small or as large as an 8-fold increase in AUC and that a stable TCA patient may become abruptly toxic when a CYP2D6 inhibitor is added. The label advises caution with coadministration, possible lower doses, and monitoring TCA plasma levels.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Fluoxetine, an SSRI, inhibits cytochrome P450 2D6; nortriptyline is a tricyclic antidepressant affected by CYP2D6 inhibition.</div><div class="flagpair-line"><b>Direction:</b> May increase nortriptyline/TCA plasma concentration or exposure, with increases described as small or up to an 8-fold increase in TCA AUC.</div><div class="flagpair-line"><b>Consequence:</b> A patient stable on a TCA may become abruptly toxic when a CYP2D6-inhibiting drug is added as concomitant therapy.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ee5d853-db93-46f1-922b-a013f26ab3c6">DailyMed</a></div>
@@ -702,6 +754,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Fluoxetine and paroxetine have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR2A, HTR7, SRP19. Fluoxetine HTR2A (AA): reduced efficacy (PMID:32073889); Fluoxetine HTR2A (TT): toxicity (PMID:16710319); Paroxetine HTR2A (TT): toxicity (PMID:16710319); Fluoxetine HTR7 (GG): efficacy (PMID:30874608); Paroxetine HTR7 (GG): efficacy (PMID:30874608); Fluoxetine SRP19 (GG): efficacy (PMID:22795047); Paroxetine SRP19 (GG): efficacy (PMID:22795047)</div>
       
@@ -710,6 +763,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Fluoxetine may increase phenytoin serum levels; the phenytoin label states that adding or withdrawing such agents in patients on phenytoin therapy may require adjustment of the phenytoin dose to achieve optimal clinical outcome.</div>
       <div class="flagpair-line"><b>Direction:</b> Fluoxetine may increase phenytoin serum levels.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=46d5c0d1-a97b-46d9-8cf4-994780673337">DailyMed</a></div>
@@ -718,6 +772,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Quetiapine</div>
       <div class="flagpair-line"><b>Findings:</b> General web evidence states that fluoxetine and quetiapine may interact through fluoxetine inhibition of CYP2D6, which can lead to increased quetiapine plasma concentrations and prolonged elimination. It also states that both drugs can independently prolong the QT interval, so combined use may have additive effects on cardiac conduction.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Fluoxetine is a potent inhibitor of CYP2D6, which the source states is involved in quetiapine metabolism; both drugs can independently prolong the QT interval.</div><div class="flagpair-line"><b>Direction:</b> Can lead to increased quetiapine plasma concentrations and prolonged elimination; combined use may have additive effects on cardiac conduction.</div><div class="flagpair-line"><b>Consequence:</b> Potential additive QT-interval effects on cardiac conduction.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://www.empathia.ai/drug/internal-medicine/quetiapine-fluoxetine-drug-interaction">General web search (Tavily)</a></div>
@@ -726,6 +781,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Fluoxetine + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Fluoxetine and sertraline have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene SRP19. Fluoxetine SRP19 (GG): efficacy (PMID:22795047); Sertraline SRP19 (GG): efficacy (PMID:22795047)</div>
       
@@ -739,6 +795,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Haloperidol + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Paroxetine is listed as a CYP2D6 inhibitor that can increase haloperidol plasma concentrations when coadministered with haloperidol; increased haloperidol concentrations may increase adverse-event risk, including QTc interval prolongation. The label recommends monitoring for increased or prolonged haloperidol effects and decreasing the haloperidol injection dose as deemed necessary.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Paroxetine is a CYP2D6 inhibitor; inhibition of haloperidol metabolism through CYP2D6 may increase haloperidol concentrations.</div><div class="flagpair-line"><b>Direction:</b> Increased haloperidol plasma concentrations.</div><div class="flagpair-line"><b>Consequence:</b> Increased risk of adverse events, including QTc interval prolongation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1ad2abd-a9d6-44e3-957b-36a73260f4f5">DailyMed</a></div>
@@ -747,6 +804,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Haloperidol + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Coadministration of haloperidol with potent CYP3A4 enzyme inducers, including phenytoin, may gradually decrease haloperidol plasma concentrations to an extent that efficacy may be reduced. The haloperidol label recommends monitoring for signs or symptoms of reduced therapeutic effects when an inducer is added and adjusting the haloperidol dose as necessary.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Phenytoin is included among potent enzyme inducers of CYP3A4 that may decrease haloperidol plasma concentrations.</div><div class="flagpair-line"><b>Direction:</b> May gradually decrease haloperidol plasma concentrations.</div><div class="flagpair-line"><b>Consequence:</b> Haloperidol efficacy may be reduced.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1ad2abd-a9d6-44e3-957b-36a73260f4f5">DailyMed</a></div>
@@ -755,6 +813,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Haloperidol + Quetiapine</div>
       <div class="flagpair-line"><b>Findings:</b> General web evidence states that combining haloperidol and quetiapine has primary risks that include increased sedation and drowsiness, which may impair cognitive function and increase fall risk, especially in elderly patients. The same source states that both drugs can prolong the QT interval, potentially increasing the risk of serious cardiac arrhythmias, and that enhanced dopamine blockade increases the risk of extrapyramidal symptoms.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Both drugs block dopamine D2 receptors; both medications can prolong the QT interval through blockade of cardiac potassium channels (hERG channels); quetiapine has antihistaminergic properties and haloperidol has central nervous system depressant effects.</div><div class="flagpair-line"><b>Direction:</b> The combination has primary risks that include increased sedation and drowsiness; both drugs can prolong the QT interval, potentially increasing serious cardiac arrhythmia risk; enhanced dopamine blockade increases extrapyramidal symptom risk.</div><div class="flagpair-line"><b>Consequence:</b> Increased sedation and drowsiness may impair cognitive function and increase fall risk, especially in elderly patients; potential increased risk of serious cardiac arrhythmias; elevated risk of extrapyramidal symptoms such as tardive dyskinesia, dystonia, and parkinsonism.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene EPM2A. Haloperidol EPM2A (CC): efficacy (PMID:27092952); Quetiapine EPM2A (CC): efficacy (PMID:27092952)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://www.empathia.ai/drug/neurology/haloperidol-quetiapine-drug-interaction">General web search (Tavily)</a></div>
@@ -763,6 +822,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Haloperidol + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Sertraline is listed as a CYP2D6 inhibitor that can increase haloperidol plasma concentrations when coadministered with haloperidol. The label warns that increased haloperidol concentrations may increase adverse events, including QTc interval prolongation, and recommends monitoring for increased or prolonged haloperidol effects and decreasing the haloperidol injection dose as needed.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Sertraline is listed as a CYP2D6 inhibitor; haloperidol metabolism involves CYP2D6 and CYP3A4.</div><div class="flagpair-line"><b>Direction:</b> Increased haloperidol plasma concentrations.</div><div class="flagpair-line"><b>Consequence:</b> Increased risk of adverse events, including QTc interval prolongation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1ad2abd-a9d6-44e3-957b-36a73260f4f5">DailyMed</a></div>
@@ -771,6 +831,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Haloperidol + Venlafaxine</div>
       <div class="flagpair-line"><b>Findings:</b> Venlafaxine is listed as a CYP2D6 inhibitor whose coadministration with haloperidol increased haloperidol plasma concentrations. The label states that increased haloperidol concentrations may increase adverse events, including QTc interval prolongation, and recommends monitoring for increased or prolonged haloperidol effects and decreasing the haloperidol injection dose as needed.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Venlafaxine is listed as a CYP2D6 inhibitor; CYP2D6 is involved in haloperidol metabolism.</div><div class="flagpair-line"><b>Direction:</b> Coadministration increased haloperidol plasma concentrations.</div><div class="flagpair-line"><b>Consequence:</b> Increased haloperidol plasma concentrations may increase adverse events, including QTc interval prolongation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1ad2abd-a9d6-44e3-957b-36a73260f4f5">DailyMed</a></div>
@@ -784,6 +845,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lamotrigine + Levetiracetam</div>
       <div class="flagpair-line"><b>Findings:</b> Levetiracetam did not influence lamotrigine plasma concentrations, and lamotrigine did not influence levetiracetam pharmacokinetics in placebo-controlled clinical studies of antiepileptic drugs.</div>
       <div class="flagpair-line"><b>Direction:</b> no effect on lamotrigine plasma concentration or levetiracetam pharmacokinetics</div><div class="flagpair-line"><b>Consequence:</b> no clinically meaningful pharmacokinetic interaction was indicated</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene SCN1A. Lamotrigine SCN1A (CT): efficacy (PMID:28753467); Levetiracetam SCN1A (CT): efficacy (PMID:28753467)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=62f3d1c8-ca5b-4760-9fc9-41e4fb4cc926">DailyMed</a></div>
@@ -792,6 +854,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lamotrigine + Olanzapine</div>
       <div class="flagpair-line"><b>Findings:</b> Lamotrigine and olanzapine can safely be combined in healthy volunteers at the low doses studied, without a clinically significant interaction; olanzapine did not significantly affect lamotrigine AUC0–24h or plasma concentrations. Lamotrigine Tmax was significantly prolonged during olanzapine coadministration, possibly because of olanzapine’s anticholinergic properties, and mild sedation was the only adverse effect reported.</div>
       <div class="flagpair-line"><b>Mechanism:</b> possibly because of the anticholinergic properties associated with olanzapine</div><div class="flagpair-line"><b>Direction:</b> olanzapine did not significantly affect lamotrigine disposition; lamotrigine Tmax was significantly prolonged during olanzapine coadministration</div><div class="flagpair-line"><b>Consequence:</b> mild sedation was the only adverse effect that occurred during lamotrigine and olanzapine coadministration</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://augusta.elsevierpure.com/en/publications/lack-of-pharmacokinetic-interaction-between-lamotrigine-and-olanz">General web search (Tavily)</a></div>
@@ -800,6 +863,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lamotrigine + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Lamotrigine dose-corrected concentrations were slightly higher with sertraline than without sertraline (60.4 vs 51.1 μmol/L × 1,000/mg/day; p=0.42), and the authors concluded the slower lamotrigine metabolism was not believed to be clinically significant. They cautioned that limited power may have overlooked a clinically relevant difference.</div>
       <div class="flagpair-line"><b>Mechanism:</b> slightly slower metabolism of lamotrigine in patients receiving lamotrigine with sertraline</div><div class="flagpair-line"><b>Direction:</b> dose-corrected lamotrigine concentration was 60.4 vs 51.1 μmol/L × 1,000/mg/day with vs without sertraline (p=0.42)</div><div class="flagpair-line"><b>Consequence:</b> not believed to be of clinical significance; limited power may have overlooked a difference that could be clinically relevant</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://pubmed.ncbi.nlm.nih.gov/22426846/">PubMed</a></div>
@@ -808,6 +872,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lamotrigine + Oxcarbazepine</div>
       <div class="flagpair-line"><b>Findings:</b> Lamotrigine and oxcarbazepine coadministration did not significantly affect lamotrigine AUC or Cmax, nor did lamotrigine significantly affect MHD AUC or Cmax. However, headache, dizziness, nausea, and somnolence occurred more frequently with the lamotrigine–oxcarbazepine combination than with monotherapy.</div>
       <div class="flagpair-line"><b>Direction:</b> No significant pharmacokinetic change; adverse events occurred more frequently with combination therapy.</div><div class="flagpair-line"><b>Consequence:</b> Headache, dizziness, nausea, and somnolence occurred more frequently during combination therapy than during monotherapy.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene SCN1A. Lamotrigine SCN1A (CT): efficacy (PMID:28753467); Oxcarbazepine SCN1A (CT): efficacy (PMID:28753467)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://www.nature.com/articles/1300831">General web search (Tavily)</a></div>
@@ -816,6 +881,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lamotrigine + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Phenytoin decreases lamotrigine concentrations by approximately 40% according to the lamotrigine DailyMed Drug Interactions section.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Phenytoin is listed among drugs that decrease lamotrigine concentrations; the label identifies UGT enzymes as responsible for lamotrigine metabolism.</div><div class="flagpair-line"><b>Direction:</b> Decreased lamotrigine concentration approximately 40%.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene CYP3A4. Lamotrigine CYP3A4 (TT): reduced efficacy (PMID:28343093); Phenytoin CYP3A4 (TT): reduced efficacy (PMID:28343093)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=811188be-d231-4b58-8d7a-b01b236fab51">DailyMed</a></div>
@@ -824,6 +890,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lamotrigine + Valproic Acid</div>
       <div class="flagpair-line"><b>Findings:</b> Valproic acid co-administration can affect lamotrigine pharmacokinetics by inhibiting lamotrigine metabolism or by protein-binding displacement. The label indicates increased monitoring of valproate and concomitant drug concentrations and dosage adjustment when interacting drugs are introduced or withdrawn.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Valproic acid can affect lamotrigine pharmacokinetics by inhibiting metabolism or protein-binding displacement.</div><div class="flagpair-line"><b>Direction:</b> can affect lamotrigine pharmacokinetics</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene CYP3A4. Lamotrigine CYP3A4 (TT): reduced efficacy (PMID:28343093); Valproic Acid CYP3A4 (TT): reduced efficacy (PMID:28343093)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ec41025a-ed7d-48c8-9005-08e3a9417f30">DailyMed</a></div>
@@ -837,6 +904,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Levetiracetam + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Levetiracetam (3000 mg daily) had no effect on the pharmacokinetic disposition of phenytoin in patients with refractory epilepsy, and phenytoin did not affect levetiracetam pharmacokinetics.</div>
       <div class="flagpair-line"><b>Direction:</b> no effect on pharmacokinetic disposition of phenytoin; levetiracetam pharmacokinetics not affected by phenytoin</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=62f3d1c8-ca5b-4760-9fc9-41e4fb4cc926">DailyMed</a></div>
@@ -845,6 +913,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Levetiracetam + Quetiapine</div>
       <div class="flagpair-line"><b>Findings:</b> Adjunctive levetiracetam plus quetiapine significantly improved acute mania outcomes versus placebo plus quetiapine: YMRS scores showed a significant time × treatment interaction (P = 0.04), greater reduction by week 4 (P = 0.045), and better treatment response (P = 0.046). The retrieved abstract states the trial evaluated safety and tolerability but is truncated before any pair-specific safety/tolerability results are reported.</div>
       <div class="flagpair-line"><b>Direction:</b> Improved acute mania outcomes with levetiracetam plus quetiapine versus placebo plus quetiapine.</div><div class="flagpair-line"><b>Consequence:</b> Greater reduction in YMRS scores and better response to treatment.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://pubmed.ncbi.nlm.nih.gov/34864756/">PubMed</a></div>
@@ -853,6 +922,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Levetiracetam + Valproic Acid</div>
       <div class="flagpair-line"><b>Findings:</b> Levetiracetam did not alter the pharmacokinetics of valproate in healthy volunteers, and valproate did not modify the rate or extent of levetiracetam absorption or exposure in the label’s clinical pharmacokinetic assessment.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Levetiracetam is unlikely to produce or be subject to pharmacokinetic interactions and does not affect the in vitro glucuronidation of valproic acid.</div><div class="flagpair-line"><b>Direction:</b> Levetiracetam did not alter valproate pharmacokinetics; valproate did not modify levetiracetam rate or extent of absorption or exposure.</div><div class="flagpair-line"><b>Consequence:</b> No pharmacokinetic interaction was found for levetiracetam and valproate in the label’s assessment.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=62f3d1c8-ca5b-4760-9fc9-41e4fb4cc926">DailyMed</a></div>
@@ -861,6 +931,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Levetiracetam + Olanzapine</div>
       <div class="flagpair-line"><b>Findings:</b> Levetiracetam combined with olanzapine was associated with a significantly greater reduction in YMRS scores than placebo plus olanzapine at week 16 (mean 2.03 vs 16.63, P &lt; 0.001) in acute mania, while lethargy occurred more frequently with levetiracetam (23.3% vs 3.3%, P = 0.05). The authors concluded the combination may benefit bipolar disorder patients unresponsive to olanzapine alone, with further research needed to confirm the findings.</div>
       <div class="flagpair-line"><b>Direction:</b> greater reduction in YMRS scores; more frequent lethargy</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://pubmed.ncbi.nlm.nih.gov/40447146/">PubMed</a></div>
@@ -874,6 +945,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lithium + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Paroxetine's label states that concomitant use of paroxetine with serotonergic drugs, including lithium, increases the risk of serotonin syndrome. It recommends monitoring for signs and symptoms of serotonin syndrome, particularly during treatment initiation and dosage increases, and considering discontinuation of paroxetine and/or the concomitant serotonergic drug if serotonin syndrome occurs.</div>
       <div class="flagpair-line"><b>Mechanism:</b> concomitant use of serotonergic drugs with paroxetine</div><div class="flagpair-line"><b>Direction:</b> increases the risk</div><div class="flagpair-line"><b>Consequence:</b> serotonin syndrome</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR1B. Lithium HTR1B (TA): efficacy (PMID:21449676); Paroxetine HTR1B (TA): toxicity (PMID:21449676)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e63fe922-b35a-406c-8737-f3f5e6d5a30d">DailyMed</a></div>
@@ -882,6 +954,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lithium + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Sertraline’s label states that concomitant use of serotonergic drugs, including lithium, with sertraline hydrochloride increases the risk of serotonin syndrome. It recommends monitoring for signs and symptoms of serotonin syndrome, particularly during treatment initiation and dosage increases, and considering discontinuation of sertraline and/or the concomitant serotonergic drug if serotonin syndrome occurs.</div>
       <div class="flagpair-line"><b>Mechanism:</b> concomitant serotonergic drugs with sertraline hydrochloride</div><div class="flagpair-line"><b>Direction:</b> increases the risk</div><div class="flagpair-line"><b>Consequence:</b> serotonin syndrome</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5e98b93-d8f8-4eed-8a0a-63b347b670ed">DailyMed</a></div>
@@ -890,6 +963,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Lithium + Venlafaxine</div>
       <div class="flagpair-line"><b>Findings:</b> Lithium did not affect steady-state pharmacokinetics of venlafaxine or O-desmethylvenlafaxine, and venlafaxine had no effect on lithium pharmacokinetics in the DailyMed label study. The label also lists lithium among serotonergic drugs with venlafaxine, warning of a potential for serotonin syndrome and advising careful patient observation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> serotonergic drugs</div><div class="flagpair-line"><b>Direction:</b> potential for serotonin syndrome; no pharmacokinetic effect reported</div><div class="flagpair-line"><b>Consequence:</b> potential for serotonin syndrome</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene FKBP5, HTR1B. Lithium FKBP5 (TC): toxicity (PMID:21449676); Venlafaxine FKBP5 (TC): toxicity (PMID:21449676); Lithium HTR1B (TA): efficacy (PMID:21449676); Venlafaxine HTR1B (TA): efficacy (PMID:21449676)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=38431a76-6185-4c17-994f-8278b6cd7510">DailyMed</a></div>
@@ -903,6 +977,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Methylphenidate + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Methylphenidate is listed in phenytoin's label among drugs that may increase phenytoin serum levels. The label indicates this interaction may require attention to achieve optimal clinical outcome.</div>
       <div class="flagpair-line"><b>Direction:</b> may increase phenytoin serum levels</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=46d5c0d1-a97b-46d9-8cf4-994780673337">DailyMed</a></div>
@@ -911,6 +986,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Methylphenidate + Quetiapine</div>
       <div class="flagpair-line"><b>Findings:</b> Adding quetiapine to OROS methylphenidate improved ADHD symptoms, aggression, and global functioning in adolescents insufficiently responsive to methylphenidate alone; 42% met all improvement criteria and 79% had minimal aggression. Mild transient sedation occurred in about half, and weight gain during combination treatment offset prior methylphenidate-related weight loss.</div>
       <div class="flagpair-line"><b>Direction:</b> improved ADHD symptoms, aggression, and global functioning; mild transient sedation; weight gain offset prior weight loss</div><div class="flagpair-line"><b>Consequence:</b> 42% met all criteria for clinically significant improvement and 79% showed minimal aggression; mild and transient sedation was reported by about half the cases</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://pubmed.ncbi.nlm.nih.gov/17630867/">PubMed</a></div>
@@ -924,6 +1000,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Nortriptyline + Paroxetine</div>
       <div class="flagpair-line"><b>Findings:</b> Paroxetine, an SSRI, inhibits CYP2D6 and the nortriptyline label warns that concomitant use of TCAs with CYP2D6-inhibiting drugs may cause abrupt TCA toxicity, with SSRI–TCA interaction size potentially ranging up to an 8-fold increase in TCA plasma AUC. The label indicates caution with coadministration of TCAs and SSRIs and states that lower TCA doses may be required.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Paroxetine inhibits cytochrome P450 2D6; nortriptyline is a tricyclic antidepressant affected by CYP2D6 inhibition.</div><div class="flagpair-line"><b>Direction:</b> TCA plasma AUC may increase, potentially up to 8-fold.</div><div class="flagpair-line"><b>Consequence:</b> A patient stable on a TCA may become abruptly toxic when given a CYP2D6-inhibiting drug concomitantly.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene BDNF. Nortriptyline BDNF (TC): toxicity (PMID:19641488); Paroxetine BDNF (CT): reduced efficacy (PMID:24577123)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ee5d853-db93-46f1-922b-a013f26ab3c6">DailyMed</a></div>
@@ -932,6 +1009,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Nortriptyline + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Nortriptyline's label states that sertraline, as an SSRI, inhibits CYP2D6 and that coadministration of TCAs such as nortriptyline with SSRIs warrants caution because CYP2D6 inhibition may cause a stable TCA patient to become abruptly toxic; TCA plasma concentration increases may be small or as large as an 8-fold AUC increase.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Sertraline, as an SSRI, inhibits cytochrome P450 2D6, which is relevant to tricyclic antidepressants such as nortriptyline.</div><div class="flagpair-line"><b>Direction:</b> TCA plasma concentrations may increase, with increases described as small or as large as an 8-fold increase in TCA AUC.</div><div class="flagpair-line"><b>Consequence:</b> A patient stable on a TCA may become abruptly toxic when given a CYP2D6-inhibiting drug as concomitant therapy.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ee5d853-db93-46f1-922b-a013f26ab3c6">DailyMed</a></div>
@@ -939,6 +1017,7 @@ a { color:var(--teal); text-decoration:none; }
     <div class="flagpair-block">
       <div class="flagpair-title">Nortriptyline + Valproic Acid</div>
       <div class="flagpair-line"><b>Findings:</b> Valproic Acid's label states that dosage adjustment of amitriptyline/nortriptyline may be necessary if used concomitantly with Valproic Acid Capsules.</div>
+      
       
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
@@ -958,6 +1037,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Oxcarbazepine + Perampanel</div>
       <div class="flagpair-line"><b>Findings:</b> Concomitant oxcarbazepine with perampanel decreased perampanel plasma levels by approximately 50% to 67% because oxcarbazepine is a moderate or strong CYP3A4 inducer. The label recommends increasing perampanel starting doses in the presence of CYP3A4 inducers and closely monitoring clinical response and tolerability when these inducers are introduced or withdrawn; perampanel dose adjustment may be necessary.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Oxcarbazepine is included among moderate and strong CYP3A4 inducers that increase clearance of perampanel.</div><div class="flagpair-line"><b>Direction:</b> Decreased perampanel plasma levels by approximately 50% to 67%.</div><div class="flagpair-line"><b>Consequence:</b> Reduced perampanel plasma concentrations, with need to monitor clinical response and tolerability.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bc8f7cf2-c19c-4235-859f-9ff1dd21908e">DailyMed</a></div>
@@ -966,6 +1046,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Oxcarbazepine + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Coadministration of oxcarbazepine (Oxtellar XR) with phenytoin decreased blood levels of oxcarbazepine’s active metabolite (MHD), and the label recommends monitoring MHD during titration because Oxtellar XR dosage adjustment may be required. The label also recommends monitoring phenytoin plasma levels during Oxtellar XR titration or dose changes because a decrease in phenytoin dosage may be required.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Phenytoin is listed as a strong CYP3A4 inducer or UGT inducer affecting oxcarbazepine's active metabolite MHD.</div><div class="flagpair-line"><b>Direction:</b> Coadministration decreased blood levels of oxcarbazepine’s active metabolite MHD; phenytoin dosage decrease may be required during Oxtellar XR titration or dosage modification.</div><div class="flagpair-line"><b>Consequence:</b> Altered plasma levels requiring monitoring and possible dosage adjustment.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=aa610e56-1d1d-11e1-8bc2-0800200c9a66">DailyMed</a></div>
@@ -979,6 +1060,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Paroxetine + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Paroxetine and sertraline have additive serotonergic activity when combined, increasing the risk of serotonin syndrome, activation, sleep disturbance, and agitation.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Additive serotonergic activity from combined serotonergic agents.</div><div class="flagpair-line"><b>Direction:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div><div class="flagpair-line"><b>Consequence:</b> Increased serotonin-syndrome risk, activation, sleep disturbance, agitation.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> Pharmacodynamic interaction reference [curated]; General web search (Tavily) [inferred]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene SRP19. Paroxetine SRP19 (GG): efficacy (PMID:22795047); Sertraline SRP19 (GG): efficacy (PMID:22795047)</div>
       
@@ -987,6 +1069,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Paroxetine + Venlafaxine</div>
       <div class="flagpair-line"><b>Findings:</b> Paroxetine may increase venlafaxine exposure because paroxetine is a CYP2D6 inhibitor and venlafaxine is listed as a CYP2D6 substrate. The label recommends decreasing the dosage of the CYP2D6 substrate if needed during concomitant paroxetine use, and increasing it may be needed if paroxetine is discontinued.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Paroxetine is a CYP2D6 inhibitor; venlafaxine is listed as a CYP2D6 substrate.</div><div class="flagpair-line"><b>Direction:</b> Concomitant use of paroxetine with a CYP2D6 substrate may increase exposure of the CYP2D6 substrate.</div><div class="flagpair-line"><b>Consequence:</b> May increase venlafaxine exposure.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene HTR1B, HTR2A, HTR7. Paroxetine HTR1B (TA): toxicity (PMID:21449676); Venlafaxine HTR1B (TA): efficacy (PMID:21449676); Paroxetine HTR2A (TT): toxicity (PMID:16710319); Venlafaxine HTR2A (AG): efficacy (PMID:22006095); Paroxetine HTR7 (GG): efficacy (PMID:30874608); Venlafaxine HTR7 (GG): efficacy (PMID:30874608)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e63fe922-b35a-406c-8737-f3f5e6d5a30d">DailyMed</a></div>
@@ -1000,6 +1083,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Perampanel + Phenytoin</div>
       <div class="flagpair-line"><b>Findings:</b> Concomitant phenytoin with perampanel decreased perampanel plasma levels by approximately 50 to 67% because phenytoin is a moderate or strong CYP3A4 inducer. The label recommends increased starting doses for perampanel in the presence of such inducers and close monitoring for clinical response and tolerability when they are introduced or withdrawn; perampanel dose adjustment may be necessary.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Phenytoin is included among moderate and strong CYP3A4 inducers that increase clearance of perampanel.</div><div class="flagpair-line"><b>Direction:</b> Decreased perampanel plasma levels by approximately 50 to 67%.</div><div class="flagpair-line"><b>Consequence:</b> Reduced perampanel exposure; patients should be monitored for clinical response and tolerability.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bc8f7cf2-c19c-4235-859f-9ff1dd21908e">DailyMed</a></div>
@@ -1013,6 +1097,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Phenytoin + Quetiapine</div>
       <div class="flagpair-line"><b>Findings:</b> Phenytoin, a CYP3A4 inducer, increased the mean oral clearance of quetiapine 5-fold; the label states quetiapine exposure is decreased by CYP3A4 inducers. Increased quetiapine doses up to 5-fold may be required to maintain control of schizophrenia symptoms during concomitant phenytoin, and quetiapine should be reduced to the original dose within 7–14 days after the inducer is discontinued.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Phenytoin is a CYP3A4 inducer that increases quetiapine oral clearance and decreases quetiapine exposure.</div><div class="flagpair-line"><b>Direction:</b> Mean oral clearance of quetiapine increased 5-fold; quetiapine exposure is decreased.</div><div class="flagpair-line"><b>Consequence:</b> Reduced quetiapine exposure may require higher quetiapine doses to maintain control of symptoms of schizophrenia.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f9447739-9e21-4232-950f-174c0496ab66">DailyMed</a></div>
@@ -1021,6 +1106,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Phenytoin + Sertraline</div>
       <div class="flagpair-line"><b>Findings:</b> Sertraline is listed among antidepressants that may increase phenytoin serum levels. The phenytoin label states that adding or withdrawing such agents in patients on phenytoin therapy may require phenytoin dose adjustment to achieve optimal clinical outcome.</div>
       <div class="flagpair-line"><b>Direction:</b> Sertraline may increase phenytoin serum levels.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]; External evidence (PubMed) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=46d5c0d1-a97b-46d9-8cf4-994780673337">DailyMed</a></div>
@@ -1029,6 +1115,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Phenytoin + Valproic Acid</div>
       <div class="flagpair-line"><b>Findings:</b> Phenytoin's label states that valproate/valproic acid may either increase or decrease phenytoin serum levels. Because the label identifies bidirectional phenytoin-level changes with concomitant valproic acid, this interaction may require clinical attention to phenytoin exposure.</div>
       <div class="flagpair-line"><b>Direction:</b> Valproate/valproic acid may either increase or decrease phenytoin serum levels.</div><div class="flagpair-line"><b>Consequence:</b> Altered phenytoin serum levels</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]; DailyMed label (Drug Interactions section) [curated]</div>
       <div class="flagpair-line"><b>Patient PGx context [predicted] (not part of this verdict):</b> both drugs carry a finding for the shared gene CYP1A1, CYP3A4, GABRA1. Phenytoin CYP1A1 (CA): toxicity (PMID:21121773); Valproic Acid CYP1A1 (CA): toxicity (PMID:21121773); Phenytoin CYP3A4 (TT): reduced efficacy (PMID:28343093); Valproic Acid CYP3A4 (TT): reduced efficacy (PMID:28343093); Phenytoin GABRA1 (GA): reduced efficacy (PMCID:PMC3125053); Valproic Acid GABRA1 (GA): reduced efficacy (PMCID:PMC3125053)</div>
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=46d5c0d1-a97b-46d9-8cf4-994780673337">DailyMed</a></div>
@@ -1042,6 +1129,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Quetiapine + Valproic Acid</div>
       <div class="flagpair-line"><b>Findings:</b> General web evidence reports that valproic acid could increase quetiapine exposure; one clinical study found a 77% rise in quetiapine plasma concentrations, while another found 17% higher Cmax but no AUC change. Clinical significance was unknown, but case reports described cervical dystonia with high quetiapine after valproic acid was added and Parkinsonism during concomitant treatment.</div>
       <div class="flagpair-line"><b>Direction:</b> Valproic acid could increase quetiapine exposure; 77% rise in plasma concentrations in one study, 17% higher Cmax but no AUC change in another.</div><div class="flagpair-line"><b>Consequence:</b> Clinical significance unknown; case reports described cervical dystonia with high quetiapine after valproic acid was added and Parkinsonism during concomitant treatment.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> General web search (Tavily) [inferred]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://relis.no/sporsmal_og_svar?id=19-24455">General web search (Tavily)</a></div>
@@ -1055,6 +1143,7 @@ a { color:var(--teal); text-decoration:none; }
       <div class="flagpair-title">Sertraline + Venlafaxine</div>
       <div class="flagpair-line"><b>Findings:</b> Sertraline hydrochloride may increase the exposure of CYP2D6 substrates, including venlafaxine, because sertraline hydrochloride is a CYP2D6 inhibitor. The label recommends decreasing the dosage of the CYP2D6 substrate if needed during concomitant sertraline use and increasing it if needed when sertraline is discontinued.</div>
       <div class="flagpair-line"><b>Mechanism:</b> Sertraline hydrochloride is a CYP2D6 inhibitor; venlafaxine is listed as a CYP2D6 substrate example.</div><div class="flagpair-line"><b>Direction:</b> May increase exposure of the CYP2D6 substrate.</div><div class="flagpair-line"><b>Consequence:</b> Increased exposure of venlafaxine as a CYP2D6 substrate may occur with concomitant sertraline hydrochloride use.</div>
+      
       <div class="flagpair-line"><b>Evidence:</b> DailyMed label (Drug Interactions section) [curated]</div>
       
       <div class="flagpair-line"><b>Hyperlink:</b> <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5e98b93-d8f8-4eed-8a0a-63b347b670ed">DailyMed</a></div>
@@ -1071,6 +1160,7 @@ a { color:var(--teal); text-decoration:none; }
     <tbody><tr><td><p class="small muted">No pairs currently fall in this category.</p></td><td><p class="small muted">No pairs currently fall in this category.</p></td></tr></tbody>
   </table>
 
+  
   <div class="callout gap" style="margin-top:8px"><b>Known Limitations (Drug Interaction Flag Sheet):</b><ul class="list-compact"><li>A pair with no finding from Flockhart, pharmacodynamic rules, PubMed, DailyMed, ClinicalTrials.gov, or Tavily is dropped from this report entirely, not shown as a negative/no-concern finding -- 'not listed here' means 'no evidence was found for this exact pair', never 'confirmed safe'.</li><li>A DailyMed 'not mentioned in reviewed label section' result is never itself a finding -- it means this module checked the drug's real DRUG INTERACTIONS label section and the other drug's name was not there, not that no interaction exists; it only ever appears as supplementary context alongside whatever other evidence a pair has.</li><li>Tavily (general web search) is queried directly and unconditionally alongside PubMed, DailyMed, and ClinicalTrials.gov for every pair here -- unlike elsewhere in this codebase (external_evidence_summary.py's question-answering paths), it is not gated behind the other sources returning no_results first. Every Tavily-sourced evidence entry is labeled 'General web search (Tavily)' so it is never mistaken for a dedicated medical/regulatory source, and it is always the lowest-priority candidate for a pair's primary Finding text.</li><li>A source whose language does not clearly match an explicit positive-outcome or negative-outcome keyword never resolves a pair on its own -- this module falls through to the next candidate source in priority order instead, and if no candidate ever resolves clearly, the pair is dropped from the report entirely, the same as a pair with no evidence at all. There is no 'Needs Review' column here; most real titles/excerpts are topic descriptions, not verdicts, and this module never guesses which way an unclear one points.</li><li>CPIC and ClinVar (gene-level sources) are not re-queried per pair here -- see the module docstring for why folding a single drug's own genotype-predicted finding into a pair's verdict here would conflate two different questions. Where this patient's genetics panel covers a screened drug, its real CPIC/ClinVar findings are in the Pharmacogenomics section, not duplicated here.</li><li>Flockhart Cytochrome P450 Drug Interaction Table (curated-snapshot-2024) curated CYP-pathway data covers only a small hand-curated set of drugs; a pair outside that set relies on the other five sources, not a gap in this report.</li><li>Positive/Negative Impact and the Finding come from the Finding Agent reading each pair's own source evidence (see classification_method); a title, snippet or keyword hit alone never decides a pair. Animal/cell studies, comparator-only studies, retracted papers and studies involving a third drug are excluded (source_rejection_counts shows how many of each). Patient PGx findings are shown as context only and never classify a pair.</li></ul></div>
 
   

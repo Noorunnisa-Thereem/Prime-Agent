@@ -81,6 +81,7 @@ patient_prime_agent/path_d/ddi/__init__.py
 patient_prime_agent/path_d/ddi/aggregation.py
 patient_prime_agent/path_d/ddi/candidate_drugs.py
 patient_prime_agent/path_d/ddi/clinical_context.py
+patient_prime_agent/path_d/ddi/finding_agent.py
 patient_prime_agent/path_d/ddi/normalizer.py
 patient_prime_agent/path_d/ddi/pairing.py
 patient_prime_agent/path_d/ddi/pgx_modifiers.py
@@ -94,12 +95,16 @@ tests/test_a2a.py
 tests/test_ddi.py
 tests/test_ddi_external_evidence.py
 tests/test_ddi_flag_evidence.py
+tests/test_ddi_pair_evidence_rules.py
+tests/test_ddi_review_fixes.py
+tests/test_ddi_skill_rules.py
 tests/test_external_evidence_resource_router.py
 tests/test_external_lookup.py
 tests/test_external_lookup_guardrails.py
 tests/test_external_lookup_memory.py
 tests/test_external_lookup_ratelimit.py
 tests/test_external_lookup_sanitization.py
+tests/test_finding_agent.py
 tests/test_harness_crud.py
 tests/test_integration.py
 tests/test_memory_refinement.py
